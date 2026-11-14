@@ -1,8 +1,9 @@
+/// Modelos do pacote de navegação (espelham dados/pacote_capim_dourado.json).
+library;
+
 import 'dart:math' as math;
 
 import 'grade.dart';
-/// Modelos do pacote de navegação (espelham dados/pacote_capim_dourado.json).
-library;
 
 String? _local(Map<String, dynamic> j, String campo, String idioma) {
   if (idioma != 'pt') {
