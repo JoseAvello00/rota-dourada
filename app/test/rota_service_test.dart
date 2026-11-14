@@ -51,8 +51,8 @@ void main() {
     });
 
 
-    test('sem rota compatível retorna null (sem escadas rolantes nem escada)', () {
-      final semEscadas = RotaService(pacote, tiposIndisponiveis: {'escada', 'escada_rolante'});
+    test('sem rota compatível retorna null (sem escadas nem elevador)', () {
+      final semEscadas = RotaService(pacote, tiposIndisponiveis: {'escada', 'escada_rolante', 'elevador'});
       expect(semEscadas.calcular(pacote.perfis['padrao']!, 't_p1', 'p_c'), isNull);
     });
 
