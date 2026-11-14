@@ -1,6 +1,8 @@
 # Rota Dourada
 
-> **Avaliadores:** comecem pela pasta [`entrega/`](entrega/LEIA-ME.md) (resumo de 1 página, documentação técnica, instruções de execução e MVP).
+> **Avaliadores:** comecem pela pasta [`entrega/`](entrega/LEIA-ME.md) (resumo de 1 página, documentação técnica, instruções de execução, MVP e vídeo).
+>
+> ▶️ **[Assistir ao vídeo de apresentação (1min27s)](https://github.com/JoseAvello00/rota-dourada/raw/main/entrega/5-Rota-Dourada-Pitch.mp4)**
 
 Navegação indoor acessível para o **Capim Dourado Shopping** (Palmas – TO).
 O visitante cria um perfil dizendo se tem alguma deficiência (e quais). O app se adapta a esse perfil: abre o mapa do shopping com todas as lojas e a posição atual dele, e traça a melhor rota para o perfil quando ele toca numa loja, pesquisa ou escolhe na lista. As instruções saem em texto, áudio e vibração. O cadastro é opcional e o app funciona sem internet depois que o mapa é salvo no aparelho.
@@ -69,6 +71,7 @@ Tudo o que foi pedido na entrega está na pasta [`entrega/`](entrega/LEIA-ME.md)
 - [Documentação técnica](entrega/2-Rota-Dourada-Documentacao-tecnica.pdf)
 - [Instruções de execução](entrega/3-Rota-Dourada-Instrucoes-de-execucao.pdf)
 - [MVP (protótipo, abre no navegador)](entrega/1-Rota-Dourada-MVP-prototipo.html)
+- [Vídeo de apresentação (1min27s)](https://github.com/JoseAvello00/rota-dourada/raw/main/entrega/5-Rota-Dourada-Pitch.mp4)
 
 ## Proposta e wireframes
 
