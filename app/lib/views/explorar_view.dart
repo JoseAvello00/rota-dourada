@@ -5,6 +5,9 @@ import 'package:provider/provider.dart';
 
 import '../models/pacote.dart';
 import '../services/localizacao_service.dart';
+import '../services/posicao/fontes.dart';
+import '../services/posicao/motor_posicao.dart';
+import '../services/rota_service.dart';
 import '../viewmodels/app_viewmodel.dart';
 import '../viewmodels/navegacao_viewmodel.dart';
 import 'conversa_view.dart';
@@ -45,8 +48,27 @@ class _ExplorarViewState extends State<ExplorarView> {
       final nav = context.read<NavegacaoViewModel>();
       final app = context.read<AppViewModel>();
       if (nav.posicao == null && !nav.localizando) nav.localizar();
+      _ligarPosicao(nav, app);
       if (app.tem('listaPrimeiro') && nav.destino == null) _scaffold.currentState?.openEndDrawer();
     });
+  }
+
+  /// --dart-define=POSICAO=manual (padrão) | ble (sensores reais) | simulacao (identificada na tela).
+  void _ligarPosicao(NavegacaoViewModel nav, AppViewModel app) {
+    const modo = String.fromEnvironment('POSICAO', defaultValue: 'manual');
+    if (modo == 'manual' || nav.motor != null) return;
+    final p = app.pacote!;
+    if (modo == 'simulacao') {
+      final s = RotaService(p);
+      final r = s.calcular(p.perfis['padrao']!, 't_p1', 't_rn');
+      if (r == null) return;
+      nav.iniciarRastreamento(
+        fonte: FonteSimulada(s.polilinha(r, 0), 0, perdas: const [(Duration(seconds: 40), Duration(seconds: 55))]),
+        motorPronto: MotorPosicao(p, extras: beaconsVirtuais(p)),
+      );
+    } else {
+      nav.iniciarRastreamento();
+    }
   }
 
   /// Centraliza o mapa num ponto do pacote com o zoom pedido.
@@ -147,6 +169,7 @@ class _ExplorarViewState extends State<ExplorarView> {
                         rotaPadrao: nav.rotaPadrao,
                         altoContraste: app.tem('altoContraste'),
                         zoom: _zoom,
+                        atual: nav.origemAlternativa == null ? nav.posicaoAtual : null,
                       ),
                     ),
                   ),
@@ -317,6 +340,32 @@ class _BarraLocal extends StatelessWidget {
           ),
         ),
         if (!conf) TextButton(onPressed: nav.confirmarPosicao, child: Text(t('ehAqui'))),
+        TextButton(onPressed: () => nav.iniciarAjuste(), child: Text(t('ajustar'))),
+      ]);
+    }
+    final at = nav.posicaoAtual;
+    if (!nav.ajustando && nav.origemAlternativa == null && at != null) {
+      final m = at.erro.isFinite ? at.erro.round().toString() : '?';
+      final txt = switch (at.estado) {
+        EstadoPosicao.ok => t('posOk').replaceAll('{m}', m),
+        EstadoPosicao.imprecisa => t('posImprecisa').replaceAll('{m}', m),
+        EstadoPosicao.semSinal => t('posSemSinal'),
+        EstadoPosicao.indisponivel => '${t('posIndisponivel')} (${at.motivo ?? ''})',
+        EstadoPosicao.aguardando => t('localizando'),
+      };
+      conteudo = Row(children: [
+        Expanded(
+          child: Column(crossAxisAlignment: CrossAxisAlignment.start, mainAxisSize: MainAxisSize.min, children: [
+            if (nav.emSimulacao)
+              Container(
+                margin: const EdgeInsets.only(bottom: 2),
+                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1),
+                color: Cores.barro,
+                child: Text(t('simulacao'), style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 12)),
+              ),
+            Text('📍 $txt', style: const TextStyle(fontSize: 14)),
+          ]),
+        ),
         TextButton(onPressed: () => nav.iniciarAjuste(), child: Text(t('ajustar'))),
       ]);
     }

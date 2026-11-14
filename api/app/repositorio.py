@@ -26,6 +26,9 @@ class RepositorioJson:
         dados = json.loads(self.caminho.read_text(encoding="utf-8"))
         return [dados["versao"]]
 
+    def salvar(self, pacote_id: str, pacote: dict) -> None:
+        self.caminho.write_text(json.dumps(pacote, ensure_ascii=False, indent=1), encoding="utf-8")
+
 
 class RepositorioFirestore:
     """Cada pacote é um documento em `pacotes/{pacote_id}` com o JSON completo,
@@ -42,6 +45,9 @@ class RepositorioFirestore:
 
     def listar(self) -> list[dict]:
         return [d.to_dict()["versao"] for d in self.db.collection("pacotes").stream()]
+
+    def salvar(self, pacote_id: str, pacote: dict) -> None:
+        self.db.collection("pacotes").document(pacote_id).set(pacote)
 
 
 @lru_cache

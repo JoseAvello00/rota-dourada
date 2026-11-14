@@ -41,6 +41,7 @@ def test_validacao_endpoint_com_avisos_de_acessibilidade():
     j = cliente.get(f"/pacotes/{ID}/validacao").json()
     assert j["valido"] and j["erros"] == []
     assert any("mobilidade" in a and "t_p1" in a for a in j["avisos"])
+    assert any("p_w2" in a or "e068" in a for a in j["avisos"])  # trecho sem passagem na planta é informado
 
 
 # ---------- Regras de rota (rede traçada sobre a Planta Mix) ----------
@@ -55,10 +56,11 @@ def test_mobilidade_sem_rota_confirmada_por_dentro_ate_o_2o_piso():
     assert calcular_rota(GRAFO, PERFIS["mobilidade"], "t_p1", "p_c") is None
 
 
-def test_mobilidade_pelo_acesso_oeste_usa_elevador():
-    rota = calcular_rota(GRAFO, PERFIS["mobilidade"], "t_po", "p_c")
-    assert "elevador" in rota["tipos"]
-    assert not {"escada", "escada_rolante", "esteira"} & set(rota["tipos"])
+def test_mobilidade_sem_passagem_confirmada_ate_o_2o_piso_em_nenhuma_entrada():
+    # o vestíbulo do elevador no 2º piso não tem passagem livre desenhada até a praça
+    entradas = [n["id"] for n in PACOTE["nos"] if n["tipo"] == "entrada"]
+    assert all(calcular_rota(GRAFO, PERFIS["mobilidade"], e, "p_c") is None for e in entradas)
+    assert any(t["de"] == "p_w2" and t["para"] == "p_elev" for t in PACOTE["trechos_descartados"])
 
 
 def test_visual_prefere_escada_fixa_a_escada_rolante():
@@ -67,13 +69,12 @@ def test_visual_prefere_escada_fixa_a_escada_rolante():
 
 
 def test_trecho_nao_confirmado_nao_entra_em_rota_acessivel():
+    base = calcular_rota(GRAFO, PERFIS["mobilidade"], "t_p1", "t_rn")
+    alvo = base["arestas"][1]
     pacote = copy.deepcopy(PACOTE)
-    for a in pacote["arestas"]:
-        if a["id"] == "v_elevador":
-            a["a_validar"] = True
-    g = montar_grafo(pacote)
-    assert calcular_rota(g, PERFIS["mobilidade"], "t_po", "p_c") is None
-    assert calcular_rota(g, PERFIS["padrao"], "t_po", "p_c") is not None
+    next(a for a in pacote["arestas"] if a["id"] == alvo)["a_validar"] = True
+    r = calcular_rota(montar_grafo(pacote), PERFIS["mobilidade"], "t_p1", "t_rn")
+    assert r is None or alvo not in r["arestas"]
 
 
 def test_distancias_em_metros_reais():
@@ -81,11 +82,39 @@ def test_distancias_em_metros_reais():
     assert 100 < rota["distancia"] < 160
 
 
-def test_sensorial_evita_praca_de_eventos_central():
+def test_sensorial_reduz_trecho_em_area_de_estimulo_alto():
+    est = {e["id"]: e.get("estimulo") for e in PACOTE["arestas"]}
+    dist = {e["id"]: e.get("distancia") for e in PACOTE["arestas"]}
+    alto = lambda r: sum(dist[a] or 0 for a in r["arestas"] if est[a] == "alto")
     padrao = calcular_rota(GRAFO, PERFIS["padrao"], "t_p1", "t_rn")
     sens = calcular_rota(GRAFO, PERFIS["sensorial"], "t_p1", "t_rn")
-    assert "t_praca" in padrao["nos"]
-    assert "t_praca" not in sens["nos"]
+    assert alto(sens) < alto(padrao)
+
+
+def test_rede_e_entradas_dentro_da_area_de_circulacao():
+    from app.validador import validar_geometria
+    assert validar_geometria(PACOTE) == []
+    pacote = copy.deepcopy(PACOTE)
+    e = next(a for a in pacote["arestas"] if a.get("geometria"))
+    e["geometria"] = [e["geometria"][0], [0.2, 0.2], e["geometria"][-1]]  # atalho por fora do prédio
+    assert any("atravessa obstáculo" in x for x in validar_geometria(pacote))
+
+
+def test_cadastro_de_beacons_valida_posicao(monkeypatch, tmp_path):
+    import json as _json
+    from app import repositorio as R
+    arq = tmp_path / "p.json"; arq.write_text(_json.dumps(PACOTE), encoding="utf-8")
+    monkeypatch.setenv("PACOTE_ARQUIVO", str(arq)); monkeypatch.setenv("ADMIN_TOKEN", "t")
+    R.repositorio.cache_clear()
+    n = next(n for n in PACOTE["nos"] if n["id"] == "t_rs")
+    ok = {"id": "b1", "uuid": "f7826da6-4fa2-4e98-8024-bc5b71e0893e", "major": 1, "minor": 1, "andar": 0, "x": n["x"], "y": n["y"]}
+    assert cliente.put(f"/pacotes/{ID}/beacons", json=[ok]).status_code == 401
+    ruim = dict(ok, id="b2", minor=2, x=1.0, y=1.0)
+    r = cliente.put(f"/pacotes/{ID}/beacons", json=[ok, ruim], headers={"authorization": "Bearer t"})
+    assert r.status_code == 422 and "b2" in str(r.json())
+    r = cliente.put(f"/pacotes/{ID}/beacons", json=[ok], headers={"authorization": "Bearer t"})
+    assert r.status_code == 200 and r.json()["beacons"] == 1
+    R.repositorio.cache_clear()
 
 
 def test_validador_detecta_poi_quebrado():
@@ -96,9 +125,9 @@ def test_validador_detecta_poi_quebrado():
 
 def test_validador_detecta_destino_inacessivel():
     pacote = copy.deepcopy(PACOTE)
-    pacote["arestas"] = [a for a in pacote["arestas"] if a["id"] != "v_elevador"]
+    pacote["arestas"] = [a for a in pacote["arestas"] if a["tipo"] not in ("escada", "escada_rolante")]
     erros = validar_pacote(pacote)
-    assert any("sem rota 'mobilidade'" in e for e in erros)  # 2º piso sem nenhuma entrada acessível
+    assert any("sem rota 'padrao'" in e for e in erros)  # 2º piso isolado até no perfil padrão
 
 
 def test_pacote_tem_lojas_da_planta_e_imagens():

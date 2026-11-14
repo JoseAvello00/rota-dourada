@@ -893,7 +893,11 @@ function limitarV(){ const {w,h}=dimensoes(),ar=w/h,a=andarInfo(S.andarMapa),L=a
 function zoomEm(f,cx,cy){ const V=S.V; cx=cx??V.x+V.w/2; cy=cy??V.y+V.h/2;
   V.x=cx-(cx-V.x)*f; V.y=cy-(cy-V.y)*f; V.w*=f; V.h*=f; limitarV(); desenharExplorar(); }
 function poisVisiveis(){ const q=$('campoBusca').value.trim(); return q?new Set(N.buscar(PACOTE,q).map(p=>p.id)):null; }
-const linhaRota=(r,andar)=>r.nos.filter(id=>grafo.nos[id].andar===andar).map(id=>grafo.nos[id].x+','+grafo.nos[id].y).join(' ');
+// segue a geometria verificada de cada trecho (nunca a reta entre nós)
+const ARESTA_POR_ID=Object.fromEntries(PACOTE.arestas.map(a=>[a.id,a]));
+const linhaRota=(r,andar)=>{const pts=[];r.arestas.forEach(t=>{const a=ARESTA_POR_ID[t.id];if(!a)return;const de=grafo.nos[t.de]||grafo.nos[a.de],para=grafo.nos[t.para]||grafo.nos[a.para];
+  if(!de||!para||de.andar!==andar||para.andar!==andar)return;let g=a.geometria&&a.geometria.length>1?a.geometria:[[de.x,de.y],[para.x,para.y]];
+  if(a.geometria&&t.de&&t.de!==a.de)g=[...g].reverse();(pts.length?g.slice(1):g).forEach(([x,y])=>pts.push(x+','+y));});return pts.join(' ');};
 function svgRota(r,andar,px,P,grossa){
   const pts=linhaRota(r,andar), k=grossa||1;
   return `<polyline points="${pts}" fill="none" stroke="${P.rotaBorda}" stroke-width="${11*px*k}" stroke-linejoin="round" stroke-linecap="round"/><polyline points="${pts}" fill="none" stroke="${P.rota}" stroke-width="${7*px*k}" stroke-linejoin="round" stroke-linecap="round"/>`;

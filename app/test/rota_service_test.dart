@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:rota_dourada/models/pacote.dart';
+import 'package:rota_dourada/models/rota.dart';
 import 'package:rota_dourada/services/instrucao_service.dart';
 import 'package:rota_dourada/services/rota_service.dart';
 
@@ -24,14 +25,13 @@ void main() {
       expect(pad.distancia, inInclusiveRange(100, 160));
     });
 
-    test('mobilidade: sem rota confirmada por dentro; pelo acesso oeste usa elevador', () {
+    test('mobilidade: sem passagem sem escadas até o 2º piso verificada na planta', () {
       final mob = pacote.perfis['mobilidade']!;
       expect(rotas.calcular(mob, 't_p1', 'p_c'), isNull);
-      final r = rotas.calcular(mob, 't_po', 'p_c')!;
-      expect(r.tipos, contains('elevador'));
-      expect(r.tipos.intersection({'escada', 'escada_rolante', 'esteira'}), isEmpty);
-      expect(rotas.entradasComRota(mob, 'p_c').map((x) => x.$1.id).toList(), ['t_po']);
+      expect(rotas.calcular(mob, 't_po', 'p_c'), isNull);
+      expect(rotas.entradasComRota(mob, 'p_c'), isEmpty);
     });
+
 
     test('visual prefere escada fixa a escada rolante', () {
       final r = rotas.calcular(pacote.perfis['visual']!, 't_p1', 'p_c')!;
@@ -40,24 +40,29 @@ void main() {
     });
 
     test('trecho não confirmado nunca entra em rota acessível', () {
+      final base = rotas.calcular(pacote.perfis['mobilidade']!, 't_p1', 't_rn')!;
+      final alvo = base.trechos[1].id;
       final j = jsonDecode(File('assets/pacote_capim_dourado.json').readAsStringSync()) as Map<String, dynamic>;
-      (j['arestas'] as List).firstWhere((a) => a['id'] == 'v_elevador')['a_validar'] = true;
+      (j['arestas'] as List).firstWhere((a) => a['id'] == alvo)['a_validar'] = true;
       final p2 = Pacote.fromJson(j);
-      final s2 = RotaService(p2);
-      expect(s2.calcular(p2.perfis['mobilidade']!, 't_po', 'p_c'), isNull);
-      expect(s2.calcular(p2.perfis['padrao']!, 't_po', 'p_c'), isNotNull);
+      final r = RotaService(p2).calcular(p2.perfis['mobilidade']!, 't_p1', 't_rn');
+      expect(r == null || !r.trechos.any((t) => t.id == alvo), isTrue);
     });
 
-    test('sem rota compatível retorna null (elevador indisponível)', () {
-      final semElevador = RotaService(pacote, tiposIndisponiveis: {'elevador'});
-      expect(semElevador.calcular(pacote.perfis['mobilidade']!, 't_po', 'p_c'), isNull);
+
+    test('sem rota compatível retorna null (sem escadas rolantes nem escada)', () {
+      final semEscadas = RotaService(pacote, tiposIndisponiveis: {'escada', 'escada_rolante'});
+      expect(semEscadas.calcular(pacote.perfis['padrao']!, 't_p1', 'p_c'), isNull);
     });
 
-    test('sensorial desvia da Praça de Eventos central (paridade com JS e Python)', () {
-      final r = rotas.calcular(pacote.perfis['sensorial']!, 't_p1', 'p_c')!;
-      expect(r.nos, ['t_p1', 't_s0', 't_sw1', 't_swa', 't_sw2', 't_sw3', 't_esc', 'p_esc', 'p_e', 'p_c']);
-      expect(rotas.calcular(pacote.perfis['sensorial']!, 't_p1', 't_rn')!.nos, isNot(contains('t_praca')));
+
+    test('sensorial reduz o trecho em áreas de estímulo alto', () {
+      double alto(Rota r) => r.trechos.where((t) => t.estimulo == 'alto').fold(0.0, (s, t) => s + t.distancia);
+      final pad = rotas.calcular(pacote.perfis['padrao']!, 't_p1', 't_rn')!;
+      final sen = rotas.calcular(pacote.perfis['sensorial']!, 't_p1', 't_rn')!;
+      expect(alto(sen), lessThan(alto(pad)));
     });
+
   });
 
   group('InstrucaoService', () {
@@ -69,11 +74,12 @@ void main() {
       expect(e.last.icone, 'chegada');
     });
 
-    test('EN: elevador no modo mobilidade', () {
-      final r = rotas.calcular(pacote.perfis['mobilidade']!, 't_po', 'p_c')!;
-      final e = InstrucaoService(pacote).gerar(r, poi('poi_praca_alim'), 'en', nomeEntrada: 'West access');
-      expect(e.any((x) => x.texto.contains('Take the elevator to the 2nd floor')), isTrue);
+    test('EN: escada rolante no perfil padrão', () {
+      final r = rotas.calcular(pacote.perfis['padrao']!, 't_p1', 'p_c')!;
+      final e = InstrucaoService(pacote).gerar(r, poi('poi_praca_alim'), 'en', nomeEntrada: 'Main entrance P1');
+      expect(e.any((x) => x.texto.contains('Take the escalator up to the 2nd floor')), isTrue);
     });
+
 
     test('origem por referência e retas longas divididas', () {
       final r = rotas.calcular(pacote.perfis['padrao']!, 't_rs', 't_sanw2')!;

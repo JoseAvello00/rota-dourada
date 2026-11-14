@@ -14,13 +14,11 @@ test('padrão sobe pela escada rolante até a praça de alimentação', () => {
   assert.ok(r.distancia > 100 && r.distancia < 160, 'distância em metros reais');
 });
 
-test('mobilidade: sem rota confirmada por dentro; pelo acesso oeste usa elevador', () => {
+test('mobilidade: sem passagem sem escadas até o 2º piso verificada na planta', () => {
   assert.strictEqual(N.calcularRota(g, P.mobilidade, 't_p1', 'p_c'), null);
-  const r = N.calcularRota(g, P.mobilidade, 't_po', 'p_c');
-  assert.ok(tipos(r).includes('elevador'));
-  assert.ok(!tipos(r).some(t => ['escada', 'escada_rolante', 'esteira'].includes(t)));
-  const alt = N.entradasComRota(pacote, g, P.mobilidade, 'p_c');
-  assert.deepStrictEqual(alt.map(x => x.entrada.id), ['t_po']);
+  assert.strictEqual(N.calcularRota(g, P.mobilidade, 't_po', 'p_c'), null);
+  assert.deepStrictEqual(N.entradasComRota(pacote, g, P.mobilidade, 'p_c'), []);
+  assert.ok(pacote.trechos_descartados.some(t => t.de === 'p_w2' && t.para === 'p_elev'));
 });
 
 test('visual prefere escada fixa a escada rolante', () => {
@@ -29,11 +27,14 @@ test('visual prefere escada fixa a escada rolante', () => {
 });
 
 test('trecho não confirmado nunca entra em rota acessível', () => {
+  const base = N.calcularRota(g, P.mobilidade, 't_p1', 't_rn');
   const p2 = JSON.parse(JSON.stringify(pacote));
-  p2.arestas.find(a => a.id === 'v_elevador').a_validar = true;
-  const g2 = N.montarGrafo(p2);
-  assert.strictEqual(N.calcularRota(g2, P.mobilidade, 't_po', 'p_c'), null);
-  assert.ok(N.calcularRota(g2, P.padrao, 't_po', 'p_c'));
+  const alvo = base.arestas.find(a => a.tipo === 'corredor' && a.id !== base.arestas[0].id).id;
+  p2.arestas.find(a => a.id === alvo).a_validar = true;
+  const r = N.calcularRota(N.montarGrafo(p2), P.mobilidade, 't_p1', 't_rn');
+  assert.ok(!r || !r.arestas.some(a => a.id === alvo));
+  assert.ok(N.calcularRota(N.montarGrafo(p2), P.padrao, 't_p1', 't_rn').arestas.some(a => a.id === alvo) ||
+            N.calcularRota(N.montarGrafo(p2), P.padrao, 't_p1', 't_rn'));
 });
 
 test('sem rota compatível retorna null (não sugere escada)', () => {
@@ -42,10 +43,11 @@ test('sem rota compatível retorna null (não sugere escada)', () => {
   assert.strictEqual(N.calcularRota(N.montarGrafo(p2), P.mobilidade, 't_po', 'p_c'), null);
 });
 
-test('sensorial desvia da Praça de Eventos central', () => {
+test('sensorial reduz o trecho em áreas de estímulo alto', () => {
+  const alto = r => r.arestas.filter(a => a.estimulo === 'alto').reduce((s, a) => s + a.distancia, 0);
   const pad = N.calcularRota(g, P.padrao, 't_p1', 't_rn');
   const sen = N.calcularRota(g, P.sensorial, 't_p1', 't_rn');
-  assert.ok(pad.nos.includes('t_praca') && !sen.nos.includes('t_praca'));
+  assert.ok(alto(sen) < alto(pad));
 });
 
 test('paridade com a API Python (mesmos nós)', () => {
@@ -69,11 +71,11 @@ test('retas longas são divididas (nenhuma etapa acima de ~90 m)', () => {
 });
 
 test('instruções em inglês e espanhol', () => {
-  const r = N.calcularRota(g, P.mobilidade, 't_po', 'p_c');
+  const r = N.calcularRota(g, P.padrao, 't_p1', 'p_c');
   const en = N.gerarInstrucoes(pacote, g, r, 'Main entrance P1', poi('poi_praca_alim'), 'en').map(e => e.texto);
   const es = N.gerarInstrucoes(pacote, g, r, 'Entrada principal P1', poi('poi_praca_alim'), 'es').map(e => e.texto);
-  assert.ok(en.some(t => /Take the elevator to the 2nd floor/.test(t)));
-  assert.ok(es.some(t => /Tome el ascensor/.test(t)));
+  assert.ok(en.some(t => /Take the escalator up to the 2nd floor/.test(t)));
+  assert.ok(es.some(t => /Tome la escalera mecánica/.test(t)));
   assert.ok(!en.join(' ').match(/Vire|Siga/));
 });
 
@@ -91,7 +93,7 @@ test('perfil combinado: cadeirante + cego soma restrições e penalidades', () =
   assert.strictEqual(u.perfil.penalidade_curva, P.visual.penalidade_curva);
   assert.ok(u.ui.has('altoContraste') && u.ui.has('audioAuto') && u.ui.has('semEscadas'));
   assert.ok(u.perfil.exigir_confirmado);
-  assert.ok(N.calcularRota(g, u.perfil, 't_po', 'p_c').arestas.some(a => a.tipo === 'elevador'));
+  assert.ok(!N.calcularRota(g, u.perfil, 't_p1', 't_rn').arestas.some(a => ['escada', 'escada_rolante', 'esteira'].includes(a.tipo)));
 });
 
 test('sem deficiência (ou tipos ignorados quando "não") usa perfil padrão', () => {
@@ -104,10 +106,24 @@ test('toque no mapa: nó mais próximo (em metros) ignora escadas e elevadores',
   assert.strictEqual(N.noMaisProximo(pacote, 1, 53, 34).id, 'p_c');
 });
 
-test('cadeirante: todo o térreo tem rota sem escada; o 2º piso só pelo acesso oeste', () => {
+test('cadeirante: todo o térreo tem rota sem escada; o 2º piso não tem passagem confirmada', () => {
   const u = N.perfilDoUsuario(pacote, { possuiDeficiencia: true, tipos: ['cadeirante'] });
   pacote.pois.filter(p => p.andar === 0).forEach(p => assert.ok(N.calcularRota(g, u.perfil, 't_rs', p.no), p.id));
-  pacote.pois.filter(p => p.andar === 1).forEach(p => assert.ok(N.calcularRota(g, u.perfil, 't_po', p.no), p.id));
+  pacote.pois.filter(p => p.andar === 1).forEach(p => assert.strictEqual(N.calcularRota(g, u.perfil, 't_p1', p.no), null, p.id));
+});
+
+test('rede verificada na grade: nenhum trecho de corredor atravessa obstáculo da planta', () => {
+  const nos = Object.fromEntries(pacote.nos.map(n => [n.id, n]));
+  for (const a of pacote.edificio.andares) {
+    const G = a.grade, C = G.celula_m, bits = G.rle.map(r => { const o = []; let v = 0; for (const n of r) { for (let i = 0; i < n; i++) o.push(v); v ^= 1; } return o; });
+    const livre = (x, y) => { const l = Math.floor(y / C), c = Math.floor(x / C); return l >= 0 && l < bits.length && c >= 0 && c < bits[0].length && bits[l][c] === 1; };
+    for (const e of pacote.arestas.filter(e => e.tipo === 'corredor' && e.geometria && nos[e.de].andar === a.id)) {
+      for (let i = 1; i < e.geometria.length; i++) {
+        const [ax, ay] = e.geometria[i - 1], [bx, by] = e.geometria[i], n = Math.max(1, Math.ceil(Math.hypot(bx - ax, by - ay) / 0.25));
+        for (let k = 0; k <= n; k++) assert.ok(livre(ax + (bx - ax) * k / n, ay + (by - ay) * k / n), `${e.id} sai da área de circulação`);
+      }
+    }
+  }
 });
 
 test('deficiência na fala e auditiva liberam Conversar; outras não', () => {

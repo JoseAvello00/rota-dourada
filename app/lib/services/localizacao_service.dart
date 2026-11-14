@@ -27,17 +27,12 @@ class LocalizacaoSimulada implements LocalizacaoService {
 
   @override
   Future<PosicaoEstimada?> estimar() async {
-    if (pacote.beacons.isEmpty) return null;
+    final comNo = pacote.beacons.where((b) => b.no != null).toList();
+    if (comNo.isEmpty) return null;
     await Future<void>.delayed(const Duration(milliseconds: 600));
-    final b = pacote.beacons[indice % pacote.beacons.length];
-    return PosicaoEstimada(b.no, Confianca.media, 'simulado');
+    final b = comNo[indice % comNo.length];
+    return PosicaoEstimada(b.no!, Confianca.media, 'simulado');
   }
 }
 
-/// Etapa 5: leituras BLE reais (ex.: flutter_blue_plus), relacionando o
-/// identificador do beacon ao nó do pacote e calculando a confiança pelo RSSI.
-class LocalizacaoBle implements LocalizacaoService {
-  @override
-  Future<PosicaoEstimada?> estimar() async =>
-      throw UnimplementedError('Integração BLE prevista para a Etapa 5, após validação em campo.');
-}
+// Leituras BLE reais e passos: ver services/posicao/ (MotorPosicao + FonteSensoresReais).

@@ -1,3 +1,6 @@
+import 'dart:math' as math;
+
+import 'grade.dart';
 /// Modelos do pacote de navegação (espelham dados/pacote_capim_dourado.json).
 library;
 
@@ -14,13 +17,19 @@ class Andar {
   final double largura, altura; // metros
   final String? imagem; // recorte limpo da Planta Mix (tema claro)
   final Map<String, String> imagens; // claro | escuro | terror
+  /// Células de 0,5 m da área de circulação (corredores e passagens) extraídas das camadas CAD.
+  final GradeCirculacao? grade;
+  /// Ângulo do norte na planta, horário a partir do "para cima" do mapa (rosa dos ventos da folha 1/2: 90° = +x).
+  final double norteMapaGraus;
   final Map<String, dynamic> _j;
   Andar(this._j)
       : id = _j['id'] as int,
         largura = ((_j['largura'] as num?) ?? 200).toDouble(),
         altura = ((_j['altura'] as num?) ?? 105).toDouble(),
         imagem = _j['imagem'] as String?,
-        imagens = ((_j['imagens'] as Map?) ?? const {}).map((k, v) => MapEntry(k as String, v as String));
+        imagens = ((_j['imagens'] as Map?) ?? const {}).map((k, v) => MapEntry(k as String, v as String)),
+        grade = _j['grade'] == null ? null : GradeCirculacao.fromJson(_j['grade'] as Map<String, dynamic>),
+        norteMapaGraus = (((_j['orientacao'] as Map?)?['norte_mapa_graus'] as num?) ?? 0).toDouble();
   String nome(String idioma) => _local(_j, 'nome', idioma) ?? '';
 }
 
@@ -48,6 +57,8 @@ class Aresta {
   final bool bidirecional;
   /// false = trecho não confirmado na planta (nunca entra em rota acessível).
   final bool confirmado;
+  /// Polilinha verificada na grade de circulação (de → para). Vazia em trechos verticais.
+  final List<math.Point<double>> geometria;
   Aresta.fromJson(Map<String, dynamic> j)
       : id = j['id'] as String,
         de = j['de'] as String,
@@ -56,7 +67,22 @@ class Aresta {
         estimulo = (j['estimulo'] as String?) ?? 'medio',
         distancia = (j['distancia'] as num?)?.toDouble(),
         bidirecional = (j['bidirecional'] as bool?) ?? true,
-        confirmado = !((j['a_validar'] as bool?) ?? false);
+        confirmado = !((j['a_validar'] as bool?) ?? false),
+        geometria = ((j['geometria'] as List?) ?? const [])
+            .map((p) => math.Point(((p as List)[0] as num).toDouble(), (p[1] as num).toDouble()))
+            .toList();
+}
+
+/// Porta do estabelecimento na faixa de circulação, ancorada num trecho (t = fração do comprimento).
+class Entrada {
+  final double x, y, t;
+  final String aresta, fonte; // estimada_planta | cadastrada
+  Entrada.fromJson(Map<String, dynamic> j)
+      : x = (j['x'] as num).toDouble(),
+        y = (j['y'] as num).toDouble(),
+        t = (j['t'] as num).toDouble(),
+        aresta = j['aresta'] as String,
+        fonte = (j['fonte'] as String?) ?? 'estimada_planta';
 }
 
 class Poi {
@@ -65,6 +91,7 @@ class Poi {
   final double x, y;
   final bool acessivel;
   final List<String> tags;
+  final Entrada? entrada;
   final Map<String, dynamic> _j;
   Poi(this._j)
       : id = _j['id'] as String,
@@ -74,7 +101,8 @@ class Poi {
         x = (_j['x'] as num).toDouble(),
         y = (_j['y'] as num).toDouble(),
         acessivel = (_j['acessivel'] as bool?) ?? false,
-        tags = ((_j['tags'] as List?) ?? const []).cast<String>();
+        tags = ((_j['tags'] as List?) ?? const []).cast<String>(),
+        entrada = _j['entrada'] == null ? null : Entrada.fromJson(_j['entrada'] as Map<String, dynamic>);
 
   String nome(String idioma) => _local(_j, 'nome', idioma) ?? '';
   String get textoBusca =>
@@ -127,12 +155,28 @@ class Perfil {
 }
 
 class Beacon {
-  final String id, no;
-  final int andar;
+  final String id, uuid, status;
+  final String? no;
+  final int andar, major, minor;
+  final double x, y;
+  /// RSSI medido a 1 m (calibração em campo) e expoente de perda do ambiente.
+  final double rssi1m, expoente;
   Beacon.fromJson(Map<String, dynamic> j)
       : id = j['id'] as String,
-        no = j['no'] as String,
-        andar = j['andar'] as int;
+        uuid = ((j['uuid'] as String?) ?? '').toLowerCase(),
+        status = (j['status'] as String?) ?? 'planejado',
+        no = j['no'] as String?,
+        andar = j['andar'] as int,
+        major = (j['major'] as int?) ?? 0,
+        minor = (j['minor'] as int?) ?? 0,
+        x = ((j['x'] as num?) ?? 0).toDouble(),
+        y = ((j['y'] as num?) ?? 0).toDouble(),
+        rssi1m = ((j['rssi_1m'] as num?) ?? -59).toDouble(),
+        expoente = ((j['expoente'] as num?) ?? 2.2).toDouble();
+
+  /// Chave do anúncio iBeacon (uuid:major:minor).
+  String get chave => '$uuid:$major:$minor';
+  bool get instalado => status == 'instalado';
 }
 
 class Pacote {

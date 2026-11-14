@@ -1,6 +1,7 @@
 import 'dart:collection';
 import 'dart:math' as math;
 
+import '../models/grade.dart';
 import '../models/pacote.dart';
 import '../models/rota.dart';
 
@@ -97,6 +98,86 @@ class RotaService {
       if (r != null) out.add((n, r));
     }
     out.sort((a, b) => a.$2.distancia.compareTo(b.$2.distancia));
+    return out;
+  }
+
+  // ---------- rotas a partir de posição contínua (beacon + passos) ----------
+
+  /// Liga um ponto do mapa ao trecho de corredor mais próximo que ele enxerga sem obstáculo
+  /// (até [raio] m). Devolve o ponto de projeção, o trecho e a distância a cada extremidade.
+  ({math.Point<double> ponto, Aresta aresta, double ateDe, double atePara, double aproximacao})? ancorar(
+      int andar, math.Point<double> p, {double raio = 8}) {
+    final g = pacote.andar(andar).grade;
+    ({math.Point<double> ponto, Aresta aresta, double ateDe, double atePara, double aproximacao})? melhor;
+    for (final a in pacote.arestas) {
+      if (a.geometria.length < 2 || pacote.nos[a.de]!.andar != andar) continue;
+      var acum = 0.0;
+      final total = _comprimento(a.geometria);
+      for (var i = 1; i < a.geometria.length; i++) {
+        final (q, t) = projetar(p, a.geometria[i - 1], a.geometria[i]);
+        final seg = a.geometria[i - 1].distanceTo(a.geometria[i]);
+        final d = q.distanceTo(p);
+        if (d <= raio && (melhor == null || d < melhor.aproximacao) && (g == null || g.segmentoLivre(p, q))) {
+          final s = acum + t * seg;
+          melhor = (ponto: q, aresta: a, ateDe: s, atePara: total - s, aproximacao: d);
+        }
+        acum += seg;
+      }
+    }
+    return melhor;
+  }
+
+  static double _comprimento(List<math.Point<double>> g) {
+    var d = 0.0;
+    for (var i = 1; i < g.length; i++) {
+      d += g[i - 1].distanceTo(g[i]);
+    }
+    return d;
+  }
+
+  /// Rota do ponto atual até a ENTRADA cadastrada do destino: testa as duas extremidades do trecho
+  /// de origem e do trecho da entrada e fica com o menor custo. Null = sem rota compatível.
+  ({Rota rota, String origemNo, double inicio, double fim})? calcularDoPonto(
+      Perfil perfil, int andar, math.Point<double> p, Poi destino) {
+    final o = ancorar(andar, p);
+    if (o == null) return null;
+    final ent = destino.entrada;
+    final candidatas = ent == null ? const <Aresta>[] : pacote.arestas.where((a) => a.id == ent.aresta).toList();
+    final fins = <(String, double)>[];
+    if (ent != null && candidatas.isNotEmpty) {
+      final total = _comprimento(candidatas.first.geometria);
+      fins
+        ..add((candidatas.first.de, ent.t * total))
+        ..add((candidatas.first.para, (1 - ent.t) * total));
+    } else {
+      fins.add((destino.no, 0));
+    }
+    ({Rota rota, String origemNo, double inicio, double fim})? melhor;
+    for (final (no0, d0) in [(o.aresta.de, o.ateDe), (o.aresta.para, o.atePara)]) {
+      if (perfil.exigirConfirmado && !o.aresta.confirmado) continue;
+      for (final (no1, d1) in fins) {
+        final r = calcular(perfil, no0, no1);
+        if (r == null) continue;
+        final custo = r.custo + o.aproximacao + d0 + d1;
+        if (melhor == null || custo < melhor.rota.custo + melhor.inicio + melhor.fim) {
+          melhor = (rota: r, origemNo: no0, inicio: o.aproximacao + d0, fim: d1);
+        }
+      }
+    }
+    return melhor;
+  }
+
+  /// Polilinha da rota no [andar] (geometria verificada de cada trecho, na direção percorrida).
+  List<math.Point<double>> polilinha(Rota r, int andar) {
+    final out = <math.Point<double>>[];
+    for (final t in r.trechos) {
+      final a = pacote.arestas.firstWhere((x) => x.id == t.id);
+      if (pacote.nos[t.de]!.andar != andar || pacote.nos[t.para]!.andar != andar) continue;
+      final g = a.geometria.isNotEmpty
+          ? (a.de == t.de ? a.geometria : a.geometria.reversed.toList())
+          : [math.Point(pacote.nos[t.de]!.x, pacote.nos[t.de]!.y), math.Point(pacote.nos[t.para]!.x, pacote.nos[t.para]!.y)];
+      out.addAll(out.isEmpty ? g : g.skip(1));
+    }
     return out;
   }
 }

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math' as math;
 
 import 'package:flutter/foundation.dart';
@@ -6,7 +7,10 @@ import '../models/pacote.dart';
 import '../models/rota.dart';
 import '../services/feedback_service.dart';
 import '../services/instrucao_service.dart';
+import '../models/grade.dart';
 import '../services/localizacao_service.dart';
+import '../services/posicao/fontes.dart';
+import '../services/posicao/motor_posicao.dart';
 import '../services/rota_service.dart';
 import 'app_viewmodel.dart';
 
@@ -49,6 +53,7 @@ class NavegacaoViewModel extends ChangeNotifier {
 
   @override
   void dispose() {
+    pararRastreamento();
     app.removeListener(_aoMudarApp);
     super.dispose();
   }
@@ -122,6 +127,7 @@ class NavegacaoViewModel extends ChangeNotifier {
 
   void _definirPosicao(PosicaoEstimada p) {
     posicao = p;
+    if (p.fonte == 'manual') ancorarMotor(_p.nos[p.no]!);
     origemAlternativa = null;
     andarMapa = _p.nos[p.no]!.andar;
     _tracar();
@@ -328,4 +334,83 @@ class NavegacaoViewModel extends ChangeNotifier {
     }
     notifyListeners();
   }
+
+  // ---------- posição em tempo real (BLE + passos, processada no aparelho) ----------
+  FontePosicao? _fonte;
+  MotorPosicao? motor;
+  StreamSubscription<PosicaoAtual>? _sub;
+  PosicaoAtual? posicaoAtual;
+  bool get emSimulacao => _fonte?.simulacao ?? false;
+  int _desvios = 0;
+  DateTime? _ultimoRecalculo;
+  String? avisoRota; // "Rota recalculada" etc.
+
+  /// Liga a fonte de posição. [fonte] null = sensores reais.
+  Future<void> iniciarRastreamento({FontePosicao? fonte, MotorPosicao? motorPronto}) async {
+    await pararRastreamento();
+    motor = motorPronto ?? MotorPosicao(_p);
+    _fonte = fonte ?? FonteSensoresReais();
+    _sub = _fonte!.iniciar(motor!).listen(receberPosicao);
+  }
+
+  Future<void> pararRastreamento() async {
+    await _sub?.cancel();
+    await _fonte?.parar();
+    _sub = null;
+    _fonte = null;
+  }
+
+  /// Ponto conhecido (toque no mapa, QR ou "Estou perdido") também ancora o motor.
+  void ancorarMotor(No n) => motor?.definirInicial(n.andar, n.x, n.y, DateTime.now());
+
+  void receberPosicao(PosicaoAtual p) {
+    posicaoAtual = p;
+    if (!p.confiavel) {
+      // Sem dados confiáveis: não move a origem nem recalcula; a interface mostra o estado.
+      notifyListeners();
+      return;
+    }
+    andarMapa = fase == Fase.navegando ? andarMapa : p.andar;
+    final servico = RotaService(_p, tiposIndisponiveis: indisponiveis);
+    final ancora = servico.ancorar(p.andar, p.ponto);
+    if (ancora != null && fase == Fase.explorar && origemAlternativa == null) {
+      final no = ancora.ateDe <= ancora.atePara ? ancora.aresta.de : ancora.aresta.para;
+      posicao = PosicaoEstimada(no, p.estado == EstadoPosicao.ok ? Confianca.alta : Confianca.media, p.fonte);
+      _tracar();
+    }
+    if (fase == Fase.navegando && rota != null) _acompanhar(p, servico);
+    notifyListeners();
+  }
+
+  /// Durante a navegação: avança as etapas pela proximidade e recalcula após desvio confirmado.
+  void _acompanhar(PosicaoAtual p, RotaService servico) {
+    final alvo = _p.nos[etapaAtual.no]!;
+    if (alvo.andar == p.andar && p.ponto.distanceTo(math.Point(alvo.x, alvo.y)) <= math.max(3.0, p.erro)) {
+      proximo();
+      return;
+    }
+    if (p.erro > 8) return; // imprecisa demais para afirmar desvio
+    final linha = servico.polilinha(rota!, p.andar);
+    if (linha.isEmpty) return;
+    final fora = distanciaPolilinha(p.ponto, linha);
+    _desvios = fora > math.max(5.0, 2 * p.erro) ? _desvios + 1 : 0;
+    final agora = DateTime.now();
+    if (_desvios < 3 || (_ultimoRecalculo != null && agora.difference(_ultimoRecalculo!).inSeconds < 5)) return;
+    _desvios = 0;
+    _ultimoRecalculo = agora;
+    final r = servico.calcularDoPonto(app.perfil, p.andar, p.ponto, destino!);
+    if (r == null) {
+      rota = null;
+      fase = Fase.semRota;
+      feedback.vibrar('alerta');
+      return;
+    }
+    rota = r.rota;
+    origem = _p.nos[r.origemNo];
+    _gerarEtapas();
+    indice = 0;
+    avisoRota = 'recalculada';
+    _anunciarEtapa();
+  }
+
 }

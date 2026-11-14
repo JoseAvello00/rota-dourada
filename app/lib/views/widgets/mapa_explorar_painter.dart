@@ -1,9 +1,11 @@
+import 'dart:math' as math;
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 
 import '../../models/pacote.dart';
 import '../../models/rota.dart';
+import '../../services/posicao/motor_posicao.dart';
 import '../tema.dart';
 
 /// Escala do mapa ampliável: 1 metro = [escalaMapa] px lógicos (antes do zoom).
@@ -40,6 +42,8 @@ class MapaExplorarPainter extends CustomPainter {
   final bool altoContraste;
   final double zoom; // escala atual do InteractiveViewer
   final PaletaMapa paleta;
+  /// Posição contínua (beacon + passos). Quando presente, substitui o ponto no nó.
+  final PosicaoAtual? atual;
 
   MapaExplorarPainter({
     required this.pacote,
@@ -55,6 +59,7 @@ class MapaExplorarPainter extends CustomPainter {
     this.altoContraste = false,
     this.zoom = 1,
     PaletaMapa? paleta,
+    this.atual,
   }) : paleta = paleta ?? PaletaMapa.de('claro', altoContraste: altoContraste);
 
   @override
@@ -74,17 +79,23 @@ class MapaExplorarPainter extends CustomPainter {
     }
 
     Path linha(Rota r) {
+      // segue a geometria verificada de cada trecho (nunca a reta entre nós)
       final path = Path();
       var primeiro = true;
-      for (final id in r.nos) {
-        final n = pacote.nos[id]!;
-        if (n.andar != andar) continue;
-        if (primeiro) {
-          path.moveTo(n.x, n.y);
-        } else {
-          path.lineTo(n.x, n.y);
+      for (final t in r.trechos) {
+        if (pacote.nos[t.de]!.andar != andar || pacote.nos[t.para]!.andar != andar) continue;
+        final a = pacote.arestas.firstWhere((x) => x.id == t.id);
+        final pts = a.geometria.isEmpty
+            ? [pacote.nos[t.de]!, pacote.nos[t.para]!].map((n) => Offset(n.x, n.y)).toList()
+            : (a.de == t.de ? a.geometria : a.geometria.reversed).map((p) => Offset(p.x, p.y)).toList();
+        for (final o in pts) {
+          if (primeiro) {
+            path.moveTo(o.dx, o.dy);
+            primeiro = false;
+          } else {
+            path.lineTo(o.dx, o.dy);
+          }
         }
-        primeiro = false;
       }
       return path;
     }
@@ -135,7 +146,21 @@ class MapaExplorarPainter extends CustomPainter {
       }
     }
 
-    if (posicao != null) {
+    final at = atual;
+    if (at != null && at.estado != EstadoPosicao.aguardando && at.andar == andar && at.erro.isFinite) {
+      final c = Offset(at.x, at.y), azul = pal.voce;
+      // círculo de incerteza em metros reais; sem dados confiáveis: só o contorno tracejado, sem ponto
+      canvas.drawCircle(c, at.erro, Paint()..color = azul.withOpacity(.18));
+      if (at.confiavel) {
+        canvas.drawCircle(c, 8 * px, Paint()..color = azul);
+        canvas.drawCircle(c, 8 * px, Paint()..style = PaintingStyle.stroke..strokeWidth = 3 * px..color = pal.contorno);
+      } else {
+        final borda = Paint()..style = PaintingStyle.stroke..strokeWidth = 2 * px..color = azul;
+        for (var a = 0.0; a < 360; a += 30) {
+          canvas.drawArc(Rect.fromCircle(center: c, radius: math.max(at.erro, 10 * px)), a * math.pi / 180, 15 * math.pi / 180, false, borda);
+        }
+      }
+    } else if (posicao != null) {
       final n = pacote.nos[posicao]!;
       if (n.andar == andar) {
         final azul = pal.voce;

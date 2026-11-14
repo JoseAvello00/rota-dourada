@@ -283,7 +283,209 @@ def planta_limpa(limpo, original, aid, nos, arestas):
         img.paste(corr, mask=circ)
         img.paste(traco, mask=linhas)
         saida[tema] = img
-    return saida
+    return saida, circ, s
+
+
+CELULA_M = 0.5  # resolução da grade de circulação (m)
+# Camadas CAD que são obstáculo físico: paredes, alvenaria, divisórias, pilares, quiosques, esquadrias/vitrines.
+# Portas internas desenhadas como esquadria (vidro) junto a estes nós: vestíbulo da P1 e
+# vestíbulo oeste do 2º piso (acesso ao elevador). Tratadas como passagem; conferir em campo.
+PORTAS_INTERNAS = {"t_s0", "p_w2"}
+CAMADAS_OBSTACULO = re.compile(r"PAREDE|ALV|I-WALL|^DIV$|\$DIV$|PILAR|QUIOSQUES|ESQ|CONTORNO|Parede em vista|CORTINA|JANELA", re.I)
+
+
+def pdf_obstaculos():
+    d = fitz.open(PDF)
+    ocgs = d.get_ocgs()
+    on = [x for x, v in ocgs.items() if CAMADAS_OBSTACULO.search(v["name"])]
+    d.set_layer(-1, on=on, off=[x for x in ocgs if x not in on])
+    return fitz.open("pdf", d.tobytes())
+
+
+def grade_livre(obst_pdf, aid):
+    """Grade de 0,5 m: True = célula sem obstáculo. Obstáculos dilatados ~0,4 m (folga de parede)."""
+    from PIL import ImageFilter
+    a = ANDARES[aid]; x0, y0, x1, y1 = a["recorte"]; k = a["m_por_pt"]
+    z = 4 * k  # 4 px por metro
+    pix = obst_pdf[a["pagina"]].get_pixmap(matrix=fitz.Matrix(z, z), clip=fitz.Rect(x0, y0, x1, y1))
+    g = Image.frombytes("RGB", (pix.width, pix.height), pix.samples).convert("L")
+    obst = g.point(lambda v: 255 if v < 230 else 0).filter(ImageFilter.MaxFilter(3))
+    cols, lins = math.ceil((x1 - x0) * k / CELULA_M), math.ceil((y1 - y0) * k / CELULA_M)
+    red = obst.resize((cols, lins), Image.BOX)
+    return [[red.getpixel((c, l)) < 40 for c in range(cols)] for l in range(lins)]
+
+
+def celula(x, y): return int(y / CELULA_M), int(x / CELULA_M)
+def centro(l, c): return ((c + .5) * CELULA_M, (l + .5) * CELULA_M)
+
+
+def mais_proxima(livre, x, y, raio_m=6, filtro=None):
+    l0, c0 = celula(x, y); L, C = len(livre), len(livre[0])
+    melhor = None
+    R = int(raio_m / CELULA_M)
+    for l in range(max(0, l0 - R), min(L, l0 + R + 1)):
+        for c in range(max(0, c0 - R), min(C, c0 + R + 1)):
+            if livre[l][c] and (filtro is None or filtro[l][c]):
+                px, py = centro(l, c); d = math.hypot(px - x, py - y)
+                if d <= raio_m and (melhor is None or d < melhor[0]): melhor = (d, l, c)
+    return melhor
+
+
+def astar(livre, perto_parede, a, b, banda):
+    """A* em 8 direções restrito à banda; custo extra junto às paredes (mantém a rota no meio do corredor)."""
+    import heapq
+    L, C = len(livre), len(livre[0])
+    h = lambda l, c: math.hypot(l - b[0], c - b[1])
+    dist = {a: 0.0}; ant = {}; fila = [(h(*a), a)]
+    while fila:
+        _, u = heapq.heappop(fila)
+        if u == b: break
+        for dl in (-1, 0, 1):
+            for dc in (-1, 0, 1):
+                if not dl and not dc: continue
+                v = (u[0] + dl, u[1] + dc)
+                if not (0 <= v[0] < L and 0 <= v[1] < C) or not livre[v[0]][v[1]] or v not in banda: continue
+                if dl and dc and not (livre[u[0] + dl][u[1]] and livre[u[0]][u[1] + dc]): continue  # sem cortar quina
+                nd = dist[u] + math.hypot(dl, dc) * (1 + 2.0 * perto_parede[v[0]][v[1]])
+                if nd < dist.get(v, 1e18):
+                    dist[v] = nd; ant[v] = u; heapq.heappush(fila, (nd + h(*v), v))
+    if b not in dist: return None
+    cam = [b]
+    while cam[-1] != a: cam.append(ant[cam[-1]])
+    return cam[::-1]
+
+
+def visivel(livre, p, q, passo=0.05):
+    d = math.hypot(q[0] - p[0], q[1] - p[1]); n = max(1, int(d / passo))
+    for i in range(n + 1):
+        l, c = celula(p[0] + (q[0] - p[0]) * i / n, p[1] + (q[1] - p[1]) * i / n)
+        if not (0 <= l < len(livre) and 0 <= c < len(livre[0])) or not livre[l][c]: return False
+    return True
+
+
+def simplificar(livre, pts):
+    """Mantém só os vértices necessários para que cada segmento continue sem obstáculo."""
+    out = [pts[0]]; i = 0
+    while i < len(pts) - 1:
+        j = len(pts) - 1
+        while j > i + 1 and not visivel(livre, pts[i], pts[j]): j -= 1
+        out.append(pts[j]); i = j
+    return out
+
+
+def banda_do_segmento(p, q, largura_m, L, C):
+    R = largura_m / CELULA_M
+    (l0, c0), (l1, c1) = celula(*p), celula(*q)
+    vl, vc = l1 - l0, c1 - c0; n2 = vl * vl + vc * vc or 1
+    out = set()
+    for l in range(max(0, int(min(l0, l1) - R)), min(L, int(max(l0, l1) + R) + 1)):
+        for c in range(max(0, int(min(c0, c1) - R)), min(C, int(max(c0, c1) + R) + 1)):
+            t = max(0, min(1, ((l - l0) * vl + (c - c0) * vc) / n2))
+            if math.hypot(l - (l0 + vl * t), c - (c0 + vc * t)) <= R: out.add((l, c))
+    return out
+
+
+def rle(linha):
+    out, atual, n = [], 0, 0
+    for v in linha:
+        v = 1 if v else 0
+        if v == atual: n += 1
+        else: out.append(n); atual, n = v, 1
+    out.append(n)
+    return out
+
+
+def projetar(px, py, ax, ay, bx, by):
+    vx, vy = bx - ax, by - ay; L2 = vx * vx + vy * vy
+    t = 0 if L2 == 0 else max(0, min(1, ((px - ax) * vx + (py - ay) * vy) / L2))
+    return t, ax + vx * t, ay + vy * t
+
+
+def tracar_rede_na_grade(nos, arestas, obst_pdf):
+    """Reposiciona nós fora de obstáculos e substitui cada trecho reto de corredor por uma
+    polilinha que só passa por células livres (A* na grade). Devolve a grade de circulação por andar."""
+    porid = {n["id"]: n for n in nos}
+    grades, relatorio = {}, []
+    for aid in ANDARES:
+        livre = grade_livre(obst_pdf, aid); L, C = len(livre), len(livre[0])
+        perto = [[0] * C for _ in range(L)]
+        for l in range(L):
+            for c in range(C):
+                if livre[l][c] and any(not livre[ll][cc] for ll in range(max(0, l - 2), min(L, l + 3))
+                                       for cc in range(max(0, c - 2), min(C, c + 3))):
+                    perto[l][c] = 1
+        # Portas: as esquadrias das entradas e do vestíbulo do elevador são passagem, não parede.
+        for n in nos:
+            if n["andar"] == aid and (n["tipo"] in ("entrada", "vertical") or n["id"] in PORTAS_INTERNAS):
+                l0, c0 = celula(n["x"], n["y"]); R = int((6.0 if n["id"] in PORTAS_INTERNAS else 4.5 if n["tipo"] == "vertical" else 3.0) / CELULA_M)
+                for l in range(max(0, l0 - R), min(L, l0 + R + 1)):
+                    for c in range(max(0, c0 - R), min(C, c0 + R + 1)):
+                        if math.hypot(l - l0, c - c0) <= R: livre[l][c] = True
+        # componente conexa principal da área livre (a que contém a maioria dos nós de corredor)
+        comp = [[-1] * C for _ in range(L)]; tam = []
+        for l in range(L):
+            for c in range(C):
+                if livre[l][c] and comp[l][c] < 0:
+                    k = len(tam); pilha = [(l, c)]; comp[l][c] = k; n_ = 0
+                    while pilha:
+                        u = pilha.pop(); n_ += 1
+                        for v in ((u[0] + 1, u[1]), (u[0] - 1, u[1]), (u[0], u[1] + 1), (u[0], u[1] - 1)):
+                            if 0 <= v[0] < L and 0 <= v[1] < C and livre[v[0]][v[1]] and comp[v[0]][v[1]] < 0:
+                                comp[v[0]][v[1]] = k; pilha.append(v)
+                    tam.append(n_)
+        votos = {}
+        for n in nos:
+            if n["andar"] == aid and n["tipo"] != "vertical" and not n.get("externo"):
+                m = mais_proxima(livre, n["x"], n["y"], raio_m=15)
+                if m: votos[comp[m[1]][m[2]]] = votos.get(comp[m[1]][m[2]], 0) + 1
+        principal = max(votos, key=votos.get)
+        livre = [[comp[l][c] == principal for c in range(C)] for l in range(L)]
+        for l in range(L):
+            for c in range(C):
+                perto[l][c] = perto[l][c] if livre[l][c] else 0
+        for n in nos:
+            if n["andar"] != aid or n["tipo"] == "vertical" or n.get("externo"): continue
+            l, c = celula(n["x"], n["y"])
+            if not (0 <= l < L and 0 <= c < C and livre[l][c]):
+                m = mais_proxima(livre, n["x"], n["y"], raio_m=15)
+                if m:
+                    x, y = centro(m[1], m[2]); relatorio.append(f"nó {n['id']} movido {m[0]:.1f} m para a área de circulação")
+                    n["x"], n["y"] = round(x, 2), round(y, 2)
+                else:
+                    relatorio.append(f"nó {n['id']} sem área de circulação a 15 m")
+        circ = [[False] * C for _ in range(L)]
+        for e in arestas:
+            a, b = porid[e["de"]], porid[e["para"]]
+            if e["tipo"] != "corredor" or a["andar"] != aid or b["andar"] != aid: continue
+            if e.get("a_validar"): continue
+            pa, pb = celula(a["x"], a["y"]), celula(b["x"], b["y"])
+            cam = None
+            for larg in (8, 20, 45):
+                cam = astar(livre, perto, pa, pb, banda_do_segmento((a["x"], a["y"]), (b["x"], b["y"]), larg, L, C))
+                if cam: break
+            if not cam:
+                e["bloqueada_na_planta"] = True
+                relatorio.append(f"trecho {e['id']} {e['de']}→{e['para']}: sem passagem livre na planta")
+                continue
+            pts = [(a["x"], a["y"])] + [centro(l, c) for l, c in cam[1:-1]] + [(b["x"], b["y"])]
+            # simplifica só dentro de 1 m do caminho A* (não corta por dentro de lojas de frente aberta)
+            faixa = [[False] * C for _ in range(L)]
+            for l, c in cam:
+                for ll in range(max(0, l - 2), min(L, l + 3)):
+                    for cc in range(max(0, c - 2), min(C, c + 3)):
+                        faixa[ll][cc] = livre[ll][cc]
+            pts = simplificar(faixa, pts)
+            e["geometria"] = [[round(x, 2), round(y, 2)] for x, y in pts]
+            e["distancia"] = round(sum(math.hypot(q[0] - p[0], q[1] - p[1]) for p, q in zip(pts, pts[1:])), 1)
+            for l, c in cam:  # faixa de circulação: 3 m em volta do caminho
+                for ll in range(max(0, l - 6), min(L, l + 7)):
+                    for cc in range(max(0, c - 6), min(C, c + 7)):
+                        if livre[ll][cc]: circ[ll][cc] = True
+        grades[aid] = (livre, circ)
+    # trechos sem passagem livre saem da rede de rotas (ficam registrados para revisão em campo)
+    descartados = [e for e in arestas if e.get("bloqueada_na_planta")]
+    for e in descartados: arestas.remove(e)
+    return grades, relatorio, descartados
 
 
 def textos(pagina):
@@ -422,24 +624,63 @@ def main():
         p["no"] = min(c, key=lambda n: math.hypot(n["x"] - p["x"], n["y"] - p["y"]))["id"]
 
     andares = []
+    grades, relatorio, descartados = tracar_rede_na_grade(nos, arestas, pdf_obstaculos())
+    for r in relatorio: print(" ·", r)
     limpo = pdf_sem_poluicao()
     for aid, a in ANDARES.items():
         x0, y0, x1, y1 = a["recorte"]; k = a["m_por_pt"]
         base = f"planta_{'terreo' if aid == 0 else 'piso2'}"
         imagens, tam = {}, None
-        for tema, img in planta_limpa(limpo, doc, aid, nos, ARESTAS_DO_ANDAR(aid, nos)).items():
+        temas, _, _ = planta_limpa(limpo, doc, aid, nos, ARESTAS_DO_ANDAR(aid, nos))
+        for tema, img in temas.items():
             arq = f"{base}_{tema}.webp"
             img.save(RAIZ / "dados" / arq, "WEBP", quality=80, method=6)
             imagens[tema] = arq; tam = img.size
+        larg, alt = round((x1 - x0) * k, 1), round((y1 - y0) * k, 1)
+        bits = grades[aid][1]
         andares.append({"id": aid, "nome": a["nome"], "nome_en": a["nome_en"], "nome_es": a["nome_es"],
-                        "largura": round((x1 - x0) * k, 1), "altura": round((y1 - y0) * k, 1),
-                        "imagem": imagens["claro"], "imagens": imagens, "imagem_px": list(tam)})
+                        "largura": larg, "altura": alt,
+                        "imagem": imagens["claro"], "imagens": imagens, "imagem_px": list(tam),
+                        # Rosa dos ventos da folha 1/2: o norte aponta para +x (direita) da planta.
+                        # O 2º piso (folha 2/2) não tem rosa dos ventos: mesma orientação, a confirmar em campo.
+                        "orientacao": {"norte_mapa_graus": 90, "fonte": "planta" if aid == 0 else "a_confirmar",
+                                       "declinacao_magnetica_graus": None},
+                        "grade": {"celula_m": CELULA_M, "colunas": len(bits[0]), "linhas": len(bits),
+                                  "rle": [rle(l) for l in bits]}})
+    # Entrada de cada estabelecimento: ponto da faixa de circulação mais próximo da loja que
+    # enxerga, sem obstáculo, um ponto da geometria de um trecho de corredor (âncora da rota).
+    sem_entrada = []
+    for p in pois:
+        livre, circ = grades[p["andar"]]
+        melhor = None
+        cand = mais_proxima(livre, p["x"], p["y"], raio_m=60, filtro=circ)
+        if cand:
+            porta = centro(cand[1], cand[2])
+            for e in arestas:
+                if "geometria" not in e or porid[e["de"]]["andar"] != p["andar"]: continue
+                if any(porid[x]["tipo"] == "vertical" or x == "t_po" for x in (e["de"], e["para"])): continue
+                g = e["geometria"]; acum = 0.0
+                for (ax, ay), (bx, by) in zip(g, g[1:]):
+                    seg = math.hypot(bx - ax, by - ay)
+                    t, qx, qy = projetar(porta[0], porta[1], ax, ay, bx, by)
+                    d = math.hypot(qx - porta[0], qy - porta[1])
+                    if (melhor is None or d < melhor[0]) and visivel(livre, porta, (qx, qy)):
+                        melhor = (d, e["id"], (acum + t * seg) / (e["distancia"] or 1), qx, qy)
+                    acum += seg
+        if melhor:
+            p["entrada"] = {"x": round(porta[0], 2), "y": round(porta[1], 2), "aresta": melhor[1],
+                            "t": round(melhor[2], 4), "fonte": "estimada_planta"}
+            dA = melhor[2]; e = next(x for x in arestas if x["id"] == melhor[1])
+            p["no"] = e["de"] if dA <= .5 else e["para"]
+        else:
+            sem_entrada.append(p["id"])
+    print(f"{len(pois) - len(sem_entrada)} lojas com entrada ancorada; sem entrada: {sem_entrada}")
     for velho in (RAIZ / "dados").glob("planta_*.webp"):
         if not any(velho.name in a["imagens"].values() for a in andares):
             velho.unlink()
 
     pacote = {
-        "versao": {"pacote_id": "capim-dourado-piloto", "versao": "1.0.0", "atualizado_em": "2026-11-13",
+        "versao": {"pacote_id": "capim-dourado-piloto", "versao": "1.1.0", "atualizado_em": "2026-11-14",
                    "fonte": "Planta Mix – Operações Capim Dourado Shopping, nov/2026 (folhas 1/2 e 2/2)",
                    "observacao": "Coordenadas em metros, medidas sobre a planta (térreo 1:850). Corredores traçados sobre a planta. "
                                  "Só há conexões entre andares desenhadas na planta: escadas rolantes + escada fixa (Praça de Eventos oeste) "
@@ -448,7 +689,11 @@ def main():
         "edificio": {"id": "capim-dourado", "nome": "Capim Dourado Shopping", "cidade": "Palmas - TO",
                      "area_m2": 38800.5, "andares": andares},
         "nos": nos, "arestas": arestas, "pois": pois,
-        "beacons": [{"id": b, "uuid": "a_definir", "andar": porid[n]["andar"], "no": n, "status": "planejado"} for b, n in BEACONS],
+        "trechos_descartados": [{"id": e["id"], "de": e["de"], "para": e["para"],
+                                 "motivo": "sem passagem livre entre paredes/vitrines na planta"} for e in descartados],
+        "beacons": [{"id": b, "uuid": "a_definir", "major": 1, "minor": i + 1, "andar": porid[n]["andar"], "no": n,
+                     "x": porid[n]["x"], "y": porid[n]["y"], "rssi_1m": -59, "expoente": 2.2, "status": "planejado"}
+                    for i, (b, n) in enumerate(BEACONS)],
         "perfis": {
             "padrao": {"nome": "Navegação padrão", "proibidos": [], "multiplicador_tipo": {}, "multiplicador_estimulo": {}, "penalidade_curva": 0},
             # visual: evita escadas e escadas rolantes sempre que houver alternativa confirmada
@@ -460,7 +705,7 @@ def main():
     }
     (RAIZ / "dados" / "pacote_capim_dourado.json").write_text(json.dumps(pacote, ensure_ascii=False, indent=1), encoding="utf-8")
     print(f"{len(pois)} pontos de interesse, {len(nos)} nós, {len(arestas)} trechos")
-    for a in andares: print(a)
+    for a in andares: print(a["id"], a["grade"]["colunas"], "x", a["grade"]["linhas"], "células")
 
 
 if __name__ == "__main__":

@@ -86,4 +86,4 @@ def test_perfil_combinado_exige_trechos_confirmados():
     assert p["proibidos"] == ["escada", "escada_rolante", "esteira"] and p["exigir_confirmado"]
     g = montar_grafo(PACOTE)
     assert calcular_rota(g, p, "t_p1", "p_c") is None          # sem rota acessível confirmada por dentro
-    assert "elevador" in calcular_rota(g, p, "t_po", "p_c")["tipos"]  # pelo acesso oeste, sim
+    assert calcular_rota(g, p, "t_p1", "t_rn") is not None          # térreo sem escadas, sim

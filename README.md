@@ -41,13 +41,23 @@ Várias necessidades se somam: as proibições se acumulam, vale a penalidade ma
 - **Mobilidade** nunca usa escada, escada rolante ou esteira.
 - **Visual** aceita escada fixa só se não houver alternativa, e então a tela avisa "Inclui escada" e oferece a alternativa sem escadas.
 - **Sem rota acessível confirmada**: o app diz isso e mostra por quê, sem apresentar outro percurso como acessível. Oferece: rota a partir de outra entrada que tenha rota sem escadas (se existir), *Conversar* ou "Ver onde fica a Segurança", *Revisar origem* e *Outro destino*.
-- **O que a planta mostra hoje**: a única ligação desenhada entre o térreo e o 2º piso por dentro é o conjunto escadas rolantes + escada fixa da Praça de Eventos oeste. O único elevador fica no vestíbulo do acesso oeste (Av. JK). Por isso, para cadeirantes, a rota até o 2º piso só é oferecida **a partir do acesso oeste**, com o aviso de que é preciso chegar até lá por fora. Não inventamos passagens.
+- **O que a planta mostra hoje**: a única ligação desenhada entre o térreo e o 2º piso por dentro é o conjunto escadas rolantes + escada fixa da Praça de Eventos oeste. O elevador fica no acesso oeste (Av. JK), mas no 2º piso a planta não mostra passagem livre entre o vestíbulo do elevador e a praça de alimentação. Por isso **não há rota sem escadas confirmada até o 2º piso**: o app informa a limitação e oferece Conversar/Segurança, sem inventar passagens. Se a vistoria confirmar a porta, basta liberar o trecho `e068` no pacote.
 
 ### SOS – Preciso de ajuda
 
 Dentro de *Conversar*. Pede confirmação acessível (diálogo com foco, sem som), depois abre uma **mensagem em tela cheia** para mostrar a quem estiver perto ("Sou surdo / não consigo falar. Preciso de ajuda. Por favor, chame um funcionário do shopping."), com a posição atual e o botão "Fechar e voltar à conversa".
 
 **Não há integração com central de atendimento no MVP.** O app não simula envio: a tela diz explicitamente que *nenhum alerta foi enviado*. O ponto de integração está pronto (`CentralAtendimento` em `central_service.dart`). Quando o shopping tiver uma central, a tela passa a mostrar o status real (enviado / falhou).
+
+## Navegação em tempo real (posição e rotas verificadas na planta)
+
+- **Área de circulação:** o gerador lê as camadas CAD de obstáculo (paredes, alvenaria, divisórias, pilares, quiosques, esquadrias/vitrines) e cria uma grade de 0,5 m. Cada trecho de corredor foi refeito por A* nessa grade, então **nenhuma rota atravessa parede ou loja**; 3 trechos sem passagem livre foram descartados (`trechos_descartados` no pacote).
+- **Entradas das lojas:** a rota termina na entrada de cada estabelecimento (186 de 194 ancoradas; estimadas pela planta, a confirmar em campo).
+- **Posição:** calculada no celular, offline. Beacons BLE (iBeacon) + passos (acelerômetro e bússola), com encaixe na área de circulação. Estados: ok, imprecisa, sem sinal, indisponível; sem dado confiável o app não mostra posição exata nem recalcula.
+- **Desvio:** 3 leituras seguidas a mais de max(5 m, 2× erro) da rota → recálculo a partir da posição atual.
+- **Modos:** `--dart-define=POSICAO=manual` (padrão), `ble` (sensores reais) ou `simulacao` (identificado na tela).
+- **Cadastro de beacons:** `PUT /pacotes/{id}/beacons` com `Authorization: Bearer $ADMIN_TOKEN`; posição fora da área de circulação é recusada.
+- **Pendências de campo:** instalar e calibrar beacons (~1 a cada 8–10 m de corredor), declinação magnética, orientação do 2º piso, portas das lojas e a passagem do elevador no 2º piso.
 
 ## Proposta e wireframes
 
@@ -71,7 +81,7 @@ docs/         backlog, roteiro de pitch e evidências de testes
 cd api
 pip install -r requirements.txt -r requirements-dev.txt
 uvicorn app.main:app --reload          # http://localhost:8000/docs
-pytest -v                              # 24 testes
+pytest -v                              # 26 testes
 ```
 Endpoints:
 - Pacotes: `GET /pacotes`, `GET /pacotes/{id}/versao`, `GET /pacotes/{id}` (com ETag/304), `GET /pacotes/{id}/validacao`.
@@ -83,7 +93,7 @@ Para usar o Firestore: `PACOTE_FONTE=firestore` e as credenciais do Google Cloud
 cd app
 flutter create . --platforms=android,ios --project-name rota_dourada   # gera as pastas de plataforma
 flutter pub get
-flutter test                                                         # 14 testes
+flutter test                                                         # 20 testes
 flutter run                                                          # usa o pacote embutido
 flutter run --dart-define=API_URL=http://10.0.2.2:8000               # emulador Android + API local (necessário para contas)
 ```
@@ -91,7 +101,7 @@ flutter run --dart-define=API_URL=http://10.0.2.2:8000               # emulador 
 ### Protótipo web
 ```bash
 cd web-demo
-node --test tests/nucleo.test.js       # 16 testes
+node --test tests/nucleo.test.js       # 17 testes
 node build.js                          # gera dist/index.html (abre direto no navegador, offline)
 ```
 

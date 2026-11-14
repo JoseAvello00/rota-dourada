@@ -29,8 +29,8 @@ void main() {
     expect(p.ui, containsAll(['semEscadas', 'altoContraste', 'audioAuto', 'listaPrimeiro']));
     expect(p.rota.exigirConfirmado, isTrue);
     expect(RotaService(pacote).calcular(p.rota, 't_p1', 'p_c'), isNull);
-    final r = RotaService(pacote).calcular(p.rota, 't_po', 'p_c')!;
-    expect(r.tipos, contains('elevador'));
+    final r = RotaService(pacote).calcular(p.rota, 't_p1', 't_rn')!;
+    expect(r.semEscadas, isTrue);
   });
 
   test('"não" ignora tipos e usa o perfil padrão', () {
@@ -55,12 +55,12 @@ void main() {
     expect(PerfilUsuario.de(pacote, usuario(['fala'])).perfis, ['padrao']);
   });
 
-  test('cadeirante: todo o térreo tem rota sem escada; o 2º piso só pelo acesso oeste', () {
+  test('cadeirante: todo o térreo tem rota sem escada; o 2º piso não tem passagem confirmada', () {
     final p = PerfilUsuario.de(pacote, usuario(['cadeirante']));
     final s = RotaService(pacote);
     for (final poi in pacote.pois) {
-      final origem = poi.andar == 0 ? 't_rs' : 't_po';
-      expect(s.calcular(p.rota, origem, poi.no), isNotNull, reason: poi.id);
+      final r = s.calcular(p.rota, poi.andar == 0 ? 't_rs' : 't_p1', poi.no);
+      expect(r == null, poi.andar == 1, reason: poi.id);
     }
   });
 }
