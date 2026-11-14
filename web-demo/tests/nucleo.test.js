@@ -14,11 +14,12 @@ test('padrão sobe pela escada rolante até a praça de alimentação', () => {
   assert.ok(r.distancia > 100 && r.distancia < 160, 'distância em metros reais');
 });
 
-test('mobilidade: sem passagem sem escadas até o 2º piso verificada na planta', () => {
-  assert.strictEqual(N.calcularRota(g, P.mobilidade, 't_p1', 'p_c'), null);
-  assert.strictEqual(N.calcularRota(g, P.mobilidade, 't_po', 'p_c'), null);
-  assert.deepStrictEqual(N.entradasComRota(pacote, g, P.mobilidade, 'p_c'), []);
-  assert.ok(pacote.trechos_descartados.some(t => t.de === 'p_w2' && t.para === 'p_elev'));
+test('mobilidade: chega ao 2º piso pelo elevador atrás da Renner (acesso ao lado do Resolve Palmas)', () => {
+  const r = N.calcularRota(g, P.mobilidade, 't_p1', 'p_c');
+  assert.ok(tipos(r).includes('elevador'));
+  assert.ok(!tipos(r).some(t => ['escada', 'escada_rolante', 'esteira'].includes(t)));
+  assert.ok(['t_rp', 't_elev', 'p_elev'].every(n => r.nos.includes(n)));
+  assert.ok(pacote.arestas.filter(a => a.fonte === 'informado_pela_equipe').length >= 3);
 });
 
 test('visual prefere escada fixa a escada rolante', () => {
@@ -106,10 +107,12 @@ test('toque no mapa: nó mais próximo (em metros) ignora escadas e elevadores',
   assert.strictEqual(N.noMaisProximo(pacote, 1, 53, 34).id, 'p_c');
 });
 
-test('cadeirante: todo o térreo tem rota sem escada; o 2º piso não tem passagem confirmada', () => {
+test('cadeirante: todo destino dos dois andares tem rota sem escada a partir da P1', () => {
   const u = N.perfilDoUsuario(pacote, { possuiDeficiencia: true, tipos: ['cadeirante'] });
-  pacote.pois.filter(p => p.andar === 0).forEach(p => assert.ok(N.calcularRota(g, u.perfil, 't_rs', p.no), p.id));
-  pacote.pois.filter(p => p.andar === 1).forEach(p => assert.strictEqual(N.calcularRota(g, u.perfil, 't_p1', p.no), null, p.id));
+  pacote.pois.forEach(p => {
+    const r = N.calcularRota(g, u.perfil, 't_p1', p.no);
+    assert.ok(r && !r.arestas.some(a => ['escada', 'escada_rolante', 'esteira'].includes(a.tipo)), p.id);
+  });
 });
 
 test('rede verificada na grade: nenhum trecho de corredor atravessa obstáculo da planta', () => {

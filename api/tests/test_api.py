@@ -40,8 +40,7 @@ def test_pacote_inexistente_404():
 def test_validacao_endpoint_com_avisos_de_acessibilidade():
     j = cliente.get(f"/pacotes/{ID}/validacao").json()
     assert j["valido"] and j["erros"] == []
-    assert any("mobilidade" in a and "t_p1" in a for a in j["avisos"])
-    assert any("p_w2" in a or "e068" in a for a in j["avisos"])  # trecho sem passagem na planta é informado
+    assert any("descartado" in a for a in j["avisos"])  # trecho sem passagem na planta é informado
 
 
 # ---------- Regras de rota (rede traçada sobre a Planta Mix) ----------
@@ -51,16 +50,16 @@ def test_padrao_usa_escada_rolante_ate_a_praca_de_alimentacao():
     assert "escada_rolante" in rota["tipos"] and "t_esc" in rota["nos"]
 
 
-def test_mobilidade_sem_rota_confirmada_por_dentro_ate_o_2o_piso():
-    # a planta só mostra escadas rolantes/escada por dentro; o elevador fica no acesso oeste
-    assert calcular_rota(GRAFO, PERFIS["mobilidade"], "t_p1", "p_c") is None
+def test_mobilidade_sem_elevador_nao_recebe_escada():
+    pacote = copy.deepcopy(PACOTE)
+    pacote["arestas"] = [a for a in pacote["arestas"] if a["tipo"] != "elevador"]
+    assert calcular_rota(montar_grafo(pacote), PERFIS["mobilidade"], "t_p1", "p_c") is None
 
 
-def test_mobilidade_sem_passagem_confirmada_ate_o_2o_piso_em_nenhuma_entrada():
-    # o vestíbulo do elevador no 2º piso não tem passagem livre desenhada até a praça
-    entradas = [n["id"] for n in PACOTE["nos"] if n["tipo"] == "entrada"]
-    assert all(calcular_rota(GRAFO, PERFIS["mobilidade"], e, "p_c") is None for e in entradas)
-    assert any(t["de"] == "p_w2" and t["para"] == "p_elev" for t in PACOTE["trechos_descartados"])
+def test_mobilidade_chega_ao_2o_piso_pelo_elevador_atras_da_renner():
+    rota = calcular_rota(GRAFO, PERFIS["mobilidade"], "t_p1", "p_c")
+    assert "elevador" in rota["tipos"] and not {"escada", "escada_rolante", "esteira"} & set(rota["tipos"])
+    assert all(n in rota["nos"] for n in ("t_rp", "t_elev", "p_elev"))
 
 
 def test_visual_prefere_escada_fixa_a_escada_rolante():
@@ -125,7 +124,7 @@ def test_validador_detecta_poi_quebrado():
 
 def test_validador_detecta_destino_inacessivel():
     pacote = copy.deepcopy(PACOTE)
-    pacote["arestas"] = [a for a in pacote["arestas"] if a["tipo"] not in ("escada", "escada_rolante")]
+    pacote["arestas"] = [a for a in pacote["arestas"] if a["tipo"] not in ("escada", "escada_rolante", "elevador")]
     erros = validar_pacote(pacote)
     assert any("sem rota 'padrao'" in e for e in erros)  # 2º piso isolado até no perfil padrão
 

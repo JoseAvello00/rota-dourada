@@ -25,12 +25,13 @@ void main() {
       expect(pad.distancia, inInclusiveRange(100, 160));
     });
 
-    test('mobilidade: sem passagem sem escadas até o 2º piso verificada na planta', () {
-      final mob = pacote.perfis['mobilidade']!;
-      expect(rotas.calcular(mob, 't_p1', 'p_c'), isNull);
-      expect(rotas.calcular(mob, 't_po', 'p_c'), isNull);
-      expect(rotas.entradasComRota(mob, 'p_c'), isEmpty);
+    test('mobilidade: chega ao 2º piso pelo elevador atrás da Renner', () {
+      final r = rotas.calcular(pacote.perfis['mobilidade']!, 't_p1', 'p_c')!;
+      expect(r.tipos, contains('elevador'));
+      expect(r.semEscadas, isTrue);
+      expect(r.nos, containsAll(['t_rp', 't_elev', 'p_elev']));
     });
+
 
 
     test('visual prefere escada fixa a escada rolante', () {

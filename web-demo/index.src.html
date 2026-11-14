@@ -430,8 +430,8 @@ body.ui-passoAPasso .etapas{display:none}
   <label><input type="checkbox" id="dComparar" checked> Mostrar a rota padrão em cinza</label>
   <label><input type="checkbox" id="dVibrar" checked> Vibração (perfis surdez/fala)</label>
   <button class="btn-demo" id="dReset">Apagar dados deste navegador e recomeçar</button>
-  <p style="margin-top:14px">Roteiro: Criar conta (cadeirante) → buscar "Praça de Alimentação" → "sem rota acessível confirmada" e a alternativa pelo acesso oeste → Configurações → tema Sexta-feira 13 → Sair → Entrar com e-mail → perfil surdo → Conversar → SOS.</p>
-  <p>Mapa: Planta Mix do Capim Dourado (nov/2026) em escala, sem logotipos, textos e vagas. Só conexões desenhadas na planta. Contas deste protótipo ficam neste navegador. Localização simulada por beacon. O SOS não envia alertas: não há integração com a central do shopping.</p>
+  <p style="margin-top:14px">Roteiro: Entrar sem conta (cadeirante) → buscar "Praça de Alimentação" → rota sem escadas pelo elevador atrás da Renner → Iniciar navegação → Configurações → tema Sexta-feira 13 → perfil surdo → Conversar → SOS.</p>
+  <p>Mapa: Planta Mix do Capim Dourado (nov/2026) em escala, sem logotipos, textos e vagas. Conexões desenhadas na planta, mais o acesso ao elevador informado pela equipe (traçado aproximado). Contas deste protótipo ficam neste navegador. Localização simulada por beacon. O SOS não envia alertas: não há integração com a central do shopping.</p>
 </aside>
 </div>
 
@@ -476,7 +476,7 @@ const UI={
   cat:{loja:'Lojas',alimentacao:'Alimentação',sanitario:'Banheiros',servico:'Serviços',lazer:'Lazer'},catUm:{loja:'Loja',alimentacao:'Alimentação',sanitario:'Banheiro',servico:'Serviço',lazer:'Lazer'},
   legVoce:'Você',legDestino:'Destino',legRota:'Rota',legCirc:'Corredores',
   iniciar:'Iniciar navegação',semResultado:'Nada encontrado. Tente outra palavra.',noAndar:a=>`No ${a}`,outroAndar:a=>`A rota continua no ${a}.`,
-  semEscadas:'Sem escadas',incluiEscada:'Inclui escada',incluiRolante:'Inclui escada rolante',confirmadaPerfil:'Rota acessível confirmada para seu perfil',distancia:m=>`${m} m`,passo:(i,n)=>`Passo ${i} de ${n}`,padraoUsaria:'A rota mais curta usaria escada ou escada rolante.',evitaMov:'Desvia das áreas mais movimentadas (estimativa fixa).',
+  semEscadas:'Sem escadas',incluiEscada:'Inclui escada',incluiRolante:'Inclui escada rolante',confirmadaPerfil:'Rota acessível confirmada para seu perfil',distancia:m=>`${m} m`,passo:(i,n)=>`Passo ${i} de ${n}`,padraoUsaria:'A rota mais curta usaria escada ou escada rolante.',viaEquipe:'O acesso ao elevador (atrás da Renner, ao lado do Resolve Palmas) foi informado pela equipe; o traçado no mapa é aproximado.',evitaMov:'Desvia das áreas mais movimentadas (estimativa fixa).',
   temEscadaVisual:'Atenção: este trajeto inclui escada. Não há caminho sem escadas confirmado a partir daqui.',
   proximo:'Próximo passo',cheguei:'Cheguei',ouvir:'Ouvir',perdido:'Estou perdido',incertoT:'Não temos certeza da sua posição.',incertoD:'Escolha um ponto próximo para recalcular a rota.',
   semRotaAcessT:'Sem rota acessível confirmada',semRotaT:'Sem rota disponível',
@@ -519,7 +519,7 @@ const UI={
   cat:{loja:'Stores',alimentacao:'Food',sanitario:'Restrooms',servico:'Services',lazer:'Leisure'},catUm:{loja:'Store',alimentacao:'Food',sanitario:'Restroom',servico:'Service',lazer:'Leisure'},
   legVoce:'You',legDestino:'Destination',legRota:'Route',legCirc:'Corridors',
   iniciar:'Start navigation',semResultado:'Nothing found. Try another word.',noAndar:a=>`On the ${a}`,outroAndar:a=>`The route continues on the ${a}.`,
-  semEscadas:'No stairs',incluiEscada:'Includes stairs',incluiRolante:'Includes escalator',confirmadaPerfil:'Accessible route confirmed for your profile',distancia:m=>`${m} m`,passo:(i,n)=>`Step ${i} of ${n}`,padraoUsaria:'The shortest route would use stairs or an escalator.',evitaMov:'Avoids the busiest areas (fixed estimate).',
+  semEscadas:'No stairs',incluiEscada:'Includes stairs',incluiRolante:'Includes escalator',confirmadaPerfil:'Accessible route confirmed for your profile',distancia:m=>`${m} m`,passo:(i,n)=>`Step ${i} of ${n}`,padraoUsaria:'The shortest route would use stairs or an escalator.',viaEquipe:'The elevator access (behind Renner, next to Resolve Palmas) was reported by the team; the line on the map is approximate.',evitaMov:'Avoids the busiest areas (fixed estimate).',
   temEscadaVisual:'Warning: this route includes stairs. There is no confirmed stair-free path from here.',
   proximo:'Next step',cheguei:"I've arrived",ouvir:'Listen',perdido:"I'm lost",incertoT:"We're not sure where you are.",incertoD:'Pick a nearby spot to recalculate the route.',
   semRotaAcessT:'No confirmed accessible route',semRotaT:'No route available',
@@ -562,7 +562,7 @@ const UI={
   cat:{loja:'Tiendas',alimentacao:'Comida',sanitario:'Baños',servico:'Servicios',lazer:'Ocio'},catUm:{loja:'Tienda',alimentacao:'Comida',sanitario:'Baño',servico:'Servicio',lazer:'Ocio'},
   legVoce:'Usted',legDestino:'Destino',legRota:'Ruta',legCirc:'Pasillos',
   iniciar:'Iniciar navegación',semResultado:'Nada encontrado. Pruebe otra palabra.',noAndar:a=>`En el ${a}`,outroAndar:a=>`La ruta continúa en el ${a}.`,
-  semEscadas:'Sin escaleras',incluiEscada:'Incluye escalera',incluiRolante:'Incluye escalera mecánica',confirmadaPerfil:'Ruta accesible confirmada para su perfil',distancia:m=>`${m} m`,passo:(i,n)=>`Paso ${i} de ${n}`,padraoUsaria:'La ruta más corta usaría escalera o escalera mecánica.',evitaMov:'Evita las zonas más concurridas (estimación fija).',
+  semEscadas:'Sin escaleras',incluiEscada:'Incluye escalera',incluiRolante:'Incluye escalera mecánica',confirmadaPerfil:'Ruta accesible confirmada para su perfil',distancia:m=>`${m} m`,passo:(i,n)=>`Paso ${i} de ${n}`,padraoUsaria:'La ruta más corta usaría escalera o escalera mecánica.',viaEquipe:'El acceso al ascensor (detrás de Renner, junto a Resolve Palmas) fue informado por el equipo; el trazado en el mapa es aproximado.',evitaMov:'Evita las zonas más concurridas (estimación fija).',
   temEscadaVisual:'Atención: este trayecto incluye escalera. No hay camino sin escaleras confirmado desde aquí.',
   proximo:'Siguiente paso',cheguei:'Llegué',ouvir:'Escuchar',perdido:'Estoy perdido',incertoT:'No estamos seguros de su posición.',incertoD:'Elija un punto cercano para recalcular la ruta.',
   semRotaAcessT:'Sin ruta accesible confirmada',semRotaT:'Sin ruta disponible',
@@ -1054,6 +1054,7 @@ function renderCartao(){
     const pt=S.rotaPadrao&&S.rotaPadrao.arestas.map(a=>a.tipo), exige=S.perfilU.perfil.exigir_confirmado;
     const notas=[];
     if(S.origemAlt) notas.push(t.rotaDaEntrada(nomeLocal(grafo.nos[S.origemAlt]))+'. '+t.altEntradaNota);
+    if(S.rota.arestas.some(a=>(ARESTA_POR_ID[a.id]||{}).fonte==='informado_pela_equipe')) notas.push(t.viaEquipe);
     if(S.perfilU.perfis.includes('mobilidade')&&pt&&(pt.includes('escada')||pt.includes('escada_rolante'))) notas.push(t.padraoUsaria);
     if(escada&&exige) notas.push(t.temEscadaVisual);
     if(S.perfilU.perfis.includes('sensorial')) notas.push(t.evitaMov);

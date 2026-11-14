@@ -85,5 +85,5 @@ def test_perfil_combinado_exige_trechos_confirmados():
     p = combinar_perfis(PACOTE, perfis_do_usuario(True, ["cadeirante", "cegueira"]))
     assert p["proibidos"] == ["escada", "escada_rolante", "esteira"] and p["exigir_confirmado"]
     g = montar_grafo(PACOTE)
-    assert calcular_rota(g, p, "t_p1", "p_c") is None          # sem rota acessível confirmada por dentro
+    assert "elevador" in calcular_rota(g, p, "t_p1", "p_c")["tipos"]  # 2º piso pelo elevador
     assert calcular_rota(g, p, "t_p1", "t_rn") is not None          # térreo sem escadas, sim

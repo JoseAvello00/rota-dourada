@@ -45,7 +45,7 @@ Várias necessidades se somam: as proibições se acumulam, vale a penalidade ma
 - **Mobilidade** nunca usa escada, escada rolante ou esteira.
 - **Visual** aceita escada fixa só se não houver alternativa, e então a tela avisa "Inclui escada" e oferece a alternativa sem escadas.
 - **Sem rota acessível confirmada**: o app diz isso e mostra por quê, sem apresentar outro percurso como acessível. Oferece: rota a partir de outra entrada que tenha rota sem escadas (se existir), *Conversar* ou "Ver onde fica a Segurança", *Revisar origem* e *Outro destino*.
-- **O que a planta mostra hoje**: a única ligação desenhada entre o térreo e o 2º piso por dentro é o conjunto escadas rolantes + escada fixa da Praça de Eventos oeste. O elevador fica no acesso oeste (Av. JK), mas no 2º piso a planta não mostra passagem livre entre o vestíbulo do elevador e a praça de alimentação. Por isso **não há rota sem escadas confirmada até o 2º piso**: o app informa a limitação e oferece Conversar/Segurança, sem inventar passagens. Se a vistoria confirmar a porta, basta liberar o trecho `e068` no pacote.
+- **O que a planta mostra hoje**: a única ligação desenhada entre o térreo e o 2º piso por dentro é o conjunto escadas rolantes + escada fixa da Praça de Eventos oeste. O elevador fica no acesso oeste (Av. JK), mas no 2º piso a planta não mostra passagem livre entre o vestíbulo do elevador e a praça de alimentação. Por isso **não está desenhada**. A equipe informou, em visita ao shopping, que o acesso ao elevador fica atrás da Renner, ao lado do Resolve Palmas; a rota de cadeirante usa esse caminho, marcado no pacote como `informado_pela_equipe` (traçado aproximado, a medir no local).
 
 ### SOS – Preciso de ajuda
 

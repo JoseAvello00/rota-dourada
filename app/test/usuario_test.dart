@@ -28,9 +28,9 @@ void main() {
     expect(p.rota.penalidadeCurva, pacote.perfis['visual']!.penalidadeCurva);
     expect(p.ui, containsAll(['semEscadas', 'altoContraste', 'audioAuto', 'listaPrimeiro']));
     expect(p.rota.exigirConfirmado, isTrue);
-    expect(RotaService(pacote).calcular(p.rota, 't_p1', 'p_c'), isNull);
-    final r = RotaService(pacote).calcular(p.rota, 't_p1', 't_rn')!;
+    final r = RotaService(pacote).calcular(p.rota, 't_p1', 'p_c')!;
     expect(r.semEscadas, isTrue);
+    expect(r.tipos, contains('elevador'));
   });
 
   test('"não" ignora tipos e usa o perfil padrão', () {
@@ -55,12 +55,11 @@ void main() {
     expect(PerfilUsuario.de(pacote, usuario(['fala'])).perfis, ['padrao']);
   });
 
-  test('cadeirante: todo o térreo tem rota sem escada; o 2º piso não tem passagem confirmada', () {
+  test('cadeirante: todo destino dos dois andares tem rota sem escada a partir da P1', () {
     final p = PerfilUsuario.de(pacote, usuario(['cadeirante']));
     final s = RotaService(pacote);
     for (final poi in pacote.pois) {
-      final r = s.calcular(p.rota, poi.andar == 0 ? 't_rs' : 't_p1', poi.no);
-      expect(r == null, poi.andar == 1, reason: poi.id);
+      expect(s.calcular(p.rota, 't_p1', poi.no)?.semEscadas, isTrue, reason: poi.id);
     }
   });
 }

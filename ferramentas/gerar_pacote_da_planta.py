@@ -165,8 +165,9 @@ NOS = {
     "t_a7": (0, 1440, 830, "corredor", "no corredor das megalojas, perto do Cinemark", "on the megastore corridor, near Cinemark", "en el pasillo de las megatiendas, cerca de Cinemark", {}),
     # acesso oeste: vestíbulo com elevador e faixa de pedestres para a Av. JK (desenhado na planta).
     # A planta NÃO mostra ligação interna entre este vestíbulo e os corredores do shopping.
+    "t_rp": (0, 715, 996, "corredor", "ao lado do Resolve Palmas", "next to Resolve Palmas", "al lado de Resolve Palmas", {"equipe": True}),
     "t_po": (0, 497, 918, "entrada", "Acesso oeste – Av. JK (elevador)", "West access – Av. JK (elevator)", "Acceso oeste – Av. JK (ascensor)", {}),
-    "t_elev": (0, 535, 918, "vertical", "na porta do elevador do acesso oeste", "at the west access elevator door", "en la puerta del ascensor del acceso oeste", {}),
+    "t_elev": (0, 535, 918, "vertical", "na porta do elevador, atrás da Renner", "at the elevator door, behind Renner", "en la puerta del ascensor, detrás de Renner", {}),
     # ---------------- 2º piso (pontos da folha 2/2) ----------------
     "p_esc": (1, 1585, 765, "vertical", "no topo das escadas rolantes", "at the top of the escalators", "en lo alto de las escaleras mecánicas", {}),
     "p_e": (1, 1500, 765, "corredor", "na entrada da Praça de Alimentação, junto às escadas rolantes", "at the Food Court entrance, by the escalators", "en la entrada del patio de comidas, junto a las escaleras mecánicas", {}),
@@ -207,7 +208,7 @@ ARESTAS = [
     ("t_pn", "t_a1"), ("t_a1", "t_a2"), ("t_a2", "t_a3"), ("t_a3", "t_a4"), ("t_a4", "t_p2"), ("t_a4", "t_a5"),
     ("t_a5", "t_a6"), ("t_a6", "t_a7"),
     # acesso oeste → elevador
-    ("t_po", "t_elev"),
+    ("t_po", "t_elev"), ("t_renner", "t_rp"), ("t_rp", "t_elev"),
     # 2º piso
     ("p_esc", "p_e"), ("p_e", "p_n1"), ("p_n1", "p_n2"), ("p_n2", "p_n3"), ("p_n3", "p_n4"), ("p_n4", "p_w"),
     ("p_e", "p_s1"), ("p_s1", "p_s2"), ("p_s2", "p_s3"), ("p_s3", "p_s4"), ("p_s4", "p_w"),
@@ -290,7 +291,12 @@ CELULA_M = 0.5  # resolução da grade de circulação (m)
 # Camadas CAD que são obstáculo físico: paredes, alvenaria, divisórias, pilares, quiosques, esquadrias/vitrines.
 # Portas internas desenhadas como esquadria (vidro) junto a estes nós: vestíbulo da P1 e
 # vestíbulo oeste do 2º piso (acesso ao elevador). Tratadas como passagem; conferir em campo.
-PORTAS_INTERNAS = {"t_s0", "p_w2"}
+PORTAS_INTERNAS = {"t_s0", "p_w2", "t_rp"}
+# Passagens que a planta não desenha com clareza, informadas pela equipe em visita ao shopping:
+# acesso ao elevador por trás da Renner, ao lado do Resolve Palmas, e ligação do elevador à praça no 2º piso.
+# O traçado é aproximado (busca na área livre da planta); conferir com medição no local.
+NOS_EQUIPE = {"t_rp", "t_po", "p_elev", "t_elev"}
+EQUIPE = {("t_renner", "t_rp"), ("t_rp", "t_elev"), ("t_po", "t_elev"), ("p_w2", "p_elev")}
 CAMADAS_OBSTACULO = re.compile(r"PAREDE|ALV|I-WALL|^DIV$|\$DIV$|PILAR|QUIOSQUES|ESQ|CONTORNO|Parede em vista|CORTINA|JANELA", re.I)
 
 
@@ -421,6 +427,7 @@ def tracar_rede_na_grade(nos, arestas, obst_pdf):
                 for l in range(max(0, l0 - R), min(L, l0 + R + 1)):
                     for c in range(max(0, c0 - R), min(C, c0 + R + 1)):
                         if math.hypot(l - l0, c - c0) <= R: livre[l][c] = True
+        bruta = [r[:] for r in livre]
         # componente conexa principal da área livre (a que contém a maioria dos nós de corredor)
         comp = [[-1] * C for _ in range(L)]; tam = []
         for l in range(L):
@@ -444,7 +451,7 @@ def tracar_rede_na_grade(nos, arestas, obst_pdf):
             for c in range(C):
                 perto[l][c] = perto[l][c] if livre[l][c] else 0
         for n in nos:
-            if n["andar"] != aid or n["tipo"] == "vertical" or n.get("externo"): continue
+            if n["andar"] != aid or n["tipo"] == "vertical" or n.get("externo") or n["id"] in NOS_EQUIPE: continue
             l, c = celula(n["x"], n["y"])
             if not (0 <= l < L and 0 <= c < C and livre[l][c]):
                 m = mais_proxima(livre, n["x"], n["y"], raio_m=15)
@@ -460,9 +467,25 @@ def tracar_rede_na_grade(nos, arestas, obst_pdf):
             if e.get("a_validar"): continue
             pa, pb = celula(a["x"], a["y"]), celula(b["x"], b["y"])
             cam = None
-            for larg in (8, 20, 45):
-                cam = astar(livre, perto, pa, pb, banda_do_segmento((a["x"], a["y"]), (b["x"], b["y"]), larg, L, C))
+            eq = e.get("fonte") == "informado_pela_equipe"
+            base = bruta if eq else livre
+            if eq:
+                for (l, c) in (pa, pb): base[l][c] = True
+            for larg in ((15, 40, 90) if eq else (8, 20, 45)):
+                cam = astar(base, perto, pa, pb, banda_do_segmento((a["x"], a["y"]), (b["x"], b["y"]), larg, L, C))
                 if cam: break
+            if eq:
+                if not cam:  # sem caminho livre na planta: reta entre os pontos, marcada como aproximada
+                    n_ = max(2, int(math.hypot(b["x"] - a["x"], b["y"] - a["y"]) / (CELULA_M / 2)))
+                    cam = []
+                    for i in range(n_ + 1):
+                        cl = celula(a["x"] + (b["x"] - a["x"]) * i / n_, a["y"] + (b["y"] - a["y"]) * i / n_)
+                        if not cam or cam[-1] != cl: cam.append(cl)
+                    e["tracado"] = "reta_aproximada"
+                for l, c in cam:  # a passagem informada passa a contar como circulação
+                    for ll in range(max(0, l - 1), min(L, l + 2)):
+                        for cc in range(max(0, c - 1), min(C, c + 2)):
+                            livre[ll][cc] = True
             if not cam:
                 e["bloqueada_na_planta"] = True
                 relatorio.append(f"trecho {e['id']} {e['de']}→{e['para']}: sem passagem livre na planta")
@@ -609,6 +632,9 @@ def main():
         est = "alto" if (a, b) in ESTIMULO_ALTO or (b, a) in ESTIMULO_ALTO else (
             "baixo" if NOS[a][7].get("estimulo") == "baixo" or NOS[b][7].get("estimulo") == "baixo" or ext else "medio")
         e = {"id": f"e{i + 1:03d}", "de": a, "para": b, "tipo": "corredor", "estimulo": est}
+        if (a, b) in EQUIPE or (b, a) in EQUIPE:
+            e["fonte"] = "informado_pela_equipe"; e["estimulo"] = "baixo"
+            e["descricao"] = "acesso ao elevador informado pela equipe (traçado aproximado)"
         if ext:
             e["a_validar"] = True; e["descricao"] = "calçada externa até o elevador da fachada oeste"
         arestas.append(e)
@@ -680,7 +706,7 @@ def main():
             velho.unlink()
 
     pacote = {
-        "versao": {"pacote_id": "capim-dourado-piloto", "versao": "1.1.0", "atualizado_em": "2026-11-14",
+        "versao": {"pacote_id": "capim-dourado-piloto", "versao": "1.2.0", "atualizado_em": "2026-11-14",
                    "fonte": "Planta Mix – Operações Capim Dourado Shopping, nov/2026 (folhas 1/2 e 2/2)",
                    "observacao": "Coordenadas em metros, medidas sobre a planta (térreo 1:850). Corredores traçados sobre a planta. "
                                  "Só há conexões entre andares desenhadas na planta: escadas rolantes + escada fixa (Praça de Eventos oeste) "
