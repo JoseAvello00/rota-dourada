@@ -59,6 +59,13 @@ Dentro de *Conversar*. Pede confirmação acessível (diálogo com foco, sem som
 - **Cadastro de beacons:** `PUT /pacotes/{id}/beacons` com `Authorization: Bearer $ADMIN_TOKEN`; posição fora da área de circulação é recusada.
 - **Pendências de campo:** instalar e calibrar beacons (~1 a cada 8–10 m de corredor), declinação magnética, orientação do 2º piso, portas das lojas e a passagem do elevador no 2º piso.
 
+## Documentos da entrega final
+
+- [Resumo para avaliadores (1 página)](docs/entrega/4-Rota-Dourada-Resumo-para-avaliadores.pdf)
+- [Documentação técnica](docs/entrega/2-Rota-Dourada-Documentacao-tecnica.pdf)
+- [Instruções de execução](docs/entrega/3-Rota-Dourada-Instrucoes-de-execucao.pdf)
+- MVP sem instalar nada: abra [`web-demo/dist/index.html`](web-demo/dist/index.html) no navegador.
+
 ## Proposta e wireframes
 
 - [Proposta de solução tecnológica](docs/proposta/PROPOSTA%20DE%20SOLU%C3%87%C3%83O%20TECNOL%C3%93GICA.pdf)
