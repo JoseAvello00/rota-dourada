@@ -1,0 +1,10 @@
+__pycache__/
+.pytest_cache/
+*.pyc
+.venv/
+node_modules/
+app/.dart_tool/
+app/build/
+app/.flutter-plugins*
+app/pubspec.lock
+.DS_Store

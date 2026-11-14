@@ -1,0 +1,4022 @@
+{
+ "versao": {
+  "pacote_id": "capim-dourado-piloto",
+  "versao": "1.0.0",
+  "atualizado_em": "2026-11-13",
+  "fonte": "Planta Mix – Operações Capim Dourado Shopping, nov/2026 (folhas 1/2 e 2/2)",
+  "observacao": "Coordenadas em metros, medidas sobre a planta (térreo 1:850). Corredores traçados sobre a planta. Só há conexões entre andares desenhadas na planta: escadas rolantes + escada fixa (Praça de Eventos oeste) e o elevador do acesso oeste (Av. JK), que não tem ligação interna desenhada com os corredores. Trechos com a_validar=true não são usados em rotas acessíveis."
+ },
+ "edificio": {
+  "id": "capim-dourado",
+  "nome": "Capim Dourado Shopping",
+  "cidade": "Palmas - TO",
+  "area_m2": 38800.5,
+  "andares": [
+   {
+    "id": 0,
+    "nome": "Térreo",
+    "nome_en": "Ground floor",
+    "nome_es": "Planta baja",
+    "largura": 386.6,
+    "altura": 275.7,
+    "imagem": "planta_terreo_claro.webp",
+    "imagens": {
+     "claro": "planta_terreo_claro.webp",
+     "escuro": "planta_terreo_escuro.webp",
+     "terror": "planta_terreo_terror.webp"
+    },
+    "imagem_px": [
+     2580,
+     1840
+    ]
+   },
+   {
+    "id": 1,
+    "nome": "2º Piso – Praça de Alimentação",
+    "nome_en": "2nd floor – Food court",
+    "nome_es": "2º piso – Patio de comidas",
+    "largura": 111.0,
+    "altura": 63.8,
+    "imagem": "planta_piso2_claro.webp",
+    "imagens": {
+     "claro": "planta_piso2_claro.webp",
+     "escuro": "planta_piso2_escuro.webp",
+     "terror": "planta_piso2_terror.webp"
+    },
+    "imagem_px": [
+     1240,
+     713
+    ]
+   }
+  ]
+ },
+ "nos": [
+  {
+   "id": "t_p1",
+   "andar": 0,
+   "x": 184.3,
+   "y": 226.3,
+   "tipo": "entrada",
+   "nome": "Entrada principal P1 – Av. NS-05",
+   "nome_en": "Main entrance P1 – Av. NS-05",
+   "nome_es": "Entrada principal P1 – Av. NS-05",
+   "referencia": "na entrada principal P1 – Av. NS-05",
+   "referencia_en": "at the main entrance P1 – Av. NS-05",
+   "referencia_es": "en la entrada principal P1 – Av. NS-05"
+  },
+  {
+   "id": "t_p2",
+   "andar": 0,
+   "x": 279.9,
+   "y": 132.2,
+   "tipo": "entrada",
+   "nome": "Entrada P2 – estacionamento leste",
+   "nome_en": "Entrance P2 – east parking",
+   "nome_es": "Entrada P2 – estacionamiento este",
+   "referencia": "na entrada P2 – estacionamento leste",
+   "referencia_en": "at the entrance P2 – east parking",
+   "referencia_es": "en la entrada P2 – estacionamiento este"
+  },
+  {
+   "id": "t_p3",
+   "andar": 0,
+   "x": 104.3,
+   "y": 146.3,
+   "tipo": "entrada",
+   "nome": "Entrada P3 – estacionamento norte",
+   "nome_en": "Entrance P3 – north parking",
+   "nome_es": "Entrada P3 – estacionamiento norte",
+   "referencia": "na entrada P3 – estacionamento norte",
+   "referencia_en": "at the entrance P3 – north parking",
+   "referencia_es": "en la entrada P3 – estacionamiento norte"
+  },
+  {
+   "id": "t_pn",
+   "andar": 0,
+   "x": 279.9,
+   "y": 65.9,
+   "tipo": "entrada",
+   "nome": "Acesso de pedestres – Super Big",
+   "nome_en": "Pedestrian access – Super Big",
+   "nome_es": "Acceso peatonal – Super Big",
+   "referencia": "na acesso de pedestres – Super Big",
+   "referencia_en": "at the pedestrian access – Super Big",
+   "referencia_es": "en la acceso peatonal – Super Big"
+  },
+  {
+   "id": "t_rn",
+   "andar": 0,
+   "x": 185.2,
+   "y": 143.0,
+   "tipo": "corredor",
+   "referencia": "na Praça de Eventos norte, em frente à C&A",
+   "referencia_en": "at the north Events Square, in front of C&A",
+   "referencia_es": "en la Plaza de Eventos norte, frente a C&A"
+  },
+  {
+   "id": "t_rne",
+   "andar": 0,
+   "x": 209.8,
+   "y": 150.4,
+   "tipo": "corredor",
+   "referencia": "no anel em frente à Leitura",
+   "referencia_en": "on the ring in front of Leitura",
+   "referencia_es": "en el anillo frente a Leitura"
+  },
+  {
+   "id": "t_re",
+   "andar": 0,
+   "x": 225.4,
+   "y": 169.3,
+   "tipo": "corredor",
+   "referencia": "no anel em frente à Brooksfield",
+   "referencia_en": "on the ring in front of Brooksfield",
+   "referencia_es": "en el anillo frente a Brooksfield"
+  },
+  {
+   "id": "t_rse",
+   "andar": 0,
+   "x": 212.8,
+   "y": 190.3,
+   "tipo": "corredor",
+   "referencia": "no anel em frente à Drogasil",
+   "referencia_en": "on the ring in front of Drogasil",
+   "referencia_es": "en el anillo frente a Drogasil"
+  },
+  {
+   "id": "t_rs",
+   "andar": 0,
+   "x": 184.6,
+   "y": 195.4,
+   "tipo": "corredor",
+   "referencia": "na Praça de Eventos central",
+   "referencia_en": "at the central Events Square",
+   "referencia_es": "en la Plaza de Eventos central"
+  },
+  {
+   "id": "t_rsw",
+   "andar": 0,
+   "x": 157.3,
+   "y": 190.3,
+   "tipo": "corredor",
+   "referencia": "no anel em frente à Lupo",
+   "referencia_en": "on the ring in front of Lupo",
+   "referencia_es": "en el anillo frente a Lupo"
+  },
+  {
+   "id": "t_rw",
+   "andar": 0,
+   "x": 144.5,
+   "y": 169.3,
+   "tipo": "corredor",
+   "referencia": "no anel oeste, perto da Levi's",
+   "referencia_en": "on the west ring, near Levi's",
+   "referencia_es": "en el anillo oeste, cerca de Levi's"
+  },
+  {
+   "id": "t_rnw",
+   "andar": 0,
+   "x": 158.8,
+   "y": 149.0,
+   "tipo": "corredor",
+   "referencia": "no anel em frente à Schutz",
+   "referencia_en": "on the ring in front of Schutz",
+   "referencia_es": "en el anillo frente a Schutz"
+  },
+  {
+   "id": "t_praca",
+   "andar": 0,
+   "x": 184.6,
+   "y": 209.2,
+   "tipo": "corredor",
+   "referencia": "na saída da Praça de Eventos central",
+   "referencia_en": "at the central Events Square exit",
+   "referencia_es": "en la salida de la Plaza de Eventos central"
+  },
+  {
+   "id": "t_s0",
+   "andar": 0,
+   "x": 184.6,
+   "y": 219.4,
+   "tipo": "corredor",
+   "referencia": "no corredor sul, em frente à entrada P1",
+   "referencia_en": "on the south corridor, in front of entrance P1",
+   "referencia_es": "en el pasillo sur, frente a la entrada P1"
+  },
+  {
+   "id": "t_sw1",
+   "andar": 0,
+   "x": 158.8,
+   "y": 219.4,
+   "tipo": "corredor",
+   "referencia": "no corredor sul, perto da Aramis",
+   "referencia_en": "on the south corridor, near Aramis",
+   "referencia_es": "en el pasillo sur, cerca de Aramis"
+  },
+  {
+   "id": "t_sw2",
+   "andar": 0,
+   "x": 133.4,
+   "y": 220.3,
+   "tipo": "corredor",
+   "referencia": "no corredor sul, perto dos quiosques Fini e Toca da Pipoca",
+   "referencia_en": "on the south corridor, near the Fini and Toca da Pipoca kiosks",
+   "referencia_es": "en el pasillo sur, cerca de los quioscos Fini y Toca da Pipoca"
+  },
+  {
+   "id": "t_sw3",
+   "andar": 0,
+   "x": 110.9,
+   "y": 215.8,
+   "tipo": "corredor",
+   "referencia": "na Praça de Eventos oeste",
+   "referencia_en": "at the west Events Square",
+   "referencia_es": "en la Plaza de Eventos oeste"
+  },
+  {
+   "id": "t_sw4",
+   "andar": 0,
+   "x": 86.9,
+   "y": 208.3,
+   "tipo": "corredor",
+   "referencia": "no corredor da Renner, perto do Giraffas",
+   "referencia_en": "in the Renner corridor, near Giraffas",
+   "referencia_es": "en el pasillo de Renner, cerca de Giraffas"
+  },
+  {
+   "id": "t_renner",
+   "andar": 0,
+   "x": 68.9,
+   "y": 209.8,
+   "tipo": "corredor",
+   "referencia": "na entrada da Renner",
+   "referencia_en": "at the Renner entrance",
+   "referencia_es": "en la entrada de Renner"
+  },
+  {
+   "id": "t_se1",
+   "andar": 0,
+   "x": 212.8,
+   "y": 217.3,
+   "tipo": "corredor",
+   "referencia": "no corredor sul, perto da Vivara",
+   "referencia_en": "on the south corridor, near Vivara",
+   "referencia_es": "en el pasillo sur, cerca de Vivara"
+  },
+  {
+   "id": "t_se2",
+   "andar": 0,
+   "x": 237.4,
+   "y": 220.3,
+   "tipo": "corredor",
+   "referencia": "no corredor sul, perto do quiosque Artes Jalapão",
+   "referencia_en": "on the south corridor, near the Artes Jalapão kiosk",
+   "referencia_es": "en el pasillo sur, cerca del quiosco Artes Jalapão"
+  },
+  {
+   "id": "t_se3",
+   "andar": 0,
+   "x": 259.2,
+   "y": 221.2,
+   "tipo": "corredor",
+   "referencia": "no corredor sul, perto do quiosque My Case",
+   "referencia_en": "on the south corridor, near the My Case kiosk",
+   "referencia_es": "en el pasillo sur, cerca del quiosco My Case"
+  },
+  {
+   "id": "t_se4",
+   "andar": 0,
+   "x": 280.2,
+   "y": 221.8,
+   "tipo": "corredor",
+   "referencia": "no fim do corredor sul, em frente à Marisa",
+   "referencia_en": "at the end of the south corridor, in front of Marisa",
+   "referencia_es": "al final del pasillo sur, frente a Marisa"
+  },
+  {
+   "id": "t_swa",
+   "andar": 0,
+   "x": 146.0,
+   "y": 219.7,
+   "tipo": "corredor",
+   "referencia": "no corredor sul, na entrada da Alameda das Cores",
+   "referencia_en": "on the south corridor, at the Alameda das Cores",
+   "referencia_es": "en el pasillo sur, en la Alameda das Cores"
+  },
+  {
+   "id": "t_al",
+   "andar": 0,
+   "x": 146.9,
+   "y": 241.3,
+   "tipo": "corredor",
+   "referencia": "na Alameda das Cores, em frente à Centauro",
+   "referencia_en": "on Alameda das Cores, in front of Centauro",
+   "referencia_es": "en la Alameda das Cores, frente a Centauro"
+  },
+  {
+   "id": "t_esc",
+   "andar": 0,
+   "x": 101.3,
+   "y": 220.9,
+   "tipo": "vertical",
+   "referencia": "ao pé das escadas rolantes para a Praça de Alimentação",
+   "referencia_en": "at the foot of the escalators to the Food Court",
+   "referencia_es": "al pie de las escaleras mecánicas al patio de comidas",
+   "nome": "Escadas rolantes (térreo)"
+  },
+  {
+   "id": "t_nw1",
+   "andar": 0,
+   "x": 130.4,
+   "y": 163.6,
+   "tipo": "corredor",
+   "referencia": "no corredor noroeste, perto do quiosque MilkMoo",
+   "referencia_en": "on the northwest corridor, near the MilkMoo kiosk",
+   "referencia_es": "en el pasillo noroeste, cerca del quiosco MilkMoo"
+  },
+  {
+   "id": "t_nw2",
+   "andar": 0,
+   "x": 104.3,
+   "y": 163.6,
+   "tipo": "corredor",
+   "referencia": "no corredor noroeste, perto do quiosque Havanna",
+   "referencia_en": "on the northwest corridor, near the Havanna kiosk",
+   "referencia_es": "en el pasillo noroeste, cerca del quiosco Havanna"
+  },
+  {
+   "id": "t_nw3",
+   "andar": 0,
+   "x": 88.4,
+   "y": 169.3,
+   "tipo": "corredor",
+   "referencia": "na Praça de Eventos noroeste",
+   "referencia_en": "at the northwest Events Square",
+   "referencia_es": "en la Plaza de Eventos noroeste"
+  },
+  {
+   "id": "t_nw4",
+   "andar": 0,
+   "x": 95.9,
+   "y": 185.8,
+   "tipo": "corredor",
+   "referencia": "no corredor da Machine Games",
+   "referencia_en": "in the Machine Games corridor",
+   "referencia_es": "en el pasillo de Machine Games"
+  },
+  {
+   "id": "t_nw5",
+   "andar": 0,
+   "x": 74.9,
+   "y": 173.8,
+   "tipo": "corredor",
+   "referencia": "em frente à Polo Wear",
+   "referencia_en": "in front of Polo Wear",
+   "referencia_es": "frente a Polo Wear"
+  },
+  {
+   "id": "t_sanw1",
+   "andar": 0,
+   "x": 152.2,
+   "y": 137.9,
+   "tipo": "corredor",
+   "referencia": "no corredor dos sanitários da ala oeste",
+   "referencia_en": "in the west restroom corridor",
+   "referencia_es": "en el pasillo de los baños del ala oeste"
+  },
+  {
+   "id": "t_sanw2",
+   "andar": 0,
+   "x": 149.3,
+   "y": 125.9,
+   "tipo": "corredor",
+   "referencia": "na entrada dos sanitários e do Espaço Família",
+   "referencia_en": "at the restrooms and Family Room entrance",
+   "referencia_es": "en la entrada de los baños y del Espacio Familia"
+  },
+  {
+   "id": "t_sane1",
+   "andar": 0,
+   "x": 237.4,
+   "y": 206.8,
+   "tipo": "corredor",
+   "referencia": "na circulação dos sanitários da ala leste",
+   "referencia_en": "in the east restroom hallway",
+   "referencia_es": "en el pasillo de los baños del ala este"
+  },
+  {
+   "id": "t_sane2",
+   "andar": 0,
+   "x": 233.8,
+   "y": 194.8,
+   "tipo": "corredor",
+   "referencia": "na entrada dos sanitários da ala leste",
+   "referencia_en": "at the east restrooms entrance",
+   "referencia_es": "en la entrada de los baños del ala este"
+  },
+  {
+   "id": "t_e1",
+   "andar": 0,
+   "x": 238.3,
+   "y": 161.2,
+   "tipo": "corredor",
+   "referencia": "no corredor leste, perto do quiosque Pronto Fibra",
+   "referencia_en": "on the east corridor, near the Pronto Fibra kiosk",
+   "referencia_es": "en el pasillo este, cerca del quiosco Pronto Fibra"
+  },
+  {
+   "id": "t_e2",
+   "andar": 0,
+   "x": 252.9,
+   "y": 166.3,
+   "tipo": "corredor",
+   "referencia": "na Praça de Eventos leste",
+   "referencia_en": "at the east Events Square",
+   "referencia_es": "en la Plaza de Eventos este"
+  },
+  {
+   "id": "t_e3",
+   "andar": 0,
+   "x": 269.7,
+   "y": 167.8,
+   "tipo": "corredor",
+   "referencia": "no corredor leste, perto da Kazzu Sports",
+   "referencia_en": "on the east corridor, near Kazzu Sports",
+   "referencia_es": "en el pasillo este, cerca de Kazzu Sports"
+  },
+  {
+   "id": "t_a1",
+   "andar": 0,
+   "x": 290.7,
+   "y": 71.9,
+   "tipo": "corredor",
+   "referencia": "no início do corredor das megalojas, perto do Super Big",
+   "referencia_en": "at the start of the megastore corridor, near Super Big",
+   "referencia_es": "al inicio del pasillo de las megatiendas, cerca de Super Big"
+  },
+  {
+   "id": "t_a2",
+   "andar": 0,
+   "x": 290.7,
+   "y": 95.9,
+   "tipo": "corredor",
+   "referencia": "no corredor das megalojas, perto do quiosque Chute Play",
+   "referencia_en": "on the megastore corridor, near the Chute Play kiosk",
+   "referencia_es": "en el pasillo de las megatiendas, cerca del quiosco Chute Play"
+  },
+  {
+   "id": "t_a3",
+   "andar": 0,
+   "x": 290.7,
+   "y": 116.9,
+   "tipo": "corredor",
+   "referencia": "no corredor das megalojas, perto do quiosque do McDonald's",
+   "referencia_en": "on the megastore corridor, near the McDonald's kiosk",
+   "referencia_es": "en el pasillo de las megatiendas, cerca del quiosco de McDonald's"
+  },
+  {
+   "id": "t_a4",
+   "andar": 0,
+   "x": 290.7,
+   "y": 132.2,
+   "tipo": "corredor",
+   "referencia": "no corredor das megalojas, em frente à entrada P2",
+   "referencia_en": "on the megastore corridor, in front of entrance P2",
+   "referencia_es": "en el pasillo de las megatiendas, frente a la entrada P2"
+  },
+  {
+   "id": "t_a5",
+   "andar": 0,
+   "x": 290.7,
+   "y": 152.8,
+   "tipo": "corredor",
+   "referencia": "no corredor das megalojas, perto da Lojas Avenida",
+   "referencia_en": "on the megastore corridor, near Lojas Avenida",
+   "referencia_es": "en el pasillo de las megatiendas, cerca de Lojas Avenida"
+  },
+  {
+   "id": "t_a6",
+   "andar": 0,
+   "x": 290.7,
+   "y": 168.4,
+   "tipo": "corredor",
+   "referencia": "no cruzamento do corredor das megalojas com o corredor leste",
+   "referencia_en": "at the junction of the megastore corridor and the east corridor",
+   "referencia_es": "en el cruce del pasillo de las megatiendas con el pasillo este"
+  },
+  {
+   "id": "t_a7",
+   "andar": 0,
+   "x": 290.7,
+   "y": 194.8,
+   "tipo": "corredor",
+   "referencia": "no corredor das megalojas, perto do Cinemark",
+   "referencia_en": "on the megastore corridor, near Cinemark",
+   "referencia_es": "en el pasillo de las megatiendas, cerca de Cinemark"
+  },
+  {
+   "id": "t_po",
+   "andar": 0,
+   "x": 8.1,
+   "y": 221.2,
+   "tipo": "entrada",
+   "nome": "Acesso oeste – Av. JK (elevador)",
+   "nome_en": "West access – Av. JK (elevator)",
+   "nome_es": "Acceso oeste – Av. JK (ascensor)",
+   "referencia": "na acesso oeste – Av. JK (elevador)",
+   "referencia_en": "at the west access – Av. JK (elevator)",
+   "referencia_es": "en la acceso oeste – Av. JK (ascensor)"
+  },
+  {
+   "id": "t_elev",
+   "andar": 0,
+   "x": 19.5,
+   "y": 221.2,
+   "tipo": "vertical",
+   "referencia": "na porta do elevador do acesso oeste",
+   "referencia_en": "at the west access elevator door",
+   "referencia_es": "en la puerta del ascensor del acceso oeste",
+   "nome": "Elevador (térreo, acesso oeste)"
+  },
+  {
+   "id": "p_esc",
+   "andar": 1,
+   "x": 71.3,
+   "y": 34.1,
+   "tipo": "vertical",
+   "referencia": "no topo das escadas rolantes",
+   "referencia_en": "at the top of the escalators",
+   "referencia_es": "en lo alto de las escaleras mecánicas",
+   "nome": "Escadas rolantes (2º piso)"
+  },
+  {
+   "id": "p_e",
+   "andar": 1,
+   "x": 66.6,
+   "y": 34.1,
+   "tipo": "corredor",
+   "referencia": "na entrada da Praça de Alimentação, junto às escadas rolantes",
+   "referencia_en": "at the Food Court entrance, by the escalators",
+   "referencia_es": "en la entrada del patio de comidas, junto a las escaleras mecánicas"
+  },
+  {
+   "id": "p_n1",
+   "andar": 1,
+   "x": 64.4,
+   "y": 24.1,
+   "tipo": "corredor",
+   "referencia": "em frente ao Divino Fogão",
+   "referencia_en": "in front of Divino Fogão",
+   "referencia_es": "frente a Divino Fogão"
+  },
+  {
+   "id": "p_n2",
+   "andar": 1,
+   "x": 53.8,
+   "y": 23.6,
+   "tipo": "corredor",
+   "referencia": "em frente à Vivenda do Camarão",
+   "referencia_en": "in front of Vivenda do Camarão",
+   "referencia_es": "frente a Vivenda do Camarão"
+  },
+  {
+   "id": "p_n3",
+   "andar": 1,
+   "x": 45.0,
+   "y": 25.0,
+   "tipo": "corredor",
+   "referencia": "em frente ao Spoleto",
+   "referencia_en": "in front of Spoleto",
+   "referencia_es": "frente a Spoleto"
+  },
+  {
+   "id": "p_n4",
+   "andar": 1,
+   "x": 36.6,
+   "y": 27.8,
+   "tipo": "corredor",
+   "referencia": "em frente ao McDonald's",
+   "referencia_en": "in front of McDonald's",
+   "referencia_es": "frente a McDonald's"
+  },
+  {
+   "id": "p_s1",
+   "andar": 1,
+   "x": 64.4,
+   "y": 44.4,
+   "tipo": "corredor",
+   "referencia": "em frente ao Express Grill",
+   "referencia_en": "in front of Express Grill",
+   "referencia_es": "frente a Express Grill"
+  },
+  {
+   "id": "p_s2",
+   "andar": 1,
+   "x": 53.8,
+   "y": 45.8,
+   "tipo": "corredor",
+   "referencia": "em frente ao Subway",
+   "referencia_en": "in front of Subway",
+   "referencia_es": "frente a Subway"
+  },
+  {
+   "id": "p_s3",
+   "andar": 1,
+   "x": 45.0,
+   "y": 45.2,
+   "tipo": "corredor",
+   "referencia": "em frente ao Spaguettinni",
+   "referencia_en": "in front of Spaguettinni",
+   "referencia_es": "frente a Spaguettinni"
+  },
+  {
+   "id": "p_s4",
+   "andar": 1,
+   "x": 36.6,
+   "y": 41.6,
+   "tipo": "corredor",
+   "referencia": "em frente ao Kin Sui",
+   "referencia_en": "in front of Kin Sui",
+   "referencia_es": "frente a Kin Sui"
+  },
+  {
+   "id": "p_c",
+   "andar": 1,
+   "x": 53.3,
+   "y": 34.1,
+   "tipo": "corredor",
+   "referencia": "no centro das mesas",
+   "referencia_en": "in the middle of the seating area",
+   "referencia_es": "en el centro de las mesas"
+  },
+  {
+   "id": "p_w",
+   "andar": 1,
+   "x": 28.9,
+   "y": 34.2,
+   "tipo": "corredor",
+   "referencia": "na passagem oeste (P4)",
+   "referencia_en": "at the west passage (P4)",
+   "referencia_es": "en el pasaje oeste (P4)"
+  },
+  {
+   "id": "p_w2",
+   "andar": 1,
+   "x": 17.8,
+   "y": 34.2,
+   "tipo": "corredor",
+   "referencia": "no hall oeste, perto do Mundo Imersivo",
+   "referencia_en": "in the west hall, near Mundo Imersivo",
+   "referencia_es": "en el hall oeste, cerca de Mundo Imersivo"
+  },
+  {
+   "id": "p_elev",
+   "andar": 1,
+   "x": 8.3,
+   "y": 34.2,
+   "tipo": "vertical",
+   "referencia": "na saída do elevador",
+   "referencia_en": "at the elevator exit",
+   "referencia_es": "a la salida del ascensor",
+   "nome": "Elevador (2º piso)"
+  },
+  {
+   "id": "p_wcm",
+   "andar": 1,
+   "x": 67.7,
+   "y": 15.0,
+   "tipo": "corredor",
+   "referencia": "na circulação dos sanitários masculinos",
+   "referencia_en": "in the men's restroom hallway",
+   "referencia_es": "en el pasillo de los baños de hombres"
+  },
+  {
+   "id": "p_wcf",
+   "andar": 1,
+   "x": 64.9,
+   "y": 53.3,
+   "tipo": "corredor",
+   "referencia": "na circulação dos sanitários femininos e acessível",
+   "referencia_en": "in the women's and accessible restroom hallway",
+   "referencia_es": "en el pasillo de los baños de mujeres y accesible"
+  }
+ ],
+ "arestas": [
+  {
+   "id": "e001",
+   "de": "t_rn",
+   "para": "t_rne",
+   "tipo": "corredor",
+   "estimulo": "alto"
+  },
+  {
+   "id": "e002",
+   "de": "t_rne",
+   "para": "t_re",
+   "tipo": "corredor",
+   "estimulo": "medio"
+  },
+  {
+   "id": "e003",
+   "de": "t_re",
+   "para": "t_rse",
+   "tipo": "corredor",
+   "estimulo": "medio"
+  },
+  {
+   "id": "e004",
+   "de": "t_rse",
+   "para": "t_rs",
+   "tipo": "corredor",
+   "estimulo": "medio"
+  },
+  {
+   "id": "e005",
+   "de": "t_rs",
+   "para": "t_rsw",
+   "tipo": "corredor",
+   "estimulo": "medio"
+  },
+  {
+   "id": "e006",
+   "de": "t_rsw",
+   "para": "t_rw",
+   "tipo": "corredor",
+   "estimulo": "medio"
+  },
+  {
+   "id": "e007",
+   "de": "t_rw",
+   "para": "t_rnw",
+   "tipo": "corredor",
+   "estimulo": "medio"
+  },
+  {
+   "id": "e008",
+   "de": "t_rnw",
+   "para": "t_rn",
+   "tipo": "corredor",
+   "estimulo": "alto"
+  },
+  {
+   "id": "e009",
+   "de": "t_rs",
+   "para": "t_praca",
+   "tipo": "corredor",
+   "estimulo": "alto"
+  },
+  {
+   "id": "e010",
+   "de": "t_praca",
+   "para": "t_s0",
+   "tipo": "corredor",
+   "estimulo": "alto"
+  },
+  {
+   "id": "e011",
+   "de": "t_s0",
+   "para": "t_p1",
+   "tipo": "corredor",
+   "estimulo": "medio"
+  },
+  {
+   "id": "e012",
+   "de": "t_s0",
+   "para": "t_sw1",
+   "tipo": "corredor",
+   "estimulo": "medio"
+  },
+  {
+   "id": "e013",
+   "de": "t_sw1",
+   "para": "t_swa",
+   "tipo": "corredor",
+   "estimulo": "medio"
+  },
+  {
+   "id": "e014",
+   "de": "t_swa",
+   "para": "t_sw2",
+   "tipo": "corredor",
+   "estimulo": "medio"
+  },
+  {
+   "id": "e015",
+   "de": "t_swa",
+   "para": "t_al",
+   "tipo": "corredor",
+   "estimulo": "medio"
+  },
+  {
+   "id": "e016",
+   "de": "t_sw2",
+   "para": "t_sw3",
+   "tipo": "corredor",
+   "estimulo": "alto"
+  },
+  {
+   "id": "e017",
+   "de": "t_sw3",
+   "para": "t_esc",
+   "tipo": "corredor",
+   "estimulo": "alto"
+  },
+  {
+   "id": "e018",
+   "de": "t_esc",
+   "para": "t_sw4",
+   "tipo": "corredor",
+   "estimulo": "medio"
+  },
+  {
+   "id": "e019",
+   "de": "t_sw4",
+   "para": "t_renner",
+   "tipo": "corredor",
+   "estimulo": "medio"
+  },
+  {
+   "id": "e020",
+   "de": "t_rsw",
+   "para": "t_sw1",
+   "tipo": "corredor",
+   "estimulo": "medio"
+  },
+  {
+   "id": "e021",
+   "de": "t_s0",
+   "para": "t_se1",
+   "tipo": "corredor",
+   "estimulo": "medio"
+  },
+  {
+   "id": "e022",
+   "de": "t_se1",
+   "para": "t_se2",
+   "tipo": "corredor",
+   "estimulo": "medio"
+  },
+  {
+   "id": "e023",
+   "de": "t_se2",
+   "para": "t_se3",
+   "tipo": "corredor",
+   "estimulo": "medio"
+  },
+  {
+   "id": "e024",
+   "de": "t_se3",
+   "para": "t_se4",
+   "tipo": "corredor",
+   "estimulo": "medio"
+  },
+  {
+   "id": "e025",
+   "de": "t_se4",
+   "para": "t_a7",
+   "tipo": "corredor",
+   "estimulo": "medio"
+  },
+  {
+   "id": "e026",
+   "de": "t_rse",
+   "para": "t_se1",
+   "tipo": "corredor",
+   "estimulo": "medio"
+  },
+  {
+   "id": "e027",
+   "de": "t_rw",
+   "para": "t_nw1",
+   "tipo": "corredor",
+   "estimulo": "medio"
+  },
+  {
+   "id": "e028",
+   "de": "t_nw1",
+   "para": "t_nw2",
+   "tipo": "corredor",
+   "estimulo": "medio"
+  },
+  {
+   "id": "e029",
+   "de": "t_nw2",
+   "para": "t_p3",
+   "tipo": "corredor",
+   "estimulo": "medio"
+  },
+  {
+   "id": "e030",
+   "de": "t_nw2",
+   "para": "t_nw3",
+   "tipo": "corredor",
+   "estimulo": "alto"
+  },
+  {
+   "id": "e031",
+   "de": "t_nw3",
+   "para": "t_nw5",
+   "tipo": "corredor",
+   "estimulo": "medio"
+  },
+  {
+   "id": "e032",
+   "de": "t_nw3",
+   "para": "t_nw4",
+   "tipo": "corredor",
+   "estimulo": "medio"
+  },
+  {
+   "id": "e033",
+   "de": "t_nw4",
+   "para": "t_sw4",
+   "tipo": "corredor",
+   "estimulo": "medio"
+  },
+  {
+   "id": "e034",
+   "de": "t_rnw",
+   "para": "t_sanw1",
+   "tipo": "corredor",
+   "estimulo": "baixo"
+  },
+  {
+   "id": "e035",
+   "de": "t_sanw1",
+   "para": "t_sanw2",
+   "tipo": "corredor",
+   "estimulo": "baixo"
+  },
+  {
+   "id": "e036",
+   "de": "t_se2",
+   "para": "t_sane1",
+   "tipo": "corredor",
+   "estimulo": "baixo"
+  },
+  {
+   "id": "e037",
+   "de": "t_sane1",
+   "para": "t_sane2",
+   "tipo": "corredor",
+   "estimulo": "baixo"
+  },
+  {
+   "id": "e038",
+   "de": "t_rne",
+   "para": "t_e1",
+   "tipo": "corredor",
+   "estimulo": "medio"
+  },
+  {
+   "id": "e039",
+   "de": "t_re",
+   "para": "t_e1",
+   "tipo": "corredor",
+   "estimulo": "medio"
+  },
+  {
+   "id": "e040",
+   "de": "t_e1",
+   "para": "t_e2",
+   "tipo": "corredor",
+   "estimulo": "alto"
+  },
+  {
+   "id": "e041",
+   "de": "t_e2",
+   "para": "t_e3",
+   "tipo": "corredor",
+   "estimulo": "alto"
+  },
+  {
+   "id": "e042",
+   "de": "t_e3",
+   "para": "t_a6",
+   "tipo": "corredor",
+   "estimulo": "medio"
+  },
+  {
+   "id": "e043",
+   "de": "t_pn",
+   "para": "t_a1",
+   "tipo": "corredor",
+   "estimulo": "medio"
+  },
+  {
+   "id": "e044",
+   "de": "t_a1",
+   "para": "t_a2",
+   "tipo": "corredor",
+   "estimulo": "medio"
+  },
+  {
+   "id": "e045",
+   "de": "t_a2",
+   "para": "t_a3",
+   "tipo": "corredor",
+   "estimulo": "medio"
+  },
+  {
+   "id": "e046",
+   "de": "t_a3",
+   "para": "t_a4",
+   "tipo": "corredor",
+   "estimulo": "medio"
+  },
+  {
+   "id": "e047",
+   "de": "t_a4",
+   "para": "t_p2",
+   "tipo": "corredor",
+   "estimulo": "medio"
+  },
+  {
+   "id": "e048",
+   "de": "t_a4",
+   "para": "t_a5",
+   "tipo": "corredor",
+   "estimulo": "medio"
+  },
+  {
+   "id": "e049",
+   "de": "t_a5",
+   "para": "t_a6",
+   "tipo": "corredor",
+   "estimulo": "medio"
+  },
+  {
+   "id": "e050",
+   "de": "t_a6",
+   "para": "t_a7",
+   "tipo": "corredor",
+   "estimulo": "medio"
+  },
+  {
+   "id": "e051",
+   "de": "t_po",
+   "para": "t_elev",
+   "tipo": "corredor",
+   "estimulo": "medio"
+  },
+  {
+   "id": "e052",
+   "de": "p_esc",
+   "para": "p_e",
+   "tipo": "corredor",
+   "estimulo": "medio"
+  },
+  {
+   "id": "e053",
+   "de": "p_e",
+   "para": "p_n1",
+   "tipo": "corredor",
+   "estimulo": "medio"
+  },
+  {
+   "id": "e054",
+   "de": "p_n1",
+   "para": "p_n2",
+   "tipo": "corredor",
+   "estimulo": "alto"
+  },
+  {
+   "id": "e055",
+   "de": "p_n2",
+   "para": "p_n3",
+   "tipo": "corredor",
+   "estimulo": "medio"
+  },
+  {
+   "id": "e056",
+   "de": "p_n3",
+   "para": "p_n4",
+   "tipo": "corredor",
+   "estimulo": "medio"
+  },
+  {
+   "id": "e057",
+   "de": "p_n4",
+   "para": "p_w",
+   "tipo": "corredor",
+   "estimulo": "medio"
+  },
+  {
+   "id": "e058",
+   "de": "p_e",
+   "para": "p_s1",
+   "tipo": "corredor",
+   "estimulo": "medio"
+  },
+  {
+   "id": "e059",
+   "de": "p_s1",
+   "para": "p_s2",
+   "tipo": "corredor",
+   "estimulo": "alto"
+  },
+  {
+   "id": "e060",
+   "de": "p_s2",
+   "para": "p_s3",
+   "tipo": "corredor",
+   "estimulo": "medio"
+  },
+  {
+   "id": "e061",
+   "de": "p_s3",
+   "para": "p_s4",
+   "tipo": "corredor",
+   "estimulo": "medio"
+  },
+  {
+   "id": "e062",
+   "de": "p_s4",
+   "para": "p_w",
+   "tipo": "corredor",
+   "estimulo": "medio"
+  },
+  {
+   "id": "e063",
+   "de": "p_e",
+   "para": "p_c",
+   "tipo": "corredor",
+   "estimulo": "alto"
+  },
+  {
+   "id": "e064",
+   "de": "p_c",
+   "para": "p_n2",
+   "tipo": "corredor",
+   "estimulo": "alto"
+  },
+  {
+   "id": "e065",
+   "de": "p_c",
+   "para": "p_s2",
+   "tipo": "corredor",
+   "estimulo": "alto"
+  },
+  {
+   "id": "e066",
+   "de": "p_c",
+   "para": "p_w",
+   "tipo": "corredor",
+   "estimulo": "alto"
+  },
+  {
+   "id": "e067",
+   "de": "p_w",
+   "para": "p_w2",
+   "tipo": "corredor",
+   "estimulo": "medio"
+  },
+  {
+   "id": "e068",
+   "de": "p_w2",
+   "para": "p_elev",
+   "tipo": "corredor",
+   "estimulo": "medio"
+  },
+  {
+   "id": "e069",
+   "de": "p_n1",
+   "para": "p_wcm",
+   "tipo": "corredor",
+   "estimulo": "baixo"
+  },
+  {
+   "id": "e070",
+   "de": "p_s1",
+   "para": "p_wcf",
+   "tipo": "corredor",
+   "estimulo": "baixo"
+  },
+  {
+   "id": "v_rolante",
+   "de": "t_esc",
+   "para": "p_esc",
+   "tipo": "escada_rolante",
+   "distancia": 18,
+   "descricao": "escadas rolantes",
+   "estimulo": "medio"
+  },
+  {
+   "id": "v_escada",
+   "de": "t_esc",
+   "para": "p_esc",
+   "tipo": "escada",
+   "distancia": 20,
+   "descricao": "escada fixa entre as escadas rolantes",
+   "estimulo": "medio"
+  },
+  {
+   "id": "v_elevador",
+   "de": "t_elev",
+   "para": "p_elev",
+   "tipo": "elevador",
+   "distancia": 30,
+   "descricao": "elevador do acesso oeste (inclui espera)",
+   "estimulo": "medio"
+  }
+ ],
+ "pois": [
+  {
+   "id": "poi_renner",
+   "nome": "Renner",
+   "categoria": "loja",
+   "andar": 0,
+   "x": 44.2,
+   "y": 216.2,
+   "tags": [
+    "âncora",
+    "loja ANCORA 01"
+   ],
+   "loja": "ANCORA 01",
+   "area_m2": 2027.51,
+   "no": "t_renner"
+  },
+  {
+   "id": "poi_resolve_palmas",
+   "nome": "Resolve Palmas",
+   "categoria": "servico",
+   "andar": 0,
+   "x": 65.7,
+   "y": 238.7,
+   "tags": [
+    "loja 06"
+   ],
+   "loja": "06",
+   "area_m2": 176.57,
+   "no": "t_renner"
+  },
+  {
+   "id": "poi_daycambio",
+   "nome": "DayCâmbio",
+   "categoria": "servico",
+   "andar": 0,
+   "x": 69.3,
+   "y": 231.2,
+   "tags": [
+    "loja 05 A"
+   ],
+   "loja": "05 A",
+   "area_m2": 32.0,
+   "no": "t_renner"
+  },
+  {
+   "id": "poi_labvida",
+   "nome": "Labvida",
+   "categoria": "servico",
+   "andar": 0,
+   "x": 69.3,
+   "y": 226.3,
+   "tags": [
+    "loja 05"
+   ],
+   "loja": "05",
+   "area_m2": 48.0,
+   "no": "t_renner"
+  },
+  {
+   "id": "poi_nk_sobrancelhas",
+   "nome": "NK Sobrancelhas",
+   "categoria": "servico",
+   "andar": 0,
+   "x": 69.4,
+   "y": 203.0,
+   "tags": [
+    "loja 04"
+   ],
+   "loja": "04",
+   "area_m2": 40.0,
+   "no": "t_renner"
+  },
+  {
+   "id": "poi_hot_stamp",
+   "nome": "Hot Stamp",
+   "categoria": "loja",
+   "andar": 0,
+   "x": 68.9,
+   "y": 198.0,
+   "tags": [
+    "loja 03"
+   ],
+   "loja": "03",
+   "area_m2": 40.0,
+   "no": "t_renner"
+  },
+  {
+   "id": "poi_casa_do_celular",
+   "nome": "Casa do Celular",
+   "categoria": "loja",
+   "andar": 0,
+   "x": 68.4,
+   "y": 192.0,
+   "tags": [
+    "loja 02-A"
+   ],
+   "loja": "02-A",
+   "area_m2": 34.05,
+   "no": "t_renner"
+  },
+  {
+   "id": "poi_correios",
+   "nome": "Correios",
+   "categoria": "servico",
+   "andar": 0,
+   "x": 68.4,
+   "y": 187.9,
+   "tags": [
+    "loja 02"
+   ],
+   "loja": "02",
+   "area_m2": 46.44,
+   "no": "t_nw5"
+  },
+  {
+   "id": "poi_lemos_pelissari",
+   "nome": "Lemos Pelissari",
+   "categoria": "servico",
+   "andar": 0,
+   "x": 68.7,
+   "y": 177.5,
+   "tags": [
+    "loja 148"
+   ],
+   "loja": "148",
+   "area_m2": 59.56,
+   "no": "t_nw5"
+  },
+  {
+   "id": "poi_polo_wear",
+   "nome": "Polo Wear",
+   "categoria": "loja",
+   "andar": 0,
+   "x": 75.7,
+   "y": 151.2,
+   "tags": [
+    "loja 147"
+   ],
+   "loja": "147",
+   "area_m2": 619.17,
+   "no": "t_nw3"
+  },
+  {
+   "id": "poi_life_by_vivara",
+   "nome": "Life by Vivara",
+   "categoria": "loja",
+   "andar": 0,
+   "x": 94.0,
+   "y": 150.6,
+   "tags": [
+    "loja 145"
+   ],
+   "loja": "145",
+   "area_m2": 103.8,
+   "no": "t_p3"
+  },
+  {
+   "id": "poi_kekala",
+   "nome": "Kekala",
+   "categoria": "alimentacao",
+   "andar": 0,
+   "x": 99.6,
+   "y": 162.1,
+   "tags": [],
+   "no": "t_nw2"
+  },
+  {
+   "id": "poi_we_pink",
+   "nome": "We Pink",
+   "categoria": "loja",
+   "andar": 0,
+   "x": 104.3,
+   "y": 153.1,
+   "tags": [
+    "loja 143"
+   ],
+   "loja": "143",
+   "area_m2": 116.1,
+   "no": "t_p3"
+  },
+  {
+   "id": "poi_havanna",
+   "nome": "Havanna",
+   "categoria": "alimentacao",
+   "andar": 0,
+   "x": 107.6,
+   "y": 162.0,
+   "tags": [],
+   "no": "t_nw2"
+  },
+  {
+   "id": "poi_youcom",
+   "nome": "Youcom",
+   "categoria": "loja",
+   "andar": 0,
+   "x": 125.7,
+   "y": 150.5,
+   "tags": [
+    "loja 141"
+   ],
+   "loja": "141",
+   "area_m2": 311.55,
+   "no": "t_nw1"
+  },
+  {
+   "id": "poi_lez_a_lez",
+   "nome": "Lez a Lez",
+   "categoria": "loja",
+   "andar": 0,
+   "x": 134.5,
+   "y": 152.3,
+   "tags": [
+    "loja 140"
+   ],
+   "loja": "140",
+   "area_m2": 88.5,
+   "no": "t_nw1"
+  },
+  {
+   "id": "poi_colcci",
+   "nome": "Colcci",
+   "categoria": "loja",
+   "andar": 0,
+   "x": 142.0,
+   "y": 148.5,
+   "tags": [
+    "loja 139"
+   ],
+   "loja": "139",
+   "area_m2": 87.4,
+   "no": "t_sanw1"
+  },
+  {
+   "id": "poi_jean_darrot",
+   "nome": "Jean Darrot",
+   "categoria": "loja",
+   "andar": 0,
+   "x": 157.6,
+   "y": 132.6,
+   "tags": [
+    "loja 137"
+   ],
+   "loja": "137",
+   "area_m2": 96.3,
+   "no": "t_sanw1"
+  },
+  {
+   "id": "poi_authentic_feet",
+   "nome": "Authentic Feet",
+   "categoria": "loja",
+   "andar": 0,
+   "x": 164.3,
+   "y": 127.6,
+   "tags": [
+    "loja 135"
+   ],
+   "loja": "135",
+   "area_m2": 91.51,
+   "no": "t_sanw2"
+  },
+  {
+   "id": "poi_c_a",
+   "nome": "C&A",
+   "categoria": "loja",
+   "andar": 0,
+   "x": 182.2,
+   "y": 106.7,
+   "tags": [],
+   "no": "t_rn"
+  },
+  {
+   "id": "poi_riachuelo",
+   "nome": "Riachuelo",
+   "categoria": "loja",
+   "andar": 0,
+   "x": 185.2,
+   "y": 166.4,
+   "tags": [],
+   "no": "t_rn"
+  },
+  {
+   "id": "poi_damyller",
+   "nome": "Damyller",
+   "categoria": "loja",
+   "andar": 0,
+   "x": 93.4,
+   "y": 176.1,
+   "tags": [
+    "loja 86"
+   ],
+   "loja": "86",
+   "area_m2": 124.06,
+   "no": "t_nw3"
+  },
+  {
+   "id": "poi_lupo_sport",
+   "nome": "Lupo Sport",
+   "categoria": "loja",
+   "andar": 0,
+   "x": 101.3,
+   "y": 171.7,
+   "tags": [
+    "loja 88"
+   ],
+   "loja": "88",
+   "area_m2": 57.6,
+   "no": "t_nw2"
+  },
+  {
+   "id": "poi_crocs",
+   "nome": "Crocs",
+   "categoria": "loja",
+   "andar": 0,
+   "x": 107.4,
+   "y": 170.4,
+   "tags": [
+    "loja 89"
+   ],
+   "loja": "89",
+   "area_m2": 40.84,
+   "no": "t_nw2"
+  },
+  {
+   "id": "poi_quem_disse_berenice",
+   "nome": "Quem Disse, Berenice?",
+   "categoria": "loja",
+   "andar": 0,
+   "x": 112.8,
+   "y": 170.2,
+   "tags": [
+    "loja 90"
+   ],
+   "loja": "90",
+   "area_m2": 34.25,
+   "no": "t_nw2"
+  },
+  {
+   "id": "poi_avatim",
+   "nome": "Avatim",
+   "categoria": "loja",
+   "andar": 0,
+   "x": 117.7,
+   "y": 170.3,
+   "tags": [
+    "loja 91"
+   ],
+   "loja": "91",
+   "area_m2": 31.92,
+   "no": "t_nw1"
+  },
+  {
+   "id": "poi_levins",
+   "nome": "Levi's",
+   "categoria": "loja",
+   "andar": 0,
+   "x": 137.2,
+   "y": 171.7,
+   "tags": [
+    "loja 93"
+   ],
+   "loja": "93",
+   "area_m2": 101.88,
+   "no": "t_rw"
+  },
+  {
+   "id": "poi_milon",
+   "nome": "Milon",
+   "categoria": "loja",
+   "andar": 0,
+   "x": 153.4,
+   "y": 162.8,
+   "tags": [
+    "loja 97"
+   ],
+   "loja": "97",
+   "area_m2": 50.88,
+   "no": "t_rw"
+  },
+  {
+   "id": "poi_babi_fitness_praia",
+   "nome": "Babi Fitness & Praia",
+   "categoria": "loja",
+   "andar": 0,
+   "x": 157.3,
+   "y": 159.5,
+   "tags": [
+    "loja 98"
+   ],
+   "loja": "98",
+   "area_m2": 50.97,
+   "no": "t_rnw"
+  },
+  {
+   "id": "poi_schutz",
+   "nome": "Schutz",
+   "categoria": "loja",
+   "andar": 0,
+   "x": 161.6,
+   "y": 155.8,
+   "tags": [
+    "loja 99"
+   ],
+   "loja": "99",
+   "area_m2": 73.1,
+   "no": "t_rnw"
+  },
+  {
+   "id": "poi_sestini",
+   "nome": "Sestini",
+   "categoria": "loja",
+   "andar": 0,
+   "x": 206.6,
+   "y": 156.1,
+   "tags": [
+    "loja 102"
+   ],
+   "loja": "102",
+   "area_m2": 74.18,
+   "no": "t_rne"
+  },
+  {
+   "id": "poi_track_field",
+   "nome": "Track&Field",
+   "categoria": "loja",
+   "andar": 0,
+   "x": 212.0,
+   "y": 159.8,
+   "tags": [
+    "loja 103"
+   ],
+   "loja": "103",
+   "area_m2": 50.83,
+   "no": "t_rne"
+  },
+  {
+   "id": "poi_brooksfield",
+   "nome": "Brooksfield",
+   "categoria": "loja",
+   "andar": 0,
+   "x": 228.6,
+   "y": 172.3,
+   "tags": [
+    "loja 104"
+   ],
+   "loja": "104",
+   "area_m2": 364.0,
+   "no": "t_re"
+  },
+  {
+   "id": "poi_kings_sneakers",
+   "nome": "Kings Sneakers",
+   "categoria": "loja",
+   "andar": 0,
+   "x": 200.0,
+   "y": 127.1,
+   "tags": [
+    "loja 134"
+   ],
+   "loja": "134",
+   "area_m2": 54.99,
+   "no": "t_rn"
+  },
+  {
+   "id": "poi_democrata",
+   "nome": "Democrata",
+   "categoria": "loja",
+   "andar": 0,
+   "x": 204.2,
+   "y": 130.4,
+   "tags": [
+    "loja 133"
+   ],
+   "loja": "133",
+   "area_m2": 62.13,
+   "no": "t_rne"
+  },
+  {
+   "id": "poi_cia_do_verao",
+   "nome": "Cia do Verão",
+   "categoria": "loja",
+   "andar": 0,
+   "x": 213.7,
+   "y": 134.5,
+   "tags": [
+    "loja 131"
+   ],
+   "loja": "131",
+   "area_m2": 54.99,
+   "no": "t_rne"
+  },
+  {
+   "id": "poi_leitura",
+   "nome": "Leitura",
+   "categoria": "loja",
+   "andar": 0,
+   "x": 225.3,
+   "y": 134.4,
+   "tags": [
+    "loja 141A"
+   ],
+   "loja": "141A",
+   "area_m2": 500.0,
+   "no": "t_rne"
+  },
+  {
+   "id": "poi_clube_morena_rosa",
+   "nome": "Clube Morena Rosa",
+   "categoria": "loja",
+   "andar": 0,
+   "x": 227.9,
+   "y": 147.8,
+   "tags": [
+    "loja 129"
+   ],
+   "loja": "129",
+   "area_m2": 90.78,
+   "no": "t_e1"
+  },
+  {
+   "id": "poi_lnessence",
+   "nome": "L'essence",
+   "categoria": "loja",
+   "andar": 0,
+   "x": 231.8,
+   "y": 151.9,
+   "tags": [
+    "loja 128"
+   ],
+   "loja": "128",
+   "area_m2": 65.18,
+   "no": "t_e1"
+  },
+  {
+   "id": "poi_ellus",
+   "nome": "Ellus",
+   "categoria": "loja",
+   "andar": 0,
+   "x": 264.7,
+   "y": 151.8,
+   "tags": [
+    "loja 123"
+   ],
+   "loja": "123",
+   "area_m2": 77.4,
+   "no": "t_e3"
+  },
+  {
+   "id": "poi_morofit",
+   "nome": "Morofit",
+   "categoria": "lazer",
+   "andar": 0,
+   "x": 313.4,
+   "y": 31.0,
+   "tags": [
+    "âncora",
+    "loja PC01A"
+   ],
+   "loja": "PC01A",
+   "area_m2": 1280.14,
+   "no": "t_a1"
+  },
+  {
+   "id": "poi_wow_park",
+   "nome": "Wow Park",
+   "categoria": "lazer",
+   "andar": 0,
+   "x": 320.6,
+   "y": 50.0,
+   "tags": [
+    "âncora",
+    "loja PC01B"
+   ],
+   "loja": "PC01B",
+   "area_m2": 1085.04,
+   "no": "t_a1"
+  },
+  {
+   "id": "poi_super_big",
+   "nome": "Super Big",
+   "categoria": "loja",
+   "andar": 0,
+   "x": 329.6,
+   "y": 68.8,
+   "tags": [
+    "âncora",
+    "loja PC 001C"
+   ],
+   "loja": "PC 001C",
+   "area_m2": 1070.7,
+   "no": "t_a1"
+  },
+  {
+   "id": "poi_zig_zag_play",
+   "nome": "Zig Zag Play",
+   "categoria": "lazer",
+   "andar": 0,
+   "x": 324.4,
+   "y": 90.2,
+   "tags": [
+    "âncora",
+    "loja PC 02"
+   ],
+   "loja": "PC 02",
+   "area_m2": 1317.0,
+   "no": "t_a2"
+  },
+  {
+   "id": "poi_big_lar",
+   "nome": "Big Lar",
+   "categoria": "loja",
+   "andar": 0,
+   "x": 323.0,
+   "y": 110.4,
+   "tags": [
+    "âncora",
+    "loja PC 03"
+   ],
+   "loja": "PC 03",
+   "area_m2": 1317.0,
+   "no": "t_a3"
+  },
+  {
+   "id": "poi_pernambucanas",
+   "nome": "Pernambucanas",
+   "categoria": "loja",
+   "andar": 0,
+   "x": 320.2,
+   "y": 129.6,
+   "tags": [
+    "âncora",
+    "loja PC 04"
+   ],
+   "loja": "PC 04",
+   "area_m2": 1324.62,
+   "no": "t_a4"
+  },
+  {
+   "id": "poi_lojas_avenida",
+   "nome": "Lojas Avenida",
+   "categoria": "loja",
+   "andar": 0,
+   "x": 321.7,
+   "y": 146.5,
+   "tags": [
+    "âncora",
+    "loja PC 05"
+   ],
+   "loja": "PC 05",
+   "area_m2": 968.67,
+   "no": "t_a5"
+  },
+  {
+   "id": "poi_stz",
+   "nome": "STZ",
+   "categoria": "loja",
+   "andar": 0,
+   "x": 322.2,
+   "y": 162.1,
+   "tags": [
+    "âncora",
+    "loja PC 06"
+   ],
+   "loja": "PC 06",
+   "area_m2": 967.7,
+   "no": "t_a6"
+  },
+  {
+   "id": "poi_usaflex",
+   "nome": "Usaflex",
+   "categoria": "loja",
+   "andar": 0,
+   "x": 251.4,
+   "y": 170.6,
+   "tags": [
+    "loja 110"
+   ],
+   "loja": "110",
+   "area_m2": 56.0,
+   "no": "t_e2"
+  },
+  {
+   "id": "poi_chiquinho_sorvetes",
+   "nome": "Chiquinho Sorvetes",
+   "categoria": "alimentacao",
+   "andar": 0,
+   "x": 273.1,
+   "y": 170.9,
+   "tags": [
+    "loja 114A"
+   ],
+   "loja": "114A",
+   "area_m2": 30.41,
+   "no": "t_e3"
+  },
+  {
+   "id": "poi_amandans_make",
+   "nome": "Amanda's Make",
+   "categoria": "loja",
+   "andar": 0,
+   "x": 274.2,
+   "y": 177.1,
+   "tags": [
+    "loja 114-B"
+   ],
+   "loja": "114-B",
+   "area_m2": 49.93,
+   "no": "t_e3"
+  },
+  {
+   "id": "poi_burger_king",
+   "nome": "Burger King",
+   "categoria": "alimentacao",
+   "andar": 0,
+   "x": 300.0,
+   "y": 175.8,
+   "tags": [
+    "loja PC 07"
+   ],
+   "loja": "PC 07",
+   "area_m2": 191.35,
+   "no": "t_a6"
+  },
+  {
+   "id": "poi_lady_lord",
+   "nome": "Lady&Lord",
+   "categoria": "loja",
+   "andar": 0,
+   "x": 272.6,
+   "y": 185.7,
+   "tags": [
+    "loja 47"
+   ],
+   "loja": "47",
+   "area_m2": 229.9,
+   "no": "t_e3"
+  },
+  {
+   "id": "poi_chilli_beans",
+   "nome": "Chilli Beans",
+   "categoria": "loja",
+   "andar": 0,
+   "x": 277.0,
+   "y": 197.8,
+   "tags": [
+    "loja 48A"
+   ],
+   "loja": "48A",
+   "area_m2": 35.0,
+   "no": "t_a7"
+  },
+  {
+   "id": "poi_nathalia_fraga",
+   "nome": "Nathalia Fraga",
+   "categoria": "loja",
+   "andar": 0,
+   "x": 292.9,
+   "y": 186.8,
+   "tags": [
+    "loja 46"
+   ],
+   "loja": "46",
+   "area_m2": 40.0,
+   "no": "t_a7"
+  },
+  {
+   "id": "poi_vitoria_geek",
+   "nome": "Vitória Geek",
+   "categoria": "loja",
+   "andar": 0,
+   "x": 292.8,
+   "y": 207.9,
+   "tags": [
+    "loja 43"
+   ],
+   "loja": "43",
+   "area_m2": 25.0,
+   "no": "t_a7"
+  },
+  {
+   "id": "poi_cs_club",
+   "nome": "CS Club",
+   "categoria": "loja",
+   "andar": 0,
+   "x": 277.5,
+   "y": 204.3,
+   "tags": [
+    "loja 49"
+   ],
+   "loja": "49",
+   "area_m2": 60.0,
+   "no": "t_a7"
+  },
+  {
+   "id": "poi_sapatinho_de_luxo",
+   "nome": "Sapatinho de Luxo",
+   "categoria": "loja",
+   "andar": 0,
+   "x": 270.0,
+   "y": 204.5,
+   "tags": [
+    "loja 50"
+   ],
+   "loja": "50",
+   "area_m2": 90.08,
+   "no": "t_se3"
+  },
+  {
+   "id": "poi_puket",
+   "nome": "Puket",
+   "categoria": "loja",
+   "andar": 0,
+   "x": 263.0,
+   "y": 206.4,
+   "tags": [
+    "loja 52"
+   ],
+   "loja": "52",
+   "area_m2": 37.07,
+   "no": "t_se3"
+  },
+  {
+   "id": "poi_hering",
+   "nome": "Hering",
+   "categoria": "loja",
+   "andar": 0,
+   "x": 253.6,
+   "y": 201.3,
+   "tags": [
+    "loja 53"
+   ],
+   "loja": "53",
+   "area_m2": 384.1,
+   "no": "t_sane1"
+  },
+  {
+   "id": "poi_hope",
+   "nome": "Hope",
+   "categoria": "loja",
+   "andar": 0,
+   "x": 246.0,
+   "y": 207.2,
+   "tags": [
+    "loja 54"
+   ],
+   "loja": "54",
+   "area_m2": 42.39,
+   "no": "t_sane1"
+  },
+  {
+   "id": "poi_footwear_shop",
+   "nome": "Footwear Shop",
+   "categoria": "loja",
+   "andar": 0,
+   "x": 241.0,
+   "y": 206.7,
+   "tags": [
+    "loja 55"
+   ],
+   "loja": "55",
+   "area_m2": 46.02,
+   "no": "t_sane1"
+  },
+  {
+   "id": "poi_constance",
+   "nome": "Constance",
+   "categoria": "loja",
+   "andar": 0,
+   "x": 232.3,
+   "y": 206.2,
+   "tags": [
+    "loja 56"
+   ],
+   "loja": "56",
+   "area_m2": 101.97,
+   "no": "t_sane1"
+  },
+  {
+   "id": "poi_dudalina",
+   "nome": "Dudalina",
+   "categoria": "loja",
+   "andar": 0,
+   "x": 225.9,
+   "y": 206.6,
+   "tags": [
+    "loja 57"
+   ],
+   "loja": "57",
+   "area_m2": 78.45,
+   "no": "t_sane1"
+  },
+  {
+   "id": "poi_bibi",
+   "nome": "Bibi",
+   "categoria": "loja",
+   "andar": 0,
+   "x": 221.1,
+   "y": 208.3,
+   "tags": [
+    "loja 58"
+   ],
+   "loja": "58",
+   "area_m2": 44.07,
+   "no": "t_se1"
+  },
+  {
+   "id": "poi_rommanel",
+   "nome": "Rommanel",
+   "categoria": "loja",
+   "andar": 0,
+   "x": 204.8,
+   "y": 195.4,
+   "tags": [
+    "loja 62"
+   ],
+   "loja": "62",
+   "area_m2": 50.0,
+   "no": "t_rse"
+  },
+  {
+   "id": "poi_tip_top",
+   "nome": "Tip Top",
+   "categoria": "loja",
+   "andar": 0,
+   "x": 200.5,
+   "y": 192.1,
+   "tags": [
+    "loja 63"
+   ],
+   "loja": "63",
+   "area_m2": 50.0,
+   "no": "t_rse"
+  },
+  {
+   "id": "poi_natura",
+   "nome": "Natura",
+   "categoria": "loja",
+   "andar": 0,
+   "x": 196.5,
+   "y": 188.5,
+   "tags": [
+    "loja 64"
+   ],
+   "loja": "64",
+   "area_m2": 50.0,
+   "no": "t_rs"
+  },
+  {
+   "id": "poi_luz_da_lua",
+   "nome": "Luz da Lua",
+   "categoria": "loja",
+   "andar": 0,
+   "x": 171.1,
+   "y": 188.1,
+   "tags": [
+    "loja 65"
+   ],
+   "loja": "65",
+   "area_m2": 50.0,
+   "no": "t_rsw"
+  },
+  {
+   "id": "poi_mahogany",
+   "nome": "Mahogany",
+   "categoria": "loja",
+   "andar": 0,
+   "x": 168.1,
+   "y": 192.1,
+   "tags": [
+    "loja 66"
+   ],
+   "loja": "66",
+   "area_m2": 50.0,
+   "no": "t_rsw"
+  },
+  {
+   "id": "poi_scamboo",
+   "nome": "Scamboo",
+   "categoria": "loja",
+   "andar": 0,
+   "x": 162.8,
+   "y": 194.1,
+   "tags": [
+    "loja 67"
+   ],
+   "loja": "67",
+   "area_m2": 50.0,
+   "no": "t_rsw"
+  },
+  {
+   "id": "poi_lupo",
+   "nome": "Lupo",
+   "categoria": "loja",
+   "andar": 0,
+   "x": 158.4,
+   "y": 196.9,
+   "tags": [
+    "loja 68"
+   ],
+   "loja": "68",
+   "area_m2": 49.8,
+   "no": "t_rsw"
+  },
+  {
+   "id": "poi_live",
+   "nome": "Live!",
+   "categoria": "loja",
+   "andar": 0,
+   "x": 154.7,
+   "y": 199.8,
+   "tags": [
+    "loja 69"
+   ],
+   "loja": "69",
+   "area_m2": 50.0,
+   "no": "t_rsw"
+  },
+  {
+   "id": "poi_criamigos",
+   "nome": "Criamigos",
+   "categoria": "loja",
+   "andar": 0,
+   "x": 142.8,
+   "y": 210.5,
+   "tags": [
+    "loja 71"
+   ],
+   "loja": "71",
+   "area_m2": 45.4,
+   "no": "t_swa"
+  },
+  {
+   "id": "poi_cacau_show",
+   "nome": "Cacau Show",
+   "categoria": "alimentacao",
+   "andar": 0,
+   "x": 132.3,
+   "y": 210.2,
+   "tags": [
+    "loja 73"
+   ],
+   "loja": "73",
+   "area_m2": 40.0,
+   "no": "t_sw2"
+  },
+  {
+   "id": "poi_berryns",
+   "nome": "Berry's",
+   "categoria": "alimentacao",
+   "andar": 0,
+   "x": 127.7,
+   "y": 210.2,
+   "tags": [
+    "loja 74"
+   ],
+   "loja": "74",
+   "area_m2": 50.0,
+   "no": "t_sw2"
+  },
+  {
+   "id": "poi_ri_happy",
+   "nome": "Ri Happy",
+   "categoria": "loja",
+   "andar": 0,
+   "x": 117.6,
+   "y": 194.3,
+   "tags": [
+    "loja 75"
+   ],
+   "loja": "75",
+   "area_m2": 499.31,
+   "no": "t_sw3"
+  },
+  {
+   "id": "poi_camisaria_fmw",
+   "nome": "Camisaria FMW",
+   "categoria": "loja",
+   "andar": 0,
+   "x": 107.8,
+   "y": 204.1,
+   "tags": [
+    "loja 76"
+   ],
+   "loja": "76",
+   "area_m2": 57.51,
+   "no": "t_sw3"
+  },
+  {
+   "id": "poi_bagaggio",
+   "nome": "Bagaggio",
+   "categoria": "loja",
+   "andar": 0,
+   "x": 101.8,
+   "y": 203.0,
+   "tags": [
+    "loja 77"
+   ],
+   "loja": "77",
+   "area_m2": 65.45,
+   "no": "t_sw3"
+  },
+  {
+   "id": "poi_txc",
+   "nome": "TXC",
+   "categoria": "loja",
+   "andar": 0,
+   "x": 95.8,
+   "y": 201.2,
+   "tags": [
+    "loja 78"
+   ],
+   "loja": "78",
+   "area_m2": 56.76,
+   "no": "t_sw4"
+  },
+  {
+   "id": "poi_oticas_carol",
+   "nome": "Óticas Carol",
+   "categoria": "loja",
+   "andar": 0,
+   "x": 90.8,
+   "y": 201.1,
+   "tags": [
+    "loja 79"
+   ],
+   "loja": "79",
+   "area_m2": 52.55,
+   "no": "t_sw4"
+  },
+  {
+   "id": "poi_botoclinic",
+   "nome": "Botoclinic",
+   "categoria": "servico",
+   "andar": 0,
+   "x": 85.8,
+   "y": 201.2,
+   "tags": [
+    "loja 80"
+   ],
+   "loja": "80",
+   "area_m2": 50.59,
+   "no": "t_sw4"
+  },
+  {
+   "id": "poi_detran_to",
+   "nome": "Detran-TO",
+   "categoria": "servico",
+   "andar": 0,
+   "x": 97.1,
+   "y": 192.2,
+   "tags": [
+    "loja 81"
+   ],
+   "loja": "81",
+   "area_m2": 135.81,
+   "no": "t_nw4"
+  },
+  {
+   "id": "poi_policia_federal",
+   "nome": "Polícia Federal",
+   "categoria": "servico",
+   "andar": 0,
+   "x": 98.6,
+   "y": 184.8,
+   "tags": [
+    "loja 81"
+   ],
+   "loja": "81",
+   "area_m2": 291.53,
+   "no": "t_nw4"
+  },
+  {
+   "id": "poi_drogarias_economica",
+   "nome": "Drogarias Econômica",
+   "categoria": "loja",
+   "andar": 0,
+   "x": 83.9,
+   "y": 239.8,
+   "tags": [
+    "loja 08"
+   ],
+   "loja": "08",
+   "area_m2": 96.7,
+   "no": "t_sw4"
+  },
+  {
+   "id": "poi_vivo",
+   "nome": "Vivo",
+   "categoria": "loja",
+   "andar": 0,
+   "x": 90.8,
+   "y": 239.8,
+   "tags": [
+    "loja 09"
+   ],
+   "loja": "09",
+   "area_m2": 51.01,
+   "no": "t_sw3"
+  },
+  {
+   "id": "poi_claro",
+   "nome": "Claro",
+   "categoria": "loja",
+   "andar": 0,
+   "x": 96.0,
+   "y": 239.5,
+   "tags": [
+    "loja 10"
+   ],
+   "loja": "10",
+   "area_m2": 53.02,
+   "no": "t_sw3"
+  },
+  {
+   "id": "poi_centauro",
+   "nome": "Centauro",
+   "categoria": "loja",
+   "andar": 0,
+   "x": 116.1,
+   "y": 248.0,
+   "tags": [
+    "âncora",
+    "loja ANCORA 05"
+   ],
+   "loja": "ANCORA 05",
+   "area_m2": 871.76,
+   "no": "t_al"
+  },
+  {
+   "id": "poi_aleatory",
+   "nome": "Aleatory",
+   "categoria": "loja",
+   "andar": 0,
+   "x": 117.8,
+   "y": 233.2,
+   "tags": [
+    "loja 12"
+   ],
+   "loja": "12",
+   "area_m2": 63.72,
+   "no": "t_sw3"
+  },
+  {
+   "id": "poi_inovar",
+   "nome": "Inovar",
+   "categoria": "loja",
+   "andar": 0,
+   "x": 128.3,
+   "y": 231.2,
+   "tags": [
+    "loja 13"
+   ],
+   "loja": "13",
+   "area_m2": 212.48,
+   "no": "t_sw2"
+  },
+  {
+   "id": "poi_anacapri",
+   "nome": "Anacapri",
+   "categoria": "loja",
+   "andar": 0,
+   "x": 137.8,
+   "y": 231.1,
+   "tags": [
+    "loja 16"
+   ],
+   "loja": "16",
+   "area_m2": 49.8,
+   "no": "t_sw2"
+  },
+  {
+   "id": "poi_loungerie",
+   "nome": "Loungerie",
+   "categoria": "loja",
+   "andar": 0,
+   "x": 142.3,
+   "y": 230.9,
+   "tags": [
+    "loja 17"
+   ],
+   "loja": "17",
+   "area_m2": 44.0,
+   "no": "t_al"
+  },
+  {
+   "id": "poi_farm",
+   "nome": "Farm",
+   "categoria": "loja",
+   "andar": 0,
+   "x": 149.6,
+   "y": 229.9,
+   "tags": [
+    "loja 18"
+   ],
+   "loja": "18",
+   "area_m2": 122.33,
+   "no": "t_swa"
+  },
+  {
+   "id": "poi_aramis",
+   "nome": "Aramis",
+   "categoria": "loja",
+   "andar": 0,
+   "x": 161.3,
+   "y": 222.0,
+   "tags": [
+    "loja 19"
+   ],
+   "loja": "19",
+   "area_m2": 102.0,
+   "no": "t_sw1"
+  },
+  {
+   "id": "poi_camicado",
+   "nome": "Camicado",
+   "categoria": "loja",
+   "andar": 0,
+   "x": 168.8,
+   "y": 231.1,
+   "tags": [
+    "loja 20"
+   ],
+   "loja": "20",
+   "area_m2": 515.63,
+   "no": "t_sw1"
+  },
+  {
+   "id": "poi_outback",
+   "nome": "Outback",
+   "categoria": "alimentacao",
+   "andar": 0,
+   "x": 201.2,
+   "y": 230.1,
+   "tags": [
+    "loja 32"
+   ],
+   "loja": "32",
+   "area_m2": 499.33,
+   "no": "t_se1"
+  },
+  {
+   "id": "poi_vivara",
+   "nome": "Vivara",
+   "categoria": "loja",
+   "andar": 0,
+   "x": 194.4,
+   "y": 217.9,
+   "tags": [
+    "loja 29"
+   ],
+   "loja": "29",
+   "area_m2": 79.4,
+   "no": "t_s0"
+  },
+  {
+   "id": "poi_adcos",
+   "nome": "Adcos",
+   "categoria": "loja",
+   "andar": 0,
+   "x": 200.9,
+   "y": 218.0,
+   "tags": [
+    "loja 30"
+   ],
+   "loja": "30",
+   "area_m2": 40.67,
+   "no": "t_se1"
+  },
+  {
+   "id": "poi_reserva",
+   "nome": "Reserva",
+   "categoria": "loja",
+   "andar": 0,
+   "x": 218.1,
+   "y": 229.6,
+   "tags": [
+    "loja 33"
+   ],
+   "loja": "33",
+   "area_m2": 90.0,
+   "no": "t_se1"
+  },
+  {
+   "id": "poi_lnessence_lingerie",
+   "nome": "L'essence Lingerie",
+   "categoria": "loja",
+   "andar": 0,
+   "x": 231.0,
+   "y": 230.1,
+   "tags": [
+    "loja 35"
+   ],
+   "loja": "35",
+   "area_m2": 59.0,
+   "no": "t_se2"
+  },
+  {
+   "id": "poi_kopenhagen",
+   "nome": "Kopenhagen",
+   "categoria": "alimentacao",
+   "andar": 0,
+   "x": 236.3,
+   "y": 229.8,
+   "tags": [
+    "loja 36"
+   ],
+   "loja": "36",
+   "area_m2": 45.0,
+   "no": "t_se2"
+  },
+  {
+   "id": "poi_oficial",
+   "nome": "Oficial",
+   "categoria": "loja",
+   "andar": 0,
+   "x": 241.1,
+   "y": 229.9,
+   "tags": [
+    "loja 37"
+   ],
+   "loja": "37",
+   "area_m2": 49.8,
+   "no": "t_se2"
+  },
+  {
+   "id": "poi_carterns",
+   "nome": "Carter's",
+   "categoria": "loja",
+   "andar": 0,
+   "x": 252.5,
+   "y": 229.6,
+   "tags": [
+    "loja 39"
+   ],
+   "loja": "39",
+   "area_m2": 80.0,
+   "no": "t_se3"
+  },
+  {
+   "id": "poi_db_gelato",
+   "nome": "DB Gelato",
+   "categoria": "alimentacao",
+   "andar": 0,
+   "x": 258.5,
+   "y": 230.0,
+   "tags": [
+    "loja 39 A"
+   ],
+   "loja": "39 A",
+   "area_m2": 39.8,
+   "no": "t_se3"
+  },
+  {
+   "id": "poi_havaianas",
+   "nome": "Havaianas",
+   "categoria": "loja",
+   "andar": 0,
+   "x": 262.5,
+   "y": 230.3,
+   "tags": [
+    "loja 40"
+   ],
+   "loja": "40",
+   "area_m2": 39.91,
+   "no": "t_se3"
+  },
+  {
+   "id": "poi_marisa",
+   "nome": "Marisa",
+   "categoria": "loja",
+   "andar": 0,
+   "x": 266.1,
+   "y": 244.8,
+   "tags": [
+    "âncora",
+    "loja ANCORA 03"
+   ],
+   "loja": "ANCORA 03",
+   "area_m2": 1319.52,
+   "no": "t_se3"
+  },
+  {
+   "id": "poi_melissa",
+   "nome": "Melissa",
+   "categoria": "loja",
+   "andar": 0,
+   "x": 283.0,
+   "y": 231.1,
+   "tags": [
+    "loja 41"
+   ],
+   "loja": "41",
+   "area_m2": 49.91,
+   "no": "t_se4"
+  },
+  {
+   "id": "poi_tim",
+   "nome": "TIM",
+   "categoria": "loja",
+   "andar": 0,
+   "x": 288.0,
+   "y": 231.2,
+   "tags": [
+    "loja 42"
+   ],
+   "loja": "42",
+   "area_m2": 50.76,
+   "no": "t_se4"
+  },
+  {
+   "id": "poi_cinemark",
+   "nome": "Cinemark",
+   "categoria": "lazer",
+   "andar": 0,
+   "x": 320.2,
+   "y": 209.9,
+   "tags": [],
+   "no": "t_a7"
+  },
+  {
+   "id": "poi_colegio_interauao",
+   "nome": "Colégio Interação",
+   "categoria": "servico",
+   "andar": 0,
+   "x": 254.7,
+   "y": 185.9,
+   "tags": [
+    "loja 53A"
+   ],
+   "loja": "53A",
+   "area_m2": 299.58,
+   "no": "t_e2"
+  },
+  {
+   "id": "poi_madero",
+   "nome": "Madero",
+   "categoria": "alimentacao",
+   "andar": 0,
+   "x": 224.5,
+   "y": 243.7,
+   "tags": [],
+   "no": "t_se2"
+  },
+  {
+   "id": "poi_pronto_fibra",
+   "nome": "Pronto Fibra",
+   "categoria": "servico",
+   "andar": 0,
+   "x": 231.9,
+   "y": 162.3,
+   "tags": [
+    "loja 128"
+   ],
+   "loja": "128",
+   "area_m2": 65.18,
+   "no": "t_e1"
+  },
+  {
+   "id": "poi_use_ao",
+   "nome": "Use AO",
+   "categoria": "loja",
+   "andar": 0,
+   "x": 239.5,
+   "y": 162.2,
+   "tags": [
+    "loja 127"
+   ],
+   "loja": "127",
+   "area_m2": 50.81,
+   "no": "t_e1"
+  },
+  {
+   "id": "poi_tommy_hilfiger",
+   "nome": "Tommy Hilfiger",
+   "categoria": "loja",
+   "andar": 0,
+   "x": 112.8,
+   "y": 150.3,
+   "tags": [
+    "loja 143"
+   ],
+   "loja": "143",
+   "area_m2": 116.1,
+   "no": "t_p3"
+  },
+  {
+   "id": "poi_omoda_jaecoo",
+   "nome": "Omoda | Jaecoo",
+   "categoria": "loja",
+   "andar": 0,
+   "x": 68.8,
+   "y": 169.3,
+   "tags": [
+    "loja 148-A"
+   ],
+   "loja": "148-A",
+   "area_m2": 143.5,
+   "no": "t_nw5"
+  },
+  {
+   "id": "poi_drogasil",
+   "nome": "Drogasil",
+   "categoria": "loja",
+   "andar": 0,
+   "x": 218.7,
+   "y": 198.1,
+   "tags": [],
+   "no": "t_rse"
+  },
+  {
+   "id": "poi_stilo",
+   "nome": "Stilo",
+   "categoria": "loja",
+   "andar": 0,
+   "x": 139.5,
+   "y": 196.3,
+   "tags": [
+    "loja 70"
+   ],
+   "loja": "70",
+   "area_m2": 699.65,
+   "no": "t_rsw"
+  },
+  {
+   "id": "poi_fuel",
+   "nome": "Fuel",
+   "categoria": "loja",
+   "andar": 0,
+   "x": 197.5,
+   "y": 147.5,
+   "tags": [
+    "loja 101 A"
+   ],
+   "loja": "101 A",
+   "area_m2": 28.65,
+   "no": "t_rne"
+  },
+  {
+   "id": "poi_bistro_81",
+   "nome": "Bistrô 81",
+   "categoria": "alimentacao",
+   "andar": 0,
+   "x": 80.5,
+   "y": 220.2,
+   "tags": [],
+   "no": "t_sw4"
+  },
+  {
+   "id": "poi_andabella",
+   "nome": "Andabella",
+   "categoria": "loja",
+   "andar": 0,
+   "x": 137.3,
+   "y": 210.4,
+   "tags": [
+    "loja 72"
+   ],
+   "loja": "72",
+   "area_m2": 60.0,
+   "no": "t_sw2"
+  },
+  {
+   "id": "poi_mcdonaldns",
+   "nome": "McDonald's",
+   "categoria": "alimentacao",
+   "andar": 1,
+   "x": 37.2,
+   "y": 15.6,
+   "tags": [
+    "loja 214"
+   ],
+   "loja": "214",
+   "area_m2": 161.69,
+   "no": "p_n3"
+  },
+  {
+   "id": "poi_spoleto",
+   "nome": "Spoleto",
+   "categoria": "alimentacao",
+   "andar": 1,
+   "x": 45.1,
+   "y": 15.3,
+   "tags": [
+    "loja 213"
+   ],
+   "loja": "213",
+   "area_m2": 53.38,
+   "no": "p_n3"
+  },
+  {
+   "id": "poi_pizza_hut",
+   "nome": "Pizza Hut",
+   "categoria": "alimentacao",
+   "andar": 1,
+   "x": 49.5,
+   "y": 14.8,
+   "tags": [
+    "loja 212"
+   ],
+   "loja": "212",
+   "area_m2": 37.25,
+   "no": "p_n2"
+  },
+  {
+   "id": "poi_vivenda_do_camarao",
+   "nome": "Vivenda do Camarão",
+   "categoria": "alimentacao",
+   "andar": 1,
+   "x": 53.8,
+   "y": 15.4,
+   "tags": [
+    "loja 211"
+   ],
+   "loja": "211",
+   "area_m2": 35.44,
+   "no": "p_n2"
+  },
+  {
+   "id": "poi_dona_maria_express",
+   "nome": "Dona Maria Express",
+   "categoria": "alimentacao",
+   "andar": 1,
+   "x": 58.0,
+   "y": 14.6,
+   "tags": [
+    "loja 210"
+   ],
+   "loja": "210",
+   "area_m2": 32.55,
+   "no": "p_wcm"
+  },
+  {
+   "id": "poi_divino_fogao",
+   "nome": "Divino Fogão",
+   "categoria": "alimentacao",
+   "andar": 1,
+   "x": 63.5,
+   "y": 14.5,
+   "tags": [
+    "loja 209"
+   ],
+   "loja": "209",
+   "area_m2": 57.43,
+   "no": "p_wcm"
+  },
+  {
+   "id": "poi_express_grill",
+   "nome": "Express Grill",
+   "categoria": "alimentacao",
+   "andar": 1,
+   "x": 63.9,
+   "y": 50.8,
+   "tags": [
+    "loja 207"
+   ],
+   "loja": "207",
+   "area_m2": 39.44,
+   "no": "p_wcf"
+  },
+  {
+   "id": "poi_subway",
+   "nome": "Subway",
+   "categoria": "alimentacao",
+   "andar": 1,
+   "x": 57.9,
+   "y": 50.6,
+   "tags": [
+    "loja 206"
+   ],
+   "loja": "206",
+   "area_m2": 27.88,
+   "no": "p_s2"
+  },
+  {
+   "id": "poi_spaguettinni",
+   "nome": "Spaguettinni",
+   "categoria": "alimentacao",
+   "andar": 1,
+   "x": 49.6,
+   "y": 50.5,
+   "tags": [
+    "loja 204"
+   ],
+   "loja": "204",
+   "area_m2": 38.11,
+   "no": "p_s2"
+  },
+  {
+   "id": "poi_giraffas",
+   "nome": "Giraffas",
+   "categoria": "alimentacao",
+   "andar": 1,
+   "x": 39.1,
+   "y": 49.2,
+   "tags": [
+    "loja 202"
+   ],
+   "loja": "202",
+   "area_m2": 65.41,
+   "no": "p_s3"
+  },
+  {
+   "id": "poi_kin_sui",
+   "nome": "Kin Sui",
+   "categoria": "alimentacao",
+   "andar": 1,
+   "x": 33.4,
+   "y": 44.8,
+   "tags": [
+    "loja 201"
+   ],
+   "loja": "201",
+   "area_m2": 80.69,
+   "no": "p_s4"
+  },
+  {
+   "id": "poi_q_chopp_brahma",
+   "nome": "Chopp Brahma",
+   "categoria": "alimentacao",
+   "andar": 0,
+   "x": 93.9,
+   "y": 223.1,
+   "tags": [
+    "quiosque",
+    "Q2B"
+   ],
+   "no": "t_sw4"
+  },
+  {
+   "id": "poi_q_mcdonaldns",
+   "nome": "McDonald's (quiosque)",
+   "categoria": "alimentacao",
+   "andar": 0,
+   "x": 270.1,
+   "y": 221.3,
+   "tags": [
+    "quiosque",
+    "Q11"
+   ],
+   "no": "t_se4"
+  },
+  {
+   "id": "poi_q_mcdonaldns_b",
+   "nome": "McDonald's (quiosque)",
+   "categoria": "alimentacao",
+   "andar": 0,
+   "x": 286.1,
+   "y": 122.0,
+   "tags": [
+    "quiosque",
+    "Q18"
+   ],
+   "no": "t_a3"
+  },
+  {
+   "id": "poi_q_bubble_mix",
+   "nome": "Bubble Mix",
+   "categoria": "alimentacao",
+   "andar": 0,
+   "x": 277.2,
+   "y": 221.4,
+   "tags": [
+    "quiosque",
+    "Q12"
+   ],
+   "no": "t_se4"
+  },
+  {
+   "id": "poi_q_my_case",
+   "nome": "My Case",
+   "categoria": "loja",
+   "andar": 0,
+   "x": 264.6,
+   "y": 221.3,
+   "tags": [
+    "quiosque",
+    "Q10"
+   ],
+   "no": "t_se3"
+  },
+  {
+   "id": "poi_q_new_era",
+   "nome": "New Era",
+   "categoria": "loja",
+   "andar": 0,
+   "x": 253.0,
+   "y": 220.8,
+   "tags": [
+    "quiosque",
+    "Q9A"
+   ],
+   "no": "t_se3"
+  },
+  {
+   "id": "poi_q_rei_da_pauoca",
+   "nome": "Rei da Paçoca",
+   "categoria": "alimentacao",
+   "andar": 0,
+   "x": 286.1,
+   "y": 110.6,
+   "tags": [
+    "quiosque",
+    "Q16"
+   ],
+   "no": "t_a3"
+  },
+  {
+   "id": "poi_q_toca_da_pipoca",
+   "nome": "Toca da Pipoca",
+   "categoria": "alimentacao",
+   "andar": 0,
+   "x": 143.8,
+   "y": 222.8,
+   "tags": [
+    "quiosque",
+    "Q3C"
+   ],
+   "no": "t_swa"
+  },
+  {
+   "id": "poi_q_monkey_shop",
+   "nome": "Monkey Shop",
+   "categoria": "loja",
+   "andar": 0,
+   "x": 285.6,
+   "y": 202.3,
+   "tags": [
+    "quiosque",
+    "Q12B"
+   ],
+   "no": "t_a7"
+  },
+  {
+   "id": "poi_q_goold_spell",
+   "nome": "Goold Spell",
+   "categoria": "loja",
+   "andar": 0,
+   "x": 285.6,
+   "y": 187.7,
+   "tags": [
+    "quiosque",
+    "Q13"
+   ],
+   "no": "t_a7"
+  },
+  {
+   "id": "poi_q_panda_pool",
+   "nome": "Panda Pool",
+   "categoria": "lazer",
+   "andar": 0,
+   "x": 148.6,
+   "y": 158.4,
+   "tags": [
+    "quiosque",
+    "Q30"
+   ],
+   "no": "t_rw"
+  },
+  {
+   "id": "poi_q_fun_photo",
+   "nome": "Fun Photo",
+   "categoria": "lazer",
+   "andar": 0,
+   "x": 170.9,
+   "y": 139.2,
+   "tags": [
+    "quiosque",
+    "Q29"
+   ],
+   "no": "t_rn"
+  },
+  {
+   "id": "poi_q_dinos",
+   "nome": "Dinos",
+   "categoria": "loja",
+   "andar": 0,
+   "x": 136.7,
+   "y": 222.7,
+   "tags": [
+    "quiosque",
+    "Q3B"
+   ],
+   "no": "t_sw2"
+  },
+  {
+   "id": "poi_q_giraffas",
+   "nome": "Giraffas",
+   "categoria": "alimentacao",
+   "andar": 0,
+   "x": 78.4,
+   "y": 206.5,
+   "tags": [
+    "quiosque",
+    "Q2"
+   ],
+   "no": "t_sw4"
+  },
+  {
+   "id": "poi_q_gelatos_sorveteria",
+   "nome": "Gelatos Sorveteria",
+   "categoria": "alimentacao",
+   "andar": 0,
+   "x": 205.1,
+   "y": 145.1,
+   "tags": [
+    "quiosque",
+    "Q27"
+   ],
+   "no": "t_rne"
+  },
+  {
+   "id": "poi_q_aromaah",
+   "nome": "Aromaah",
+   "categoria": "loja",
+   "andar": 0,
+   "x": 208.9,
+   "y": 214.5,
+   "tags": [
+    "quiosque",
+    "Q6A"
+   ],
+   "no": "t_se1"
+  },
+  {
+   "id": "poi_q_emporio_essenza",
+   "nome": "Emporio Essenza",
+   "categoria": "loja",
+   "andar": 0,
+   "x": 263.4,
+   "y": 164.1,
+   "tags": [
+    "quiosque",
+    "Q25A"
+   ],
+   "no": "t_e3"
+  },
+  {
+   "id": "poi_q_prontofibra",
+   "nome": "ProntoFibra",
+   "categoria": "servico",
+   "andar": 0,
+   "x": 231.7,
+   "y": 164.7,
+   "tags": [
+    "quiosque",
+    "Q26"
+   ],
+   "no": "t_e1"
+  },
+  {
+   "id": "poi_q_salve_club",
+   "nome": "Salve Club",
+   "categoria": "lazer",
+   "andar": 0,
+   "x": 221.7,
+   "y": 159.8,
+   "tags": [
+    "quiosque",
+    "Q27-A"
+   ],
+   "no": "t_re"
+  },
+  {
+   "id": "poi_q_pop_corn",
+   "nome": "Pop Corn",
+   "categoria": "alimentacao",
+   "andar": 0,
+   "x": 198.0,
+   "y": 139.6,
+   "tags": [
+    "quiosque",
+    "Q28"
+   ],
+   "no": "t_rn"
+  },
+  {
+   "id": "poi_q_acrilicos_e_cia",
+   "nome": "Acrílicos e Cia",
+   "categoria": "loja",
+   "andar": 0,
+   "x": 78.3,
+   "y": 194.3,
+   "tags": [
+    "quiosque",
+    "Q1"
+   ],
+   "no": "t_sw4"
+  },
+  {
+   "id": "poi_q_oakberry",
+   "nome": "Oakberry",
+   "categoria": "alimentacao",
+   "andar": 0,
+   "x": 226.8,
+   "y": 222.6,
+   "tags": [
+    "quiosque",
+    "Q7"
+   ],
+   "no": "t_se2"
+  },
+  {
+   "id": "poi_q_touti",
+   "nome": "Touti",
+   "categoria": "loja",
+   "andar": 0,
+   "x": 285.3,
+   "y": 157.6,
+   "tags": [
+    "quiosque",
+    "Q15"
+   ],
+   "no": "t_a5"
+  },
+  {
+   "id": "poi_q_milkmoo",
+   "nome": "MilkMoo",
+   "categoria": "alimentacao",
+   "andar": 0,
+   "x": 127.9,
+   "y": 164.2,
+   "tags": [
+    "quiosque",
+    "Q31"
+   ],
+   "no": "t_nw1"
+  },
+  {
+   "id": "poi_q_acium",
+   "nome": "Acium",
+   "categoria": "loja",
+   "andar": 0,
+   "x": 285.2,
+   "y": 168.9,
+   "tags": [
+    "quiosque",
+    "Q14"
+   ],
+   "no": "t_a6"
+  },
+  {
+   "id": "poi_q_super_soft",
+   "nome": "Super Soft",
+   "categoria": "alimentacao",
+   "andar": 0,
+   "x": 160.0,
+   "y": 214.8,
+   "tags": [
+    "quiosque",
+    "Q4A"
+   ],
+   "no": "t_sw1"
+  },
+  {
+   "id": "poi_q_fini",
+   "nome": "Fini",
+   "categoria": "alimentacao",
+   "andar": 0,
+   "x": 130.2,
+   "y": 222.7,
+   "tags": [
+    "quiosque",
+    "Q3"
+   ],
+   "no": "t_sw2"
+  },
+  {
+   "id": "poi_q_nutty_bavarian",
+   "nome": "Nutty Bavarian",
+   "categoria": "alimentacao",
+   "andar": 0,
+   "x": 160.3,
+   "y": 148.8,
+   "tags": [
+    "quiosque",
+    "Q29C"
+   ],
+   "no": "t_rnw"
+  },
+  {
+   "id": "poi_q_american_cookies",
+   "nome": "American Cookies",
+   "categoria": "alimentacao",
+   "andar": 0,
+   "x": 280.7,
+   "y": 105.9,
+   "tags": [
+    "quiosque",
+    "Q19-A"
+   ],
+   "no": "t_a2"
+  },
+  {
+   "id": "poi_q_mini_cars",
+   "nome": "Mini Cars",
+   "categoria": "lazer",
+   "andar": 0,
+   "x": 80.2,
+   "y": 232.8,
+   "tags": [
+    "quiosque",
+    "Q2C"
+   ],
+   "no": "t_sw4"
+  },
+  {
+   "id": "poi_q_buriti",
+   "nome": "Buriti",
+   "categoria": "alimentacao",
+   "andar": 0,
+   "x": 86.4,
+   "y": 171.7,
+   "tags": [
+    "quiosque",
+    "Q34"
+   ],
+   "no": "t_nw3"
+  },
+  {
+   "id": "poi_q_vivance",
+   "nome": "Vivance",
+   "categoria": "loja",
+   "andar": 0,
+   "x": 170.7,
+   "y": 209.5,
+   "tags": [
+    "quiosque",
+    "Q5"
+   ],
+   "no": "t_praca"
+  },
+  {
+   "id": "poi_q_happy_hour",
+   "nome": "Happy hour",
+   "categoria": "alimentacao",
+   "andar": 0,
+   "x": 283.7,
+   "y": 66.0,
+   "tags": [
+    "quiosque",
+    "QPC01"
+   ],
+   "no": "t_pn"
+  },
+  {
+   "id": "poi_q_grua_chaves",
+   "nome": "Grua Chaves",
+   "categoria": "servico",
+   "andar": 0,
+   "x": 200.8,
+   "y": 141.2,
+   "tags": [
+    "quiosque",
+    "Q28A"
+   ],
+   "no": "t_rne"
+  },
+  {
+   "id": "poi_q_maromba_suplementos",
+   "nome": "Maromba Suplementos",
+   "categoria": "loja",
+   "andar": 0,
+   "x": 285.5,
+   "y": 76.1,
+   "tags": [
+    "quiosque",
+    "QPC02"
+   ],
+   "no": "t_a1"
+  },
+  {
+   "id": "poi_q_fini_pocket",
+   "nome": "Fini Pocket",
+   "categoria": "alimentacao",
+   "andar": 0,
+   "x": 285.3,
+   "y": 139.6,
+   "tags": [
+    "quiosque",
+    "Q15B"
+   ],
+   "no": "t_a4"
+  },
+  {
+   "id": "poi_q_artes_jalapao",
+   "nome": "Artes Jalapão",
+   "categoria": "loja",
+   "andar": 0,
+   "x": 245.6,
+   "y": 221.7,
+   "tags": [
+    "quiosque",
+    "Q9"
+   ],
+   "no": "t_se2"
+  },
+  {
+   "id": "poi_q_tropimanga",
+   "nome": "Tropimanga",
+   "categoria": "alimentacao",
+   "andar": 0,
+   "x": 286.8,
+   "y": 88.9,
+   "tags": [
+    "quiosque",
+    "Q20"
+   ],
+   "no": "t_a2"
+  },
+  {
+   "id": "poi_q_chute_play",
+   "nome": "Chute Play",
+   "categoria": "lazer",
+   "andar": 0,
+   "x": 286.4,
+   "y": 101.2,
+   "tags": [
+    "quiosque",
+    "Q19"
+   ],
+   "no": "t_a2"
+  },
+  {
+   "id": "poi_q_comodato",
+   "nome": "Comodato",
+   "categoria": "servico",
+   "andar": 0,
+   "x": 145.2,
+   "y": 161.4,
+   "tags": [
+    "quiosque",
+    "Q30"
+   ],
+   "no": "t_rw"
+  },
+  {
+   "id": "poi_unicesumar_stand",
+   "nome": "Unicesumar (stand)",
+   "categoria": "servico",
+   "andar": 0,
+   "x": 281.4,
+   "y": 139.7,
+   "tags": [
+    "faculdade",
+    "educação"
+   ],
+   "no": "t_p2"
+  },
+  {
+   "id": "poi_sanit_oeste_fem",
+   "nome": "Sanitário Feminino (ala oeste)",
+   "categoria": "sanitario",
+   "andar": 0,
+   "x": 146.9,
+   "y": 118.1,
+   "tags": [
+    "banheiro",
+    "wc"
+   ],
+   "nome_en": "Women's restroom (west)",
+   "nome_es": "Baño de mujeres (oeste)",
+   "no": "t_sanw2"
+  },
+  {
+   "id": "poi_sanit_oeste_masc",
+   "nome": "Sanitário Masculino (ala oeste)",
+   "categoria": "sanitario",
+   "andar": 0,
+   "x": 149.6,
+   "y": 121.7,
+   "tags": [
+    "banheiro",
+    "wc"
+   ],
+   "nome_en": "Men's restroom (west)",
+   "nome_es": "Baño de hombres (oeste)",
+   "no": "t_sanw2"
+  },
+  {
+   "id": "poi_pne_oeste",
+   "nome": "Sanitário Acessível (ala oeste)",
+   "categoria": "sanitario",
+   "andar": 0,
+   "x": 146.0,
+   "y": 123.5,
+   "tags": [
+    "banheiro",
+    "wc",
+    "pcd",
+    "acessivel"
+   ],
+   "nome_en": "Accessible restroom (west)",
+   "nome_es": "Baño accesible (oeste)",
+   "acessivel": true,
+   "no": "t_sanw2"
+  },
+  {
+   "id": "poi_espaco_familia",
+   "nome": "Espaço Família",
+   "categoria": "servico",
+   "andar": 0,
+   "x": 153.1,
+   "y": 126.2,
+   "tags": [
+    "fraldário",
+    "descanso",
+    "tranquilo",
+    "bebê"
+   ],
+   "nome_en": "Family Room",
+   "nome_es": "Espacio Familia",
+   "descanso": true,
+   "no": "t_sanw2"
+  },
+  {
+   "id": "poi_sanit_leste_masc",
+   "nome": "Sanitário Masculino (ala leste)",
+   "categoria": "sanitario",
+   "andar": 0,
+   "x": 229.3,
+   "y": 187.3,
+   "tags": [
+    "banheiro",
+    "wc"
+   ],
+   "nome_en": "Men's restroom (east)",
+   "nome_es": "Baño de hombres (este)",
+   "no": "t_sane2"
+  },
+  {
+   "id": "poi_sanit_leste_fem",
+   "nome": "Sanitário Feminino (ala leste)",
+   "categoria": "sanitario",
+   "andar": 0,
+   "x": 230.2,
+   "y": 194.8,
+   "tags": [
+    "banheiro",
+    "wc"
+   ],
+   "nome_en": "Women's restroom (east)",
+   "nome_es": "Baño de mujeres (este)",
+   "no": "t_sane2"
+  },
+  {
+   "id": "poi_pne_leste",
+   "nome": "Sanitário Acessível (ala leste)",
+   "categoria": "sanitario",
+   "andar": 0,
+   "x": 235.6,
+   "y": 198.4,
+   "tags": [
+    "banheiro",
+    "wc",
+    "pcd",
+    "acessivel"
+   ],
+   "nome_en": "Accessible restroom (east)",
+   "nome_es": "Baño accesible (este)",
+   "acessivel": true,
+   "no": "t_sane2"
+  },
+  {
+   "id": "poi_brigada_leste",
+   "nome": "Brigada / Primeiros Socorros",
+   "categoria": "servico",
+   "andar": 0,
+   "x": 232.9,
+   "y": 198.4,
+   "tags": [
+    "socorro",
+    "emergência",
+    "ajuda"
+   ],
+   "nome_en": "First Aid",
+   "nome_es": "Primeros Auxilios",
+   "no": "t_sane2"
+  },
+  {
+   "id": "poi_brigada_oeste",
+   "nome": "Brigada (ala oeste)",
+   "categoria": "servico",
+   "andar": 0,
+   "x": 144.5,
+   "y": 172.0,
+   "tags": [
+    "socorro",
+    "emergência",
+    "ajuda"
+   ],
+   "nome_en": "First Aid (west)",
+   "nome_es": "Primeros Auxilios (oeste)",
+   "no": "t_rw"
+  },
+  {
+   "id": "poi_seguranca",
+   "nome": "Segurança",
+   "categoria": "servico",
+   "andar": 0,
+   "x": 312.9,
+   "y": 172.6,
+   "tags": [
+    "ajuda",
+    "achados e perdidos"
+   ],
+   "nome_en": "Security",
+   "nome_es": "Seguridad",
+   "no": "t_a6"
+  },
+  {
+   "id": "poi_praca_eventos_central",
+   "nome": "Praça de Eventos (central)",
+   "categoria": "lazer",
+   "andar": 0,
+   "x": 184.6,
+   "y": 203.8,
+   "tags": [
+    "eventos"
+   ],
+   "nome_en": "Events Square (central)",
+   "nome_es": "Plaza de Eventos (central)",
+   "no": "t_praca"
+  },
+  {
+   "id": "poi_praca_eventos_norte",
+   "nome": "Praça de Eventos (norte)",
+   "categoria": "lazer",
+   "andar": 0,
+   "x": 184.9,
+   "y": 136.1,
+   "tags": [
+    "eventos"
+   ],
+   "nome_en": "Events Square (north)",
+   "nome_es": "Plaza de Eventos (norte)",
+   "no": "t_rn"
+  },
+  {
+   "id": "poi_praca_eventos_oeste",
+   "nome": "Praça de Eventos (oeste)",
+   "categoria": "lazer",
+   "andar": 0,
+   "x": 111.2,
+   "y": 220.9,
+   "tags": [
+    "eventos",
+    "escada rolante"
+   ],
+   "nome_en": "Events Square (west)",
+   "nome_es": "Plaza de Eventos (oeste)",
+   "no": "t_sw3"
+  },
+  {
+   "id": "poi_praca_eventos_leste",
+   "nome": "Praça de Eventos (leste)",
+   "categoria": "lazer",
+   "andar": 0,
+   "x": 252.9,
+   "y": 161.2,
+   "tags": [
+    "eventos"
+   ],
+   "nome_en": "Events Square (east)",
+   "nome_es": "Plaza de Eventos (este)",
+   "no": "t_e2"
+  },
+  {
+   "id": "poi_praca_eventos_noroeste",
+   "nome": "Praça de Eventos (noroeste)",
+   "categoria": "lazer",
+   "andar": 0,
+   "x": 89.0,
+   "y": 164.8,
+   "tags": [
+    "eventos"
+   ],
+   "nome_en": "Events Square (northwest)",
+   "nome_es": "Plaza de Eventos (noroeste)",
+   "no": "t_nw3"
+  },
+  {
+   "id": "poi_praca_alim",
+   "nome": "Praça de Alimentação",
+   "categoria": "alimentacao",
+   "andar": 1,
+   "x": 53.3,
+   "y": 34.1,
+   "tags": [
+    "comida",
+    "restaurantes",
+    "almoço",
+    "mesas"
+   ],
+   "nome_en": "Food Court",
+   "nome_es": "Patio de comidas",
+   "no": "p_c"
+  },
+  {
+   "id": "poi_wc_masc_l2",
+   "nome": "Sanitário Masculino (2º piso)",
+   "categoria": "sanitario",
+   "andar": 1,
+   "x": 70.9,
+   "y": 9.7,
+   "tags": [
+    "banheiro",
+    "wc"
+   ],
+   "nome_en": "Men's restroom (2nd floor)",
+   "nome_es": "Baño de hombres (2º piso)",
+   "no": "p_wcm"
+  },
+  {
+   "id": "poi_wc_fem_l2",
+   "nome": "Sanitário Feminino (2º piso)",
+   "categoria": "sanitario",
+   "andar": 1,
+   "x": 71.0,
+   "y": 54.1,
+   "tags": [
+    "banheiro",
+    "wc"
+   ],
+   "nome_en": "Women's restroom (2nd floor)",
+   "nome_es": "Baño de mujeres (2º piso)",
+   "no": "p_wcf"
+  },
+  {
+   "id": "poi_pne_l2",
+   "nome": "Sanitário Acessível (2º piso)",
+   "categoria": "sanitario",
+   "andar": 1,
+   "x": 67.5,
+   "y": 58.1,
+   "tags": [
+    "banheiro",
+    "wc",
+    "pcd",
+    "acessivel"
+   ],
+   "nome_en": "Accessible restroom (2nd floor)",
+   "nome_es": "Baño accesible (2º piso)",
+   "acessivel": true,
+   "no": "p_wcf"
+  },
+  {
+   "id": "poi_brigada_l2",
+   "nome": "Brigada (2º piso)",
+   "categoria": "servico",
+   "andar": 1,
+   "x": 64.7,
+   "y": 57.6,
+   "tags": [
+    "socorro",
+    "emergência"
+   ],
+   "nome_en": "First Aid (2nd floor)",
+   "nome_es": "Primeros Auxilios (2º piso)",
+   "no": "p_wcf"
+  },
+  {
+   "id": "poi_mundo_imersivo",
+   "nome": "Mundo Imersivo",
+   "categoria": "lazer",
+   "andar": 1,
+   "x": 24.6,
+   "y": 17.8,
+   "tags": [
+    "atração",
+    "crianças"
+   ],
+   "no": "p_w2"
+  },
+  {
+   "id": "poi_evento_imerso_mar",
+   "nome": "Evento Imerso Mar",
+   "categoria": "lazer",
+   "andar": 1,
+   "x": 24.9,
+   "y": 48.8,
+   "tags": [
+    "atração",
+    "crianças"
+   ],
+   "no": "p_w2"
+  }
+ ],
+ "beacons": [
+  {
+   "id": "ble-t-01",
+   "uuid": "a_definir",
+   "andar": 0,
+   "no": "t_rs",
+   "status": "planejado"
+  },
+  {
+   "id": "ble-t-02",
+   "uuid": "a_definir",
+   "andar": 0,
+   "no": "t_sw3",
+   "status": "planejado"
+  },
+  {
+   "id": "ble-t-03",
+   "uuid": "a_definir",
+   "andar": 0,
+   "no": "t_rw",
+   "status": "planejado"
+  },
+  {
+   "id": "ble-t-04",
+   "uuid": "a_definir",
+   "andar": 0,
+   "no": "t_e2",
+   "status": "planejado"
+  },
+  {
+   "id": "ble-t-05",
+   "uuid": "a_definir",
+   "andar": 0,
+   "no": "t_a4",
+   "status": "planejado"
+  },
+  {
+   "id": "ble-t-06",
+   "uuid": "a_definir",
+   "andar": 0,
+   "no": "t_se3",
+   "status": "planejado"
+  },
+  {
+   "id": "ble-p-01",
+   "uuid": "a_definir",
+   "andar": 1,
+   "no": "p_e",
+   "status": "planejado"
+  },
+  {
+   "id": "ble-p-02",
+   "uuid": "a_definir",
+   "andar": 1,
+   "no": "p_w",
+   "status": "planejado"
+  }
+ ],
+ "perfis": {
+  "padrao": {
+   "nome": "Navegação padrão",
+   "proibidos": [],
+   "multiplicador_tipo": {},
+   "multiplicador_estimulo": {},
+   "penalidade_curva": 0
+  },
+  "visual": {
+   "nome": "Acessibilidade visual",
+   "proibidos": [],
+   "multiplicador_tipo": {
+    "escada": 4.0,
+    "escada_rolante": 6.0,
+    "esteira": 6.0
+   },
+   "multiplicador_estimulo": {
+    "alto": 1.2
+   },
+   "penalidade_curva": 8,
+   "exigir_confirmado": true
+  },
+  "auditiva": {
+   "nome": "Acessibilidade auditiva",
+   "proibidos": [],
+   "multiplicador_tipo": {},
+   "multiplicador_estimulo": {},
+   "penalidade_curva": 0
+  },
+  "mobilidade": {
+   "nome": "Mobilidade acessível",
+   "proibidos": [
+    "escada",
+    "esteira",
+    "escada_rolante"
+   ],
+   "multiplicador_tipo": {},
+   "multiplicador_estimulo": {},
+   "penalidade_curva": 0,
+   "exigir_confirmado": true
+  },
+  "sensorial": {
+   "nome": "Navegação sensorial",
+   "proibidos": [],
+   "multiplicador_tipo": {
+    "escada_rolante": 1.5,
+    "esteira": 2.0
+   },
+   "multiplicador_estimulo": {
+    "alto": 2.5,
+    "medio": 1.3
+   },
+   "penalidade_curva": 3
+  }
+ }
+}

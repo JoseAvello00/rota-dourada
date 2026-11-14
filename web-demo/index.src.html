@@ -1,0 +1,1195 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rota Dourada – protótipo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Creepster&display=swap" rel="stylesheet">
+<style>
+/* ---------- temas (variáveis) ---------- */
+:root,body[data-tema=claro]{
+  --fundo:#EEF3EE; --superficie:#FFFFFF; --texto:#13261C; --suave:#3B5446; --linha:#CBD6CC;
+  --primaria:#1F3B2D; --sobre-primaria:#FFFFFF; --destaque:#E3A92B; --sobre-destaque:#13261C;
+  --alerta:#B4442E; --topo:#1F3B2D; --sobre-topo:#FFFFFF; --mapa:#F3F5F1; --foco:#E3A92B;
+  --sos:#8E0016; --sobre-sos:#FFFFFF;
+  --fs:17px; font-family:"Atkinson Hyperlegible",system-ui,sans-serif;
+}
+body[data-tema=escuro]{
+  --fundo:#121614; --superficie:#1C2320; --texto:#E8EFEA; --suave:#AEBDB4; --linha:#34423B;
+  --primaria:#E3A92B; --sobre-primaria:#121614; --destaque:#E3A92B; --sobre-destaque:#121614;
+  --alerta:#FF8A73; --topo:#0B0E0D; --sobre-topo:#E8EFEA; --mapa:#141917; --foco:#FFD36B;
+}
+body[data-tema=terror]{
+  --fundo:#0E0809; --superficie:#1B1012; --texto:#F2E6E0; --suave:#CDB4AB; --linha:#3E2226;
+  --primaria:#A3121F; --sobre-primaria:#FFFFFF; --destaque:#F0A04B; --sobre-destaque:#160A0B;
+  --alerta:#FF7A7A; --topo:#120708; --sobre-topo:#F2E6E0; --mapa:#0E0809; --foco:#F0A04B;
+}
+*{box-sizing:border-box}
+body{margin:0;background:#DCE5DC;color:var(--texto);font-size:var(--fs);line-height:1.45}
+body[data-tema=escuro],body[data-tema=terror]{background:#0A0C0B}
+button,input,select{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--foco);outline-offset:2px}
+[hidden]{display:none!important}
+h1[tabindex="-1"]:focus{outline:none}
+.palco{display:flex;gap:28px;justify-content:center;align-items:flex-start;padding:24px 16px;min-height:100vh}
+.celular{width:390px;max-width:100%;height:820px;background:var(--fundo);border-radius:34px;border:10px solid #13261C;overflow:hidden;display:flex;flex-direction:column;position:relative}
+@media (max-width:860px){.palco{padding:0;display:block}.celular{width:100%;border:0;border-radius:0;height:100vh;height:100dvh}.demo{width:auto!important;margin:0!important;border-radius:0!important}}
+header.topo{background:var(--topo);color:var(--sobre-topo);padding:8px 8px;display:flex;align-items:center;gap:6px;flex:none;min-height:56px}
+body[data-tema=terror] header.topo{border-bottom:2px solid #6B0F17}
+.marca{display:flex;align-items:center;gap:6px;font-weight:700;font-size:17px;flex:1;white-space:nowrap;min-width:0;overflow:hidden}
+body[data-tema=terror] .marca span{font-family:"Creepster","Atkinson Hyperlegible",cursive;font-weight:400;font-size:21px;letter-spacing:.5px;color:#F0A04B}
+.btn-topo{display:inline-flex;align-items:center;gap:4px;background:transparent;border:1.5px solid currentColor;color:var(--sobre-topo);border-radius:10px;padding:5px 8px;cursor:pointer;font-weight:700;font-size:15px;min-height:40px}
+.btn-topo.icone{width:40px;justify-content:center;padding:0}
+.btn-topo.ajuda{background:var(--destaque);color:var(--sobre-destaque);border-color:var(--destaque)}
+main{flex:1;overflow:auto;position:relative}
+main>section{padding:18px 16px 16px}
+h1{font-size:25px;line-height:1.15;margin:4px 0 6px}
+h2{font-size:19px;margin:16px 0 8px}
+p.sub{margin:0 0 14px;color:var(--suave)}
+.primario{background:var(--primaria);color:var(--sobre-primaria);border:0;border-radius:12px;padding:14px 16px;font-weight:700;width:100%;cursor:pointer;font-size:18px;min-height:52px}
+.primario:disabled{opacity:.55;cursor:progress}
+.secundario{background:var(--superficie);color:var(--texto);border:2px solid var(--primaria);border-radius:12px;padding:11px 14px;font-weight:700;cursor:pointer;min-height:48px}
+body[data-tema=escuro] .secundario,body[data-tema=terror] .secundario{border-color:var(--suave)}
+.link{background:none;border:0;color:var(--texto);text-decoration:underline;cursor:pointer;padding:10px 0;font-weight:700}
+.perigo{color:var(--alerta)!important}
+.linha-btn{display:flex;gap:8px;flex-wrap:wrap}
+.linha-btn>*{flex:1}
+.pilha>*+*{margin-top:8px}
+.aviso{border-left:5px solid var(--destaque);background:var(--superficie);padding:12px 14px;border-radius:0 12px 12px 0;margin:10px 0 14px}
+.aviso.erro{border-color:var(--alerta)}
+.selo{display:inline-flex;align-items:center;gap:5px;background:var(--primaria);color:var(--sobre-primaria);border-radius:999px;padding:3px 10px;font-size:14px;margin:0 4px 4px 0}
+.selo.ouro{background:var(--destaque);color:var(--sobre-destaque)}
+.selo.atencao{background:var(--alerta);color:#160A0B}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+.toast{position:absolute;left:12px;right:12px;top:64px;background:var(--primaria);color:var(--sobre-primaria);padding:12px 14px;border-radius:12px;font-weight:700;z-index:20;box-shadow:0 4px 16px #0005}
+
+/* ---------- acesso ---------- */
+.opcao{display:flex;gap:14px;align-items:center;width:100%;text-align:left;background:var(--superficie);border:2px solid var(--linha);border-radius:16px;padding:14px;cursor:pointer;color:var(--texto)}
+.opcao:hover{border-color:var(--primaria)}
+.opcao .ic{width:46px;height:46px;border-radius:12px;display:grid;place-items:center;flex:none;background:var(--primaria);color:var(--sobre-primaria)}
+.opcao b{display:block;font-size:18px}
+.opcao span.d{font-size:15px;color:var(--suave)}
+.idioma-linha{display:flex;align-items:center;gap:8px;margin:0 0 14px}
+select.campo-sel{border:2px solid var(--linha);border-radius:10px;padding:8px;background:var(--superficie);color:var(--texto)}
+
+/* ---------- formulários ---------- */
+.campo{display:flex;flex-direction:column;gap:4px;margin-bottom:12px}
+.campo label,.legenda{font-weight:700}
+.obrig{font-weight:400;color:var(--suave);font-size:14px}
+.campo input{border:2px solid var(--suave);border-radius:10px;padding:11px;background:var(--superficie);color:var(--texto)}
+.campo input[aria-invalid=true]{border-color:var(--alerta)}
+.campo .erro,.erro-campo{color:var(--alerta);font-weight:700;font-size:15px}
+.senha-linha{display:flex;gap:6px}.senha-linha input{flex:1;min-width:0}
+fieldset{border:0;padding:0;margin:0 0 12px}
+legend{font-weight:700;margin-bottom:6px;padding:0}
+.opcoes{display:flex;gap:8px}
+.opcoes label,.tipos label,.temas label{display:flex;align-items:center;gap:10px;background:var(--superficie);border:2px solid var(--linha);border-radius:12px;padding:10px 12px;cursor:pointer}
+.opcoes label{flex:1;justify-content:center;font-weight:700}
+.opcoes label:has(input:checked),.tipos label:has(input:checked),.temas label:has(input:checked){border-color:var(--primaria);box-shadow:inset 0 0 0 1px var(--primaria)}
+body[data-tema=escuro] .opcoes label:has(input:checked),body[data-tema=escuro] .tipos label:has(input:checked),body[data-tema=escuro] .temas label:has(input:checked){border-color:var(--destaque);box-shadow:inset 0 0 0 1px var(--destaque)}
+.tipos,.temas{display:flex;flex-direction:column;gap:6px}
+input[type=radio],input[type=checkbox]{width:20px;height:20px;accent-color:var(--primaria);flex:none}
+.consent{display:flex;gap:10px;align-items:flex-start;font-size:15px;margin:10px 0}
+.adapta{background:var(--primaria);color:var(--sobre-primaria);border-radius:14px;padding:12px 14px;margin:6px 0 14px}
+.adapta ul{margin:6px 0 0;padding-left:20px}
+.resumo-erros{border:2px solid var(--alerta);border-radius:12px;padding:10px 12px;margin-bottom:12px}
+.resumo-erros ul{margin:4px 0 0;padding-left:20px}
+.amostra{width:44px;height:28px;border-radius:6px;border:1px solid #0003;flex:none;display:grid;place-items:center;font-size:12px;font-weight:700}
+.nota{font-size:14px;color:var(--suave)}
+
+/* ---------- explorar ---------- */
+#tela-explorar{padding:0;height:100%;display:flex;flex-direction:column}
+.barra{padding:10px 12px 8px;display:flex;flex-direction:column;gap:8px;flex:none;background:var(--fundo)}
+.busca{display:flex;gap:6px}
+.busca input{flex:1;border:2px solid var(--suave);border-radius:12px;padding:10px 12px;background:var(--superficie);color:var(--texto);min-width:0}
+.busca button{border:0;background:var(--primaria);color:var(--sobre-primaria);border-radius:12px;width:46px;cursor:pointer;flex:none}
+.local{display:flex;align-items:center;gap:8px;font-size:14px;background:var(--superficie);border-radius:10px;padding:6px 8px 6px 10px}
+.local .txt{flex:1}
+.local button{border:1.5px solid var(--suave);background:transparent;border-radius:8px;padding:3px 9px;cursor:pointer;font-size:14px;font-weight:700;min-height:34px}
+.local.ajustando{background:var(--destaque);color:var(--sobre-destaque)}
+.mapa-area{position:relative;flex:1;min-height:0;overflow:hidden;background:var(--mapa)}
+svg.mapa{display:block;width:100%;height:100%;touch-action:none;cursor:grab;user-select:none}
+svg.mapa.ajustar{cursor:crosshair}
+.pin{cursor:pointer}.pin:focus{outline:none}
+.pin:focus-visible .disco{stroke:var(--foco);stroke-width:3px}
+.andares-flut{position:absolute;top:8px;left:8px;display:flex;background:var(--superficie);border-radius:10px;box-shadow:0 1px 4px #0003;overflow:hidden}
+.andares-flut button{border:0;background:none;padding:6px 10px;cursor:pointer;font-size:14px;color:var(--texto);min-height:36px}
+.andares-flut button[aria-pressed=true]{background:var(--primaria);color:var(--sobre-primaria);font-weight:700}
+.zoom{position:absolute;right:46px;bottom:12px;display:flex;flex-direction:column;gap:6px}
+.zoom button{width:42px;height:42px;border-radius:10px;border:0;background:var(--superficie);color:var(--texto);box-shadow:0 1px 4px #0004;font-size:20px;font-weight:700;cursor:pointer}
+.legenda-mapa{position:absolute;left:8px;bottom:12px;background:var(--superficie);border-radius:10px;padding:6px 8px;font-size:12.5px;box-shadow:0 1px 4px #0003;display:flex;flex-direction:column;gap:3px}
+.legenda-mapa i{display:inline-block;width:12px;height:12px;border-radius:50%;margin-right:5px;vertical-align:-1px}
+.legenda-mapa i.rota{border-radius:2px;height:6px;width:16px;vertical-align:2px}
+.alca{position:absolute;right:0;top:50%;transform:translateY(-50%);width:34px;height:120px;background:var(--primaria);color:var(--sobre-primaria);border:0;border-radius:12px 0 0 12px;cursor:grab;touch-action:none;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:0}
+.alca span{writing-mode:vertical-rl;transform:rotate(180deg);font-weight:700;font-size:14px}
+.gaveta{position:absolute;inset:0 0 0 auto;width:88%;background:var(--fundo);box-shadow:-6px 0 18px #0004;transform:translateX(100%);transition:transform .22s ease;display:flex;flex-direction:column;z-index:3;touch-action:pan-y}
+.gaveta.aberta{transform:none}.gaveta.arrastando{transition:none}
+.gaveta header{display:flex;align-items:center;gap:8px;padding:10px 12px;border-bottom:1px solid var(--linha)}
+.gaveta header h2{margin:0;flex:1;font-size:18px}
+.lista-lojas{overflow:auto;flex:1;padding:0 12px 12px}
+.lista-lojas h3{font-size:14px;color:var(--suave);margin:14px 0 4px}
+.lista-lojas ul,.lista{list-style:none;margin:0;padding:0}
+.lista-lojas li button,.lista li button{display:flex;justify-content:space-between;gap:8px;width:100%;text-align:left;background:none;border:0;border-bottom:1px solid var(--linha);padding:12px 2px;cursor:pointer;color:var(--texto);min-height:48px}
+.lista-lojas small,.lista small{color:var(--suave);white-space:nowrap}
+.cartao{position:absolute;left:8px;right:8px;bottom:8px;background:var(--superficie);border-radius:16px;box-shadow:0 4px 18px #0005;padding:14px;z-index:2;max-height:72%;overflow:auto}
+.cartao h2{margin:0 0 2px;font-size:20px;padding-right:36px}
+.cartao .meta{color:var(--suave);font-size:14px;margin-bottom:8px}
+.cartao .fechar{position:absolute;top:6px;right:6px;border:0;background:none;font-size:24px;width:40px;height:40px;cursor:pointer;color:var(--texto)}
+.cartao .pilha button{width:100%}
+
+/* ---------- navegação ---------- */
+.mapa-wrap{background:var(--superficie);border-radius:16px;border:1px solid var(--linha);overflow:hidden;margin-bottom:12px}
+.andares{display:flex;border-bottom:1px solid var(--linha)}
+.andares button{flex:1;border:0;background:none;padding:8px;cursor:pointer;font-size:14px;color:var(--texto)}
+.andares button[aria-pressed=true]{font-weight:700;box-shadow:inset 0 -3px var(--destaque)}
+.etapa-atual{background:var(--primaria);color:var(--sobre-primaria);border-radius:16px;padding:16px;display:flex;gap:14px;align-items:flex-start;margin-bottom:10px}
+.etapa-atual .seta{width:52px;height:52px;flex:none;border-radius:50%;background:var(--destaque);color:var(--sobre-destaque);display:grid;place-items:center}
+.etapa-atual p{margin:0;font-size:20px;line-height:1.3}
+.etapa-atual small{display:block;opacity:.85;margin-top:6px;font-size:14px}
+.etapas{list-style:none;padding:0;margin:8px 0 0;counter-reset:e}
+.etapas li{padding:8px 0 8px 34px;position:relative;border-bottom:1px solid var(--linha);color:var(--suave);font-size:15px}
+.etapas li::before{counter-increment:e;content:counter(e);position:absolute;left:0;top:8px;width:24px;height:24px;border-radius:50%;border:1.5px solid currentColor;display:grid;place-items:center;font-size:13px}
+.etapas li.feita{text-decoration:line-through;opacity:.6}
+.etapas li.atual{color:var(--texto);font-weight:700}
+.rodape{font-size:12.5px;color:var(--suave);padding:6px 14px 8px;display:flex;gap:6px;align-items:center;border-top:1px solid var(--linha);background:var(--fundo);flex:none}
+.ponto-on{width:8px;height:8px;border-radius:50%;background:#2E8B57;flex:none}
+.pulso{animation:pulso 2.4s infinite}
+@keyframes pulso{0%{opacity:.25}50%{opacity:.5}100%{opacity:.25}}
+
+/* ---------- conversa ---------- */
+#tela-conversa{padding:0;height:100%;display:flex;flex-direction:column}
+.metade{flex:1;padding:12px 16px;display:flex;flex-direction:column;gap:8px;overflow:auto}
+.metade.atendente{transform:rotate(180deg);background:var(--superficie);border-bottom:3px dashed var(--destaque)}
+.metade .quem{font-size:13px;color:var(--suave)}
+.fala{font-size:26px;line-height:1.2;font-weight:700;min-height:56px}
+.frases{display:flex;flex-wrap:wrap;gap:6px}
+.frases button{border:1.5px solid var(--suave);background:var(--superficie);color:var(--texto);border-radius:10px;padding:6px 10px;cursor:pointer;font-size:15px;text-align:left;min-height:40px}
+.escrever{display:flex;gap:6px}
+.escrever input{flex:1;border:2px solid var(--suave);border-radius:10px;padding:8px;min-width:0;background:var(--superficie);color:var(--texto)}
+.escrever button{border:0;background:var(--primaria);color:var(--sobre-primaria);border-radius:10px;padding:0 12px;cursor:pointer}
+.btn-sos{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;min-height:58px;border:3px solid #fff;outline:2px solid var(--sos);background:var(--sos);color:var(--sobre-sos);border-radius:14px;font-size:20px;font-weight:700;cursor:pointer}
+
+/* ---------- diálogos e SOS ---------- */
+.fundo-dialogo{position:absolute;inset:0;background:#000A;z-index:30;display:flex;align-items:center;justify-content:center;padding:16px}
+.dialogo{background:var(--superficie);color:var(--texto);border-radius:16px;padding:18px;max-width:340px;width:100%}
+.dialogo h2{margin-top:0}
+.sos-tela{position:absolute;inset:0;z-index:40;background:var(--sos);color:var(--sobre-sos);display:flex;flex-direction:column;padding:22px 18px;gap:12px;overflow:auto}
+.sos-tela .grande{font-size:44px;line-height:1.05;font-weight:700;margin:0}
+.sos-tela p{font-size:22px;line-height:1.3;margin:0}
+.sos-tela .status{font-size:16px;background:#0004;border-radius:10px;padding:10px 12px}
+.sos-tela button{margin-top:auto;background:#fff;color:#4A000B;border:0;border-radius:14px;font-size:19px;font-weight:700;min-height:56px;cursor:pointer}
+
+/* ---------- painel demo ---------- */
+.demo{width:300px;background:#fff;color:#13261C;border-radius:20px;padding:18px;margin-top:10px;font-size:15px}
+.demo h2{margin-top:0}
+.demo label{display:flex;gap:8px;align-items:flex-start;margin:10px 0;cursor:pointer}
+.demo p{color:#3B5446;margin:6px 0}
+.btn-demo{margin-top:6px;width:100%;background:#fff;color:#13261C;border:2px solid #1F3B2D;border-radius:12px;padding:10px;font-weight:700;cursor:pointer}
+
+/* ---------- adaptações do perfil (têm prioridade sobre o tema) ---------- */
+body.ui-altoContraste{--fs:19px;--fundo:#000;--superficie:#000;--texto:#FFE27A;--suave:#FFE27A;--linha:#FFE27A;--primaria:#FFE27A;--sobre-primaria:#000;--destaque:#FFE27A;--sobre-destaque:#000;--topo:#000;--sobre-topo:#FFE27A;--mapa:#000;--foco:#fff}
+body.ui-altoContraste .opcao,body.ui-altoContraste .secundario,body.ui-altoContraste .campo input,body.ui-altoContraste .busca input{border-color:#FFE27A}
+body.ui-calmo *,body[data-tema=terror] *{animation:none!important;transition:none!important}
+body.ui-passoAPasso .etapas{display:none}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body data-tema="claro">
+<div class="palco">
+<div class="celular" id="app">
+  <header class="topo">
+    <button class="btn-topo" id="btnVoltar" hidden>
+      <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7" stroke="currentColor" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span data-t="voltar">Voltar</span>
+    </button>
+    <div class="marca">
+      <svg width="24" height="24" viewBox="0 0 26 26" aria-hidden="true"><path d="M13 2c-4 6-4 16 0 22M13 2c4 6 4 16 0 22M5 9c5 1 11 1 16 0M5 17c5-1 11-1 16 0" stroke="#E3A92B" stroke-width="2.4" fill="none" stroke-linecap="round"/></svg>
+      <span>Rota Dourada</span>
+    </div>
+    <button class="btn-topo ajuda" id="btnConversar" hidden data-t="conversar">Conversar</button>
+    <button class="btn-topo icone" id="btnConfig" hidden>
+      <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7zM19.4 13a7.6 7.6 0 0 0 0-2l2-1.6-2-3.4-2.4 1a7.4 7.4 0 0 0-1.7-1L15 3.5h-4l-.4 2.5a7.4 7.4 0 0 0-1.7 1l-2.4-1-2 3.4 2 1.6a7.6 7.6 0 0 0 0 2l-2 1.6 2 3.4 2.4-1a7.4 7.4 0 0 0 1.7 1l.4 2.5h4l.4-2.5a7.4 7.4 0 0 0 1.7-1l2.4 1 2-3.4z" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linejoin="round"/></svg>
+    </button>
+  </header>
+
+  <main>
+    <div id="anuncio" class="sr" aria-live="assertive"></div>
+
+    <!-- acesso -->
+    <section id="tela-acesso">
+      <h1 data-t="boasVindas">Bem-vindo(a) ao Rota Dourada</h1>
+      <p class="sub" data-t="boasVindasSub">Navegação acessível no Capim Dourado Shopping. Como você quer entrar?</p>
+      <div class="idioma-linha"><label for="idiomaAcesso" data-t="idioma">Idioma</label>
+        <select id="idiomaAcesso" class="campo-sel seletor-idioma"><option value="pt">Português</option><option value="en">English</option><option value="es">Español</option></select></div>
+      <div class="pilha">
+        <button class="opcao" id="opVisitante"><span class="ic"><svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="2" fill="none"/><path d="M4 21c1-4 4-6 8-6s7 2 8 6" stroke="currentColor" stroke-width="2" fill="none"/></svg></span>
+          <span><b data-t="opVisitante">Entrar sem conta</b><span class="d" data-t="opVisitanteD">Use como visitante. Pedimos só as suas necessidades de acessibilidade.</span></span></button>
+        <button class="opcao" id="opEntrar"><span class="ic"><svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2" stroke="currentColor" stroke-width="2" fill="none"/><path d="M3 7l9 6 9-6" stroke="currentColor" stroke-width="2" fill="none"/></svg></span>
+          <span><b data-t="opEntrar">Entrar com e-mail</b><span class="d" data-t="opEntrarD">Já tem conta? Entre com seu e-mail e senha.</span></span></button>
+        <button class="opcao" id="opCriar"><span class="ic"><svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><circle cx="10" cy="8" r="4" stroke="currentColor" stroke-width="2" fill="none"/><path d="M2 21c1-4 4-6 8-6M18 13v8M14 17h8" stroke="currentColor" stroke-width="2" fill="none"/></svg></span>
+          <span><b data-t="opCriar">Criar conta</b><span class="d" data-t="opCriarD">Cadastre nome, telefone, e-mail e suas necessidades.</span></span></button>
+      </div>
+    </section>
+
+    <!-- visitante: só preferências -->
+    <section id="tela-visitante" hidden>
+      <h1 data-t="visTitulo">Suas necessidades</h1>
+      <p class="sub" data-t="visSub">Sem conta: pedimos só o necessário para adaptar rotas e telas.</p>
+      <form id="formVisitante" novalidate>
+        <div class="resumo-erros" id="visErros" role="alert" hidden></div>
+        <div class="bloco-def" data-prefixo="v"></div>
+        <label class="consent"><input type="checkbox" id="vLembrar"> <span data-t="lembrar">Lembrar minhas preferências neste aparelho</span></label>
+        <button class="primario" data-t="continuar">Continuar</button>
+      </form>
+    </section>
+
+    <!-- entrar com e-mail -->
+    <section id="tela-entrar" hidden>
+      <h1 data-t="entTitulo">Entrar com e-mail</h1>
+      <form id="formEntrar" novalidate>
+        <div class="resumo-erros" id="entErros" role="alert" hidden></div>
+        <div class="campo"><label for="eEmail"><span data-t="email">E-mail</span> <span class="obrig" data-t="obrig">(obrigatório)</span></label>
+          <input type="email" id="eEmail" autocomplete="email" aria-required="true" aria-describedby="eEmailErro"><span class="erro" id="eEmailErro"></span></div>
+        <div class="campo"><label for="eSenha"><span data-t="senha">Senha</span> <span class="obrig" data-t="obrig">(obrigatório)</span></label>
+          <div class="senha-linha"><input type="password" id="eSenha" autocomplete="current-password" aria-required="true" aria-describedby="eSenhaErro">
+            <button type="button" class="secundario mostrar-senha" data-alvo="eSenha" data-t="mostrarSenha">Mostrar</button></div>
+          <span class="erro" id="eSenhaErro"></span></div>
+        <button class="primario" id="btnEntrar" data-t="entrar">Entrar</button>
+      </form>
+      <button class="link" id="linkCriar" data-t="naoTemConta">Ainda não tem conta? Criar conta</button>
+    </section>
+
+    <!-- criar conta / editar perfil -->
+    <section id="tela-cadastro" hidden>
+      <h1 id="cadTitulo" data-t="cadTitulo">Criar conta</h1>
+      <p class="sub" data-t="cadSub">Campos marcados como obrigatórios precisam ser preenchidos.</p>
+      <form id="formCadastro" novalidate>
+        <div class="resumo-erros" id="cadErros" role="alert" hidden></div>
+        <div class="campo"><label for="cNome"><span data-t="nome">Nome</span> <span class="obrig" data-t="obrig">(obrigatório)</span></label>
+          <input type="text" id="cNome" autocomplete="name" maxlength="80" aria-required="true" aria-describedby="cNomeErro"><span class="erro" id="cNomeErro"></span></div>
+        <div class="campo"><label for="cTel"><span data-t="telefone">Telefone com DDD</span> <span class="obrig" data-t="obrig">(obrigatório)</span></label>
+          <input type="tel" id="cTel" autocomplete="tel" inputmode="tel" placeholder="(63) 99999-0000" aria-required="true" aria-describedby="cTelErro"><span class="erro" id="cTelErro"></span></div>
+        <div class="campo"><label for="cEmail"><span data-t="email">E-mail</span> <span class="obrig" data-t="obrig">(obrigatório)</span></label>
+          <input type="email" id="cEmail" autocomplete="email" aria-required="true" aria-describedby="cEmailErro"><span class="erro" id="cEmailErro"></span></div>
+        <div class="campo"><label for="cSenha"><span id="cSenhaRot" data-t="senhaNova">Senha (mínimo 8 caracteres)</span> <span class="obrig" id="cSenhaObrig" data-t="obrig">(obrigatório)</span></label>
+          <div class="senha-linha"><input type="password" id="cSenha" autocomplete="new-password" aria-describedby="cSenhaErro">
+            <button type="button" class="secundario mostrar-senha" data-alvo="cSenha" data-t="mostrarSenha">Mostrar</button></div>
+          <span class="erro" id="cSenhaErro"></span></div>
+        <div class="bloco-def" data-prefixo="c"></div>
+        <button class="primario" id="btnSalvarCadastro" data-t="criarConta">Criar conta</button>
+        <p class="nota" id="notaLocal" data-t="notaLocal">Neste protótipo, a conta fica salva só neste navegador. No app, ela fica no servidor do Rota Dourada.</p>
+      </form>
+    </section>
+
+    <!-- configurações -->
+    <section id="tela-config" hidden>
+      <h1 data-t="config">Configurações</h1>
+      <fieldset>
+        <legend data-t="tema">Tema</legend>
+        <div class="temas" id="listaTemas">
+          <label><input type="radio" name="tema" value="claro"> <span class="amostra" style="background:#EEF3EE;color:#1F3B2D">Aa</span> <span data-t="temaClaro">Claro</span></label>
+          <label><input type="radio" name="tema" value="escuro"> <span class="amostra" style="background:#121614;color:#E3A92B">Aa</span> <span data-t="temaEscuro">Escuro</span></label>
+          <label><input type="radio" name="tema" value="terror"> <span class="amostra" style="background:#0E0809;color:#F0A04B;font-family:Creepster,cursive">Aa</span> <span data-t="temaTerror">Sexta-feira 13</span></label>
+        </div>
+        <p class="nota" id="notaContraste" hidden data-t="notaContraste">Seu perfil usa alto contraste. Ele tem prioridade sobre o tema para manter a leitura.</p>
+      </fieldset>
+      <div class="idioma-linha"><label for="idiomaConfig" class="legenda" data-t="idioma">Idioma</label>
+        <select id="idiomaConfig" class="campo-sel seletor-idioma"><option value="pt">Português</option><option value="en">English</option><option value="es">Español</option></select></div>
+      <h2 data-t="perfil">Perfil</h2>
+      <p id="resumoPerfil" class="nota"></p>
+      <div class="pilha">
+        <button class="secundario" style="width:100%" id="btnEditarPerfil" data-t="editarPerfil">Editar perfil</button>
+        <button class="secundario" style="width:100%" id="btnSair" data-t="sair">Sair</button>
+        <button class="link perigo" id="btnApagar" data-t="apagar">Apagar meus dados</button>
+      </div>
+    </section>
+
+    <!-- explorar -->
+    <section id="tela-explorar" hidden>
+      <h1 class="sr" data-t="ondeIr">Aonde você quer ir?</h1>
+      <div class="barra">
+        <form class="busca" id="formBusca" role="search">
+          <label class="sr" for="campoBusca" data-t="ondeIr">Aonde você quer ir?</label>
+          <input id="campoBusca" autocomplete="off" data-ph="ondeIr" placeholder="Aonde você quer ir?">
+          <button type="button" id="btnVoz" aria-label="Buscar por voz">
+            <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3" fill="currentColor"/><path d="M6 11a6 6 0 0 0 12 0M12 17v4" stroke="currentColor" stroke-width="2" fill="none"/></svg>
+          </button>
+        </form>
+        <div class="local" id="barraLocal" aria-live="polite"></div>
+      </div>
+      <div class="mapa-area" id="mapaArea">
+        <svg class="mapa" id="mapaExplorar" role="application" aria-roledescription="mapa" aria-label="Mapa do shopping"></svg>
+        <div class="andares-flut" id="andaresExplorar"></div>
+        <div class="legenda-mapa" id="legendaMapa" aria-hidden="true"></div>
+        <div class="zoom">
+          <button id="zMais" aria-label="Aproximar">+</button>
+          <button id="zMenos" aria-label="Afastar">−</button>
+          <button id="zCentro" aria-label="Centralizar em mim" style="font-size:16px">◎</button>
+        </div>
+        <button class="alca" id="alcaLista" aria-controls="gaveta" aria-expanded="false">
+          <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6" stroke="currentColor" stroke-width="2.5" fill="none"/></svg>
+          <span data-t="lojas">Lojas</span>
+        </button>
+        <div class="cartao" id="cartaoPoi" hidden></div>
+        <aside class="gaveta" id="gaveta" aria-label="Lista de lojas">
+          <header><h2 data-t="todasLojas">Todas as lojas</h2><button class="secundario" id="fecharGaveta" data-t="fechar">Fechar</button></header>
+          <div class="lista-lojas" id="listaLojas"></div>
+        </aside>
+      </div>
+    </section>
+
+    <!-- navegação passo a passo -->
+    <section id="tela-rota" hidden>
+      <div id="resumoRota"></div>
+      <div class="etapa-atual" id="etapaAtual" aria-live="polite"></div>
+      <div class="linha-btn" style="margin-bottom:12px"><button class="primario" id="btnProx" data-t="proximo">Próximo passo</button></div>
+      <div class="linha-btn" style="margin-bottom:12px">
+        <button class="secundario" id="btnOuvir" data-t="ouvir">Ouvir</button>
+        <button class="secundario" id="btnPerdido" data-t="perdido">Estou perdido</button>
+      </div>
+      <div class="mapa-wrap">
+        <div class="andares" id="abasAndar"></div>
+        <svg class="mapa" id="mapa" style="height:auto;touch-action:auto;cursor:default" viewBox="0 0 160 100" role="img" aria-label="Mapa do andar com a rota"></svg>
+      </div>
+      <ol class="etapas" id="listaEtapas"></ol>
+    </section>
+
+    <section id="tela-perdido" hidden>
+      <h1 class="sr" data-t="incertoT">Não temos certeza da sua posição.</h1>
+      <div class="aviso erro" role="alert"><b data-t="incertoT"></b><br><span data-t="incertoD"></span></div>
+      <ul class="lista" id="listaPerdido"></ul>
+    </section>
+
+    <section id="tela-semrota" hidden>
+      <h1 data-t="semRotaAcessT">Sem rota acessível confirmada</h1>
+      <div id="semRotaCorpo"></div>
+    </section>
+
+    <section id="tela-chegada" hidden>
+      <h1 id="chegadaTitulo"></h1>
+      <p class="sub" id="chegadaTexto"></p>
+      <button class="primario" id="btnNova" data-t="nova"></button>
+    </section>
+
+    <!-- conversar (somente surdez e/ou deficiência na fala) -->
+    <section id="tela-conversa" hidden>
+      <h1 class="sr" data-t="conversar">Conversar</h1>
+      <div class="metade atendente">
+        <span class="quem">Para o atendente: leia a mensagem do visitante</span>
+        <div class="fala" id="falaParaAtendente">—</div>
+        <div class="frases" id="respostasAtendente"></div>
+        <form class="escrever" id="formAtendente">
+          <input id="campoAtendente" placeholder="Escreva sua resposta" aria-label="Resposta do atendente">
+          <button>Enviar</button>
+        </form>
+      </div>
+      <div class="metade">
+        <button class="btn-sos" id="btnSOS">
+          <svg width="28" height="28" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l10 18H2z" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round"/><path d="M12 10v5M12 18v.01" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg>
+          <span data-t="sos">SOS — Preciso de ajuda</span>
+        </button>
+        <span class="quem" data-t="vireTela"></span>
+        <div class="fala" id="falaParaVisitante" aria-live="polite">—</div>
+        <div class="frases" id="frasesVisitante"></div>
+        <form class="escrever" id="formVisitanteMsg">
+          <input id="campoVisitante" data-ph="escreva" aria-label="Sua mensagem">
+          <button data-t="mostrar"></button>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <div class="rodape"><span class="ponto-on"></span><span id="txtPacote"></span></div>
+  <div class="toast" id="toast" role="status" hidden></div>
+
+  <!-- confirmação genérica -->
+  <div class="fundo-dialogo" id="dlg" hidden>
+    <div class="dialogo" role="alertdialog" aria-modal="true" aria-labelledby="dlgTitulo" aria-describedby="dlgTexto">
+      <h2 id="dlgTitulo" tabindex="-1"></h2>
+      <p id="dlgTexto"></p>
+      <div class="pilha"><button class="primario" id="dlgSim"></button><button class="secundario" style="width:100%" id="dlgNao"></button></div>
+    </div>
+  </div>
+
+  <!-- pedido de ajuda em tela cheia (sem som, sem piscar) -->
+  <div class="sos-tela" id="sosTela" role="dialog" aria-modal="true" aria-labelledby="sosTitulo" hidden>
+    <h2 class="grande" id="sosTitulo" tabindex="-1">PRECISO DE AJUDA</h2>
+    <div id="sosCorpo"></div>
+    <p class="status" id="sosStatus" role="status"></p>
+    <button id="sosFechar" data-t="sosFechar">Fechar e voltar à conversa</button>
+  </div>
+</div>
+
+<aside class="demo" aria-label="Painel de demonstração">
+  <h2>Painel de demonstração</h2>
+  <p>Para a banca: simula situações reais sem sair do fluxo.</p>
+  <button class="btn-demo" id="dMover">Simular deslocamento (próximo beacon)</button>
+  <label><input type="checkbox" id="dElevador"> Elevador em manutenção</label>
+  <label><input type="checkbox" id="dComparar" checked> Mostrar a rota padrão em cinza</label>
+  <label><input type="checkbox" id="dVibrar" checked> Vibração (perfis surdez/fala)</label>
+  <button class="btn-demo" id="dReset">Apagar dados deste navegador e recomeçar</button>
+  <p style="margin-top:14px">Roteiro: Criar conta (cadeirante) → buscar "Praça de Alimentação" → "sem rota acessível confirmada" e a alternativa pelo acesso oeste → Configurações → tema Sexta-feira 13 → Sair → Entrar com e-mail → perfil surdo → Conversar → SOS.</p>
+  <p>Mapa: Planta Mix do Capim Dourado (nov/2026) em escala, sem logotipos, textos e vagas. Só conexões desenhadas na planta. Contas deste protótipo ficam neste navegador. Localização simulada por beacon. O SOS não envia alertas: não há integração com a central do shopping.</p>
+</aside>
+</div>
+
+<script>/*NUCLEO*/</script>
+<script>
+const PACOTE = /*PACOTE*/;
+const IMAGENS = /*IMAGENS*/;
+(function(){
+'use strict';
+const N=window.Nucleo;
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+// Integração com a central de atendimento do shopping: não existe neste protótipo.
+const CENTRAL={disponivel:false};
+
+// ---------- textos ----------
+const UI={
+ pt:{voltar:'Voltar',voltarPara:t=>`Voltar para ${t}`,conversar:'Conversar',config:'Configurações',idioma:'Idioma',
+  boasVindas:'Bem-vindo(a) ao Rota Dourada',boasVindasSub:'Navegação acessível no Capim Dourado Shopping. Como você quer entrar?',
+  opVisitante:'Entrar sem conta',opVisitanteD:'Use como visitante. Pedimos só as suas necessidades de acessibilidade.',
+  opEntrar:'Entrar com e-mail',opEntrarD:'Já tem conta? Entre com seu e-mail e senha.',
+  opCriar:'Criar conta',opCriarD:'Cadastre nome, telefone, e-mail e suas necessidades.',
+  visTitulo:'Suas necessidades',visSub:'Sem conta: pedimos só o necessário para adaptar rotas e telas.',lembrar:'Lembrar minhas preferências neste aparelho',continuar:'Continuar',
+  entTitulo:'Entrar com e-mail',email:'E-mail',senha:'Senha',obrig:'(obrigatório)',opcional:'(opcional)',mostrarSenha:'Mostrar',ocultarSenha:'Ocultar',entrar:'Entrar',entrando:'Entrando…',naoTemConta:'Ainda não tem conta? Criar conta',
+  cadTitulo:'Criar conta',cadTituloEd:'Editar perfil',cadSub:'Campos marcados como obrigatórios precisam ser preenchidos.',nome:'Nome',telefone:'Telefone com DDD',senhaNova:'Senha (mínimo 8 caracteres)',senhaTroca:'Nova senha (deixe em branco para manter)',
+  criarConta:'Criar conta',salvar:'Salvar alterações',salvando:'Salvando…',criando:'Criando conta…',
+  notaLocal:'Neste protótipo, a conta fica salva só neste navegador. No app, ela fica no servidor do Rota Dourada.',
+  perguntaDef:'Você tem alguma deficiência ou necessidade de acessibilidade?',sim:'Sim',nao:'Não',quais:'Quais? Marque todas que se aplicam.',
+  consent:'Autorizo guardar essa informação para adaptar rotas e telas. Posso apagar quando quiser.',
+  eNome:'Informe seu nome.',eTel:'Informe o telefone com DDD (10 ou 11 números).',eEmail:'Informe um e-mail válido, como nome@exemplo.com.',eSenha:'A senha precisa ter pelo menos 8 caracteres.',eSenhaVazia:'Informe sua senha.',
+  ePossui:'Responda se você tem alguma deficiência ou necessidade.',eTipos:'Marque pelo menos uma necessidade.',eConsent:'Para guardar essa informação, marque a autorização.',
+  eDuplicado:'Já existe uma conta com este e-mail. Use "Entrar com e-mail".',eLogin:'E-mail ou senha incorretos.',eArmaz:'Não foi possível usar o armazenamento deste navegador.',
+  corrija:n=>`Corrija ${n} ${n===1?'campo':'campos'}:`,
+  contaCriada:n=>`Conta criada. Bem-vindo(a), ${n}!`,bemVindoDeVolta:n=>`Bem-vindo(a) de volta, ${n}!`,perfilSalvo:'Perfil atualizado.',prefsSalvas:'Preferências aplicadas.',
+  adaptaT:'O app vai se adaptar assim:',ad:{nenhum:'Mapa e instruções visuais',semEscadas:'Rotas sem escadas nem escadas rolantes, só com trechos confirmados na planta',altoContraste:'Alto contraste e letras maiores',audioAuto:'Cada passo falado em voz alta',listaPrimeiro:'Lista de lojas aberta primeiro, melhor para leitor de tela',vibracao:'Avisos por texto e vibração, sem depender de som',calmo:'Desvia de áreas movimentadas e reduz animações',passoAPasso:'Um passo de cada vez, instruções curtas',conversar:'Botão Conversar, com SOS, para falar com atendentes por escrito'},
+  tema:'Tema',temaClaro:'Claro',temaEscuro:'Escuro',temaTerror:'Sexta-feira 13',notaContraste:'Seu perfil usa alto contraste. Ele tem prioridade sobre o tema para manter a leitura.',
+  perfil:'Perfil',editarPerfil:'Editar perfil',sair:'Sair',apagar:'Apagar meus dados',modoConta:e=>`Conta: ${e}`,modoVisitante:'Visitante (sem conta)',
+  necessidades:'Necessidades',nenhuma:'nenhuma informada',
+  apagarT:'Apagar seus dados?',apagarD:'Isto apaga seu perfil e suas necessidades deste aparelho. Não dá para desfazer.',apagarSim:'Apagar',cancelar:'Cancelar',apagado:'Dados apagados.',
+  sairT:'Sair?',sairD:'Você volta para a tela de acesso. Seus dados continuam salvos.',sairSim:'Sair',
+  ondeIr:'Aonde você quer ir?',lojas:'Lojas',todasLojas:'Todas as lojas',fechar:'Fechar',localizando:'Localizando você…',vcAqui:r=>`Você está ${r}`,estimado:'estimado',confirmado:'confirmado',ehAqui:'É aqui',ajustar:'Ajustar',toqueMapa:'Toque no mapa onde você está.',
+  cat:{loja:'Lojas',alimentacao:'Alimentação',sanitario:'Banheiros',servico:'Serviços',lazer:'Lazer'},catUm:{loja:'Loja',alimentacao:'Alimentação',sanitario:'Banheiro',servico:'Serviço',lazer:'Lazer'},
+  legVoce:'Você',legDestino:'Destino',legRota:'Rota',legCirc:'Corredores',
+  iniciar:'Iniciar navegação',semResultado:'Nada encontrado. Tente outra palavra.',noAndar:a=>`No ${a}`,outroAndar:a=>`A rota continua no ${a}.`,
+  semEscadas:'Sem escadas',incluiEscada:'Inclui escada',incluiRolante:'Inclui escada rolante',confirmadaPerfil:'Rota acessível confirmada para seu perfil',distancia:m=>`${m} m`,passo:(i,n)=>`Passo ${i} de ${n}`,padraoUsaria:'A rota mais curta usaria escada ou escada rolante.',evitaMov:'Desvia das áreas mais movimentadas (estimativa fixa).',
+  temEscadaVisual:'Atenção: este trajeto inclui escada. Não há caminho sem escadas confirmado a partir daqui.',
+  proximo:'Próximo passo',cheguei:'Cheguei',ouvir:'Ouvir',perdido:'Estou perdido',incertoT:'Não temos certeza da sua posição.',incertoD:'Escolha um ponto próximo para recalcular a rota.',
+  semRotaAcessT:'Sem rota acessível confirmada',semRotaT:'Sem rota disponível',
+  semRotaAcessD:'Não encontramos, a partir da sua posição, um caminho que atenda às suas necessidades usando só trechos confirmados na planta. Não vamos mostrar um caminho inadequado como acessível.',
+  semRotaPisoD:'Por dentro do shopping, a planta mostra só escadas rolantes e escada fixa entre o térreo e o 2º piso. O elevador fica no acesso oeste (Av. JK), sem ligação interna desenhada.',
+  elevManut:'O elevador está em manutenção.',
+  alternativas:'O que você pode fazer:',altEntrada:e=>`Ver rota a partir de: ${e}`,altEntradaNota:'Você precisará chegar a essa entrada por fora do shopping.',altSeguranca:'Ver onde fica a Segurança para pedir ajuda',altConversar:'Conversar com um atendente',outroDestino:'Escolher outro destino',revisarOrigem:'Ajustar minha posição',
+  rotaDaEntrada:e=>`Rota a partir de: ${e}`,
+  chegou:'Você chegou!',nova:'Escolher outro destino',
+  vireTela:'Mostre esta tela ao atendente. A metade de cima fica virada para ele.',mostrar:'Mostrar',escreva:'Escreva sua mensagem',
+  sos:'SOS — Preciso de ajuda',sosConfT:'Mostrar pedido de ajuda?',sosConfD:'Vamos mostrar em tela cheia uma mensagem para as pessoas perto de você. Nenhuma mensagem será enviada.',sosConfSim:'Mostrar pedido de ajuda',
+  sosFechar:'Fechar e voltar à conversa',sosSurdo:'Sou surdo(a). Escreva para mim ou use gestos.',sosFala:'Não consigo falar. Por favor, leia esta tela.',sosChame:'Por favor, chame um segurança ou a brigada do shopping.',sosPerto:(r,a)=>`Estou ${r} – ${a}.`,
+  sosSemEnvio:'Esta tela NÃO enviou alerta a ninguém: o app ainda não está ligado à central de atendimento do shopping. Mostre-a para alguém próximo.',
+  pacote:(v,d)=>`Mapa salvo no aparelho · v${v} · ${d} · funciona offline`,
+  titulos:{acesso:'Acesso',visitante:'Suas necessidades',entrar:'Entrar',cadastro:'Cadastro',config:'Configurações',explorar:'Mapa',rota:'Navegação',perdido:'Posição',semrota:'Sem rota',chegada:'Chegada',conversa:'Conversar'}},
+ en:{voltar:'Back',voltarPara:t=>`Back to ${t}`,conversar:'Talk',config:'Settings',idioma:'Language',
+  boasVindas:'Welcome to Rota Dourada',boasVindasSub:'Accessible navigation at Capim Dourado Shopping. How do you want to sign in?',
+  opVisitante:'Continue without an account',opVisitanteD:'Use as a guest. We only ask for your accessibility needs.',
+  opEntrar:'Sign in with email',opEntrarD:'Already have an account? Sign in with email and password.',
+  opCriar:'Create account',opCriarD:'Register your name, phone, email and needs.',
+  visTitulo:'Your needs',visSub:'No account: we only ask what is needed to adapt routes and screens.',lembrar:'Remember my preferences on this device',continuar:'Continue',
+  entTitulo:'Sign in with email',email:'Email',senha:'Password',obrig:'(required)',opcional:'(optional)',mostrarSenha:'Show',ocultarSenha:'Hide',entrar:'Sign in',entrando:'Signing in…',naoTemConta:"Don't have an account? Create one",
+  cadTitulo:'Create account',cadTituloEd:'Edit profile',cadSub:'Fields marked as required must be filled in.',nome:'Name',telefone:'Phone with area code',senhaNova:'Password (at least 8 characters)',senhaTroca:'New password (leave blank to keep)',
+  criarConta:'Create account',salvar:'Save changes',salvando:'Saving…',criando:'Creating account…',
+  notaLocal:'In this prototype, the account is saved only in this browser. In the app, it is stored on the Rota Dourada server.',
+  perguntaDef:'Do you have a disability or accessibility need?',sim:'Yes',nao:'No',quais:'Which ones? Check all that apply.',
+  consent:'I allow this information to be stored to adapt routes and screens. I can delete it anytime.',
+  eNome:'Enter your name.',eTel:'Enter your phone with area code (10 or 11 digits).',eEmail:'Enter a valid email, like name@example.com.',eSenha:'Password must have at least 8 characters.',eSenhaVazia:'Enter your password.',
+  ePossui:'Answer whether you have a disability or need.',eTipos:'Check at least one need.',eConsent:'To store this information, check the permission box.',
+  eDuplicado:'An account with this email already exists. Use "Sign in with email".',eLogin:'Incorrect email or password.',eArmaz:'Could not use this browser storage.',
+  corrija:n=>`Fix ${n} ${n===1?'field':'fields'}:`,
+  contaCriada:n=>`Account created. Welcome, ${n}!`,bemVindoDeVolta:n=>`Welcome back, ${n}!`,perfilSalvo:'Profile updated.',prefsSalvas:'Preferences applied.',
+  adaptaT:'The app will adapt like this:',ad:{nenhum:'Map and visual directions',semEscadas:'Routes without stairs or escalators, using only segments confirmed on the plan',altoContraste:'High contrast and larger text',audioAuto:'Every step spoken aloud',listaPrimeiro:'Store list opens first, better with a screen reader',vibracao:'Text and vibration alerts, no sound needed',calmo:'Avoids busy areas and reduces motion',passoAPasso:'One step at a time, short directions',conversar:'Talk button, with SOS, to communicate with staff in writing'},
+  tema:'Theme',temaClaro:'Light',temaEscuro:'Dark',temaTerror:'Friday the 13th',notaContraste:'Your profile uses high contrast. It takes priority over the theme to keep text readable.',
+  perfil:'Profile',editarPerfil:'Edit profile',sair:'Sign out',apagar:'Delete my data',modoConta:e=>`Account: ${e}`,modoVisitante:'Guest (no account)',
+  necessidades:'Needs',nenhuma:'none given',
+  apagarT:'Delete your data?',apagarD:'This deletes your profile and needs from this device. It cannot be undone.',apagarSim:'Delete',cancelar:'Cancel',apagado:'Data deleted.',
+  sairT:'Sign out?',sairD:'You will return to the sign-in screen. Your data stays saved.',sairSim:'Sign out',
+  ondeIr:'Where do you want to go?',lojas:'Stores',todasLojas:'All stores',fechar:'Close',localizando:'Finding you…',vcAqui:r=>`You are ${r}`,estimado:'estimated',confirmado:'confirmed',ehAqui:"That's right",ajustar:'Adjust',toqueMapa:'Tap the map where you are.',
+  cat:{loja:'Stores',alimentacao:'Food',sanitario:'Restrooms',servico:'Services',lazer:'Leisure'},catUm:{loja:'Store',alimentacao:'Food',sanitario:'Restroom',servico:'Service',lazer:'Leisure'},
+  legVoce:'You',legDestino:'Destination',legRota:'Route',legCirc:'Corridors',
+  iniciar:'Start navigation',semResultado:'Nothing found. Try another word.',noAndar:a=>`On the ${a}`,outroAndar:a=>`The route continues on the ${a}.`,
+  semEscadas:'No stairs',incluiEscada:'Includes stairs',incluiRolante:'Includes escalator',confirmadaPerfil:'Accessible route confirmed for your profile',distancia:m=>`${m} m`,passo:(i,n)=>`Step ${i} of ${n}`,padraoUsaria:'The shortest route would use stairs or an escalator.',evitaMov:'Avoids the busiest areas (fixed estimate).',
+  temEscadaVisual:'Warning: this route includes stairs. There is no confirmed stair-free path from here.',
+  proximo:'Next step',cheguei:"I've arrived",ouvir:'Listen',perdido:"I'm lost",incertoT:"We're not sure where you are.",incertoD:'Pick a nearby spot to recalculate the route.',
+  semRotaAcessT:'No confirmed accessible route',semRotaT:'No route available',
+  semRotaAcessD:'From your position, we could not find a path that meets your needs using only segments confirmed on the plan. We will not show an unsuitable path as accessible.',
+  semRotaPisoD:'Inside the mall, the plan only shows escalators and stairs between the ground and 2nd floors. The elevator is at the west access (Av. JK), with no indoor connection drawn.',
+  elevManut:'The elevator is out of service.',
+  alternativas:'What you can do:',altEntrada:e=>`See the route from: ${e}`,altEntradaNota:'You will need to reach that entrance from outside the mall.',altSeguranca:'See where Security is to ask for help',altConversar:'Talk to staff',outroDestino:'Choose another destination',revisarOrigem:'Adjust my position',
+  rotaDaEntrada:e=>`Route from: ${e}`,
+  chegou:'You have arrived!',nova:'Choose another destination',
+  vireTela:'Show this screen to staff. The top half faces them.',mostrar:'Show',escreva:'Type your message',
+  sos:'SOS — I need help',sosConfT:'Show help request?',sosConfD:'We will show a full-screen message for people near you. No message will be sent.',sosConfSim:'Show help request',
+  sosFechar:'Close and return to the conversation',sosSurdo:'I am deaf. Please write to me or use gestures.',sosFala:'I cannot speak. Please read this screen.',sosChame:'Please call mall security or the first aid team.',sosPerto:(r,a)=>`I am ${r} – ${a}.`,
+  sosSemEnvio:'This screen did NOT send an alert to anyone: the app is not yet connected to the mall service center. Show it to someone nearby.',
+  pacote:(v,d)=>`Map saved on device · v${v} · ${d} · works offline`,
+  titulos:{acesso:'Sign in',visitante:'Your needs',entrar:'Sign in',cadastro:'Registration',config:'Settings',explorar:'Map',rota:'Navigation',perdido:'Position',semrota:'No route',chegada:'Arrival',conversa:'Talk'}},
+ es:{voltar:'Volver',voltarPara:t=>`Volver a ${t}`,conversar:'Conversar',config:'Configuración',idioma:'Idioma',
+  boasVindas:'Bienvenido(a) a Rota Dourada',boasVindasSub:'Navegación accesible en el Capim Dourado Shopping. ¿Cómo quiere entrar?',
+  opVisitante:'Entrar sin cuenta',opVisitanteD:'Úselo como visitante. Solo pedimos sus necesidades de accesibilidad.',
+  opEntrar:'Entrar con correo',opEntrarD:'¿Ya tiene cuenta? Entre con correo y contraseña.',
+  opCriar:'Crear cuenta',opCriarD:'Registre nombre, teléfono, correo y sus necesidades.',
+  visTitulo:'Sus necesidades',visSub:'Sin cuenta: solo pedimos lo necesario para adaptar rutas y pantallas.',lembrar:'Recordar mis preferencias en este dispositivo',continuar:'Continuar',
+  entTitulo:'Entrar con correo',email:'Correo',senha:'Contraseña',obrig:'(obligatorio)',opcional:'(opcional)',mostrarSenha:'Mostrar',ocultarSenha:'Ocultar',entrar:'Entrar',entrando:'Entrando…',naoTemConta:'¿No tiene cuenta? Crear cuenta',
+  cadTitulo:'Crear cuenta',cadTituloEd:'Editar perfil',cadSub:'Los campos marcados como obligatorios deben completarse.',nome:'Nombre',telefone:'Teléfono con código de área',senhaNova:'Contraseña (mínimo 8 caracteres)',senhaTroca:'Nueva contraseña (deje en blanco para mantener)',
+  criarConta:'Crear cuenta',salvar:'Guardar cambios',salvando:'Guardando…',criando:'Creando cuenta…',
+  notaLocal:'En este prototipo, la cuenta se guarda solo en este navegador. En la app, se guarda en el servidor de Rota Dourada.',
+  perguntaDef:'¿Tiene alguna discapacidad o necesidad de accesibilidad?',sim:'Sí',nao:'No',quais:'¿Cuáles? Marque todas las que correspondan.',
+  consent:'Autorizo guardar esta información para adaptar rutas y pantallas. Puedo borrarla cuando quiera.',
+  eNome:'Ingrese su nombre.',eTel:'Ingrese el teléfono con código de área (10 u 11 números).',eEmail:'Ingrese un correo válido, como nombre@ejemplo.com.',eSenha:'La contraseña debe tener al menos 8 caracteres.',eSenhaVazia:'Ingrese su contraseña.',
+  ePossui:'Responda si tiene alguna discapacidad o necesidad.',eTipos:'Marque al menos una necesidad.',eConsent:'Para guardar esta información, marque la autorización.',
+  eDuplicado:'Ya existe una cuenta con este correo. Use "Entrar con correo".',eLogin:'Correo o contraseña incorrectos.',eArmaz:'No fue posible usar el almacenamiento de este navegador.',
+  corrija:n=>`Corrija ${n} ${n===1?'campo':'campos'}:`,
+  contaCriada:n=>`Cuenta creada. ¡Bienvenido(a), ${n}!`,bemVindoDeVolta:n=>`¡Bienvenido(a) de nuevo, ${n}!`,perfilSalvo:'Perfil actualizado.',prefsSalvas:'Preferencias aplicadas.',
+  adaptaT:'La app se adaptará así:',ad:{nenhum:'Mapa e indicaciones visuales',semEscadas:'Rutas sin escaleras ni escaleras mecánicas, solo con tramos confirmados en el plano',altoContraste:'Alto contraste y letras más grandes',audioAuto:'Cada paso dicho en voz alta',listaPrimeiro:'Lista de tiendas primero, mejor con lector de pantalla',vibracao:'Avisos por texto y vibración, sin depender del sonido',calmo:'Evita zonas concurridas y reduce animaciones',passoAPasso:'Un paso a la vez, indicaciones cortas',conversar:'Botón Conversar, con SOS, para comunicarse por escrito con el personal'},
+  tema:'Tema',temaClaro:'Claro',temaEscuro:'Oscuro',temaTerror:'Viernes 13',notaContraste:'Su perfil usa alto contraste. Tiene prioridad sobre el tema para mantener la lectura.',
+  perfil:'Perfil',editarPerfil:'Editar perfil',sair:'Salir',apagar:'Borrar mis datos',modoConta:e=>`Cuenta: ${e}`,modoVisitante:'Visitante (sin cuenta)',
+  necessidades:'Necesidades',nenhuma:'ninguna informada',
+  apagarT:'¿Borrar sus datos?',apagarD:'Esto borra su perfil y sus necesidades de este dispositivo. No se puede deshacer.',apagarSim:'Borrar',cancelar:'Cancelar',apagado:'Datos borrados.',
+  sairT:'¿Salir?',sairD:'Volverá a la pantalla de acceso. Sus datos siguen guardados.',sairSim:'Salir',
+  ondeIr:'¿A dónde quiere ir?',lojas:'Tiendas',todasLojas:'Todas las tiendas',fechar:'Cerrar',localizando:'Ubicándolo…',vcAqui:r=>`Usted está ${r}`,estimado:'estimado',confirmado:'confirmado',ehAqui:'Es aquí',ajustar:'Ajustar',toqueMapa:'Toque el mapa donde está.',
+  cat:{loja:'Tiendas',alimentacao:'Comida',sanitario:'Baños',servico:'Servicios',lazer:'Ocio'},catUm:{loja:'Tienda',alimentacao:'Comida',sanitario:'Baño',servico:'Servicio',lazer:'Ocio'},
+  legVoce:'Usted',legDestino:'Destino',legRota:'Ruta',legCirc:'Pasillos',
+  iniciar:'Iniciar navegación',semResultado:'Nada encontrado. Pruebe otra palabra.',noAndar:a=>`En el ${a}`,outroAndar:a=>`La ruta continúa en el ${a}.`,
+  semEscadas:'Sin escaleras',incluiEscada:'Incluye escalera',incluiRolante:'Incluye escalera mecánica',confirmadaPerfil:'Ruta accesible confirmada para su perfil',distancia:m=>`${m} m`,passo:(i,n)=>`Paso ${i} de ${n}`,padraoUsaria:'La ruta más corta usaría escalera o escalera mecánica.',evitaMov:'Evita las zonas más concurridas (estimación fija).',
+  temEscadaVisual:'Atención: este trayecto incluye escalera. No hay camino sin escaleras confirmado desde aquí.',
+  proximo:'Siguiente paso',cheguei:'Llegué',ouvir:'Escuchar',perdido:'Estoy perdido',incertoT:'No estamos seguros de su posición.',incertoD:'Elija un punto cercano para recalcular la ruta.',
+  semRotaAcessT:'Sin ruta accesible confirmada',semRotaT:'Sin ruta disponible',
+  semRotaAcessD:'Desde su posición, no encontramos un camino que cumpla sus necesidades usando solo tramos confirmados en el plano. No mostraremos un camino inadecuado como accesible.',
+  semRotaPisoD:'Dentro del shopping, el plano solo muestra escaleras mecánicas y escalera fija entre la planta baja y el 2º piso. El ascensor está en el acceso oeste (Av. JK), sin conexión interna dibujada.',
+  elevManut:'El ascensor está fuera de servicio.',
+  alternativas:'Lo que puede hacer:',altEntrada:e=>`Ver la ruta desde: ${e}`,altEntradaNota:'Tendrá que llegar a esa entrada por fuera del shopping.',altSeguranca:'Ver dónde está Seguridad para pedir ayuda',altConversar:'Conversar con el personal',outroDestino:'Elegir otro destino',revisarOrigem:'Ajustar mi posición',
+  rotaDaEntrada:e=>`Ruta desde: ${e}`,
+  chegou:'¡Ha llegado!',nova:'Elegir otro destino',
+  vireTela:'Muestre esta pantalla al personal. La mitad superior queda hacia él.',mostrar:'Mostrar',escreva:'Escriba su mensaje',
+  sos:'SOS — Necesito ayuda',sosConfT:'¿Mostrar pedido de ayuda?',sosConfD:'Mostraremos a pantalla completa un mensaje para las personas cerca de usted. No se enviará ningún mensaje.',sosConfSim:'Mostrar pedido de ayuda',
+  sosFechar:'Cerrar y volver a la conversación',sosSurdo:'Soy sordo(a). Escríbame o use gestos.',sosFala:'No puedo hablar. Por favor, lea esta pantalla.',sosChame:'Por favor, llame a seguridad o a primeros auxilios del shopping.',sosPerto:(r,a)=>`Estoy ${r} – ${a}.`,
+  sosSemEnvio:'Esta pantalla NO envió ninguna alerta: la app todavía no está conectada a la central de atención del shopping. Muéstrela a alguien cercano.',
+  pacote:(v,d)=>`Mapa guardado en el dispositivo · v${v} · ${d} · funciona sin conexión`,
+  titulos:{acesso:'Acceso',visitante:'Sus necesidades',entrar:'Entrar',cadastro:'Registro',config:'Configuración',explorar:'Mapa',rota:'Navegación',perdido:'Posición',semrota:'Sin ruta',chegada:'Llegada',conversa:'Conversar'}}
+};
+const FRASES=[
+  {pt:'Sou surdo(a). Pode escrever para mim?',en:'I am deaf. Could you write to me?',es:'Soy sordo(a). ¿Puede escribirme?'},
+  {pt:'Não consigo falar. Vou escrever aqui.',en:"I can't speak. I'll write here.",es:'No puedo hablar. Escribiré aquí.'},
+  {pt:'Onde fica o banheiro?',en:'Where is the restroom?',es:'¿Dónde está el baño?'},
+  {pt:'Preciso de um caminho sem escadas.',en:'I need a route without stairs.',es:'Necesito un camino sin escaleras.'},
+  {pt:'Pode me mostrar no mapa?',en:'Can you show me on the map?',es:'¿Me lo muestra en el mapa?'},
+  {pt:'Obrigado(a)!',en:'Thank you!',es:'¡Gracias!'}];
+const RESPOSTAS=[
+  {pt:'Siga-me, por favor.',en:'Please follow me.',es:'Sígame, por favor.'},
+  {pt:'Aguarde um momento.',en:'Please wait a moment.',es:'Espere un momento.'},
+  {pt:'Vou chamar um colega.',en:"I'll call a colleague.",es:'Voy a llamar a un compañero.'},
+  {pt:'Fica à sua esquerda.',en:"It's on your left.",es:'Está a su izquierda.'},
+  {pt:'Fica à sua direita.',en:"It's on your right.",es:'Está a su derecha.'},
+  {pt:'Siga em frente.',en:'Go straight ahead.',es:'Siga recto.'},
+  {pt:'Fica no 2º piso.',en:"It's on the 2nd floor.",es:'Está en el 2º piso.'}];
+// cores por tema (pinos, rota, rótulos) — rota sempre com borda escura para contraste
+const PALETA={
+  claro:{cat:{loja:'#1F3B2D',alimentacao:'#B4442E',sanitario:'#2D5DA8',servico:'#6B4FA0',lazer:'#8A5F08'},rota:'#E3A92B',rotaBorda:'#1F3B2D',rotulo:'#13261C',contorno:'#FFFFFF',voce:'#2D6CDF',padrao:'#56645B'},
+  escuro:{cat:{loja:'#6FBF8F',alimentacao:'#FF8A73',sanitario:'#7FB0FF',servico:'#C7A6FF',lazer:'#F2C14E'},rota:'#FFC23D',rotaBorda:'#000000',rotulo:'#E8EFEA',contorno:'#0B0E0D',voce:'#5B9BFF',padrao:'#9FB0A6'},
+  terror:{cat:{loja:'#D9C2B0',alimentacao:'#FF6B5A',sanitario:'#8FB8FF',servico:'#D7A6FF',lazer:'#F0A04B'},rota:'#FF8A3D',rotaBorda:'#000000',rotulo:'#F2E6E0',contorno:'#0E0809',voce:'#6FA8FF',padrao:'#B39A92'},
+  contraste:{cat:{loja:'#FFE27A',alimentacao:'#FFE27A',sanitario:'#FFE27A',servico:'#FFE27A',lazer:'#FFE27A'},rota:'#FFFFFF',rotaBorda:'#000000',rotulo:'#FFE27A',contorno:'#000000',voce:'#5B9BFF',padrao:'#9A9A9A'}};
+const ICONE_CAT={loja:'M6 8h12l-1 12H7zM9 8a3 3 0 0 1 6 0',alimentacao:'M7 3v8M5 3v5a2 2 0 0 0 4 0V3M7 11v10M16 3c-2 2-2 6 0 8v10',
+  sanitario:'M8 4a1.5 1.5 0 1 0 0 .1M16 4a1.5 1.5 0 1 0 0 .1M6 8h4v6H9v6H7v-6H6zM14 8h4l1 7h-2v5h-2v-5h-2z',servico:'M12 7v.1M12 11v7',lazer:'M12 3l2.6 5.6 6 .6-4.5 4 1.3 6L12 16l-5.4 3.2 1.3-6-4.5-4 6-.6z'};
+const SETAS={frente:'<path d="M12 20V5M6 11l6-6 6 6"/>',direita:'<path d="M5 20v-7a4 4 0 0 1 4-4h10M14 4l5 5-5 5"/>',esquerda:'<path d="M19 20v-7a4 4 0 0 0-4-4H5M10 4L5 9l5 5"/>',voltar:'<path d="M8 20V9a4 4 0 0 1 8 0v4M12 9l4 4 4-4"/>',elevador:'<rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 9l3-3 3 3M9 15l3 3 3-3"/>',escada:'<path d="M4 20h4v-4h4v-4h4V8h4"/>',esteira:'<path d="M3 19l15-12h3M3 19h4"/>',rampa:'<path d="M3 19h18L21 9z"/>',chegada:'<path d="M6 21V4M6 4h11l-2 4 2 4H6"/>'};
+const ic=(k,s=26)=>`<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${SETAS[k]||SETAS.frente}</svg>`;
+
+// ---------- estado ----------
+const S={idioma:'pt',tema:'claro',conta:null,visitante:null,perfilU:null,pilha:[],tela:null,editando:false,
+  pos:null,beaconIdx:0,ajustando:false,andarMapa:0,sel:null,rota:null,rotaPadrao:null,origemAlt:null,
+  etapas:[],i:0,andarVisto:0,origem:null,V:null,_ultima:null};
+const grafo=N.montarGrafo(PACOTE);
+const u=()=>UI[S.idioma];
+const nomeLocal=o=>(S.idioma!=='pt'&&o['nome_'+S.idioma])||o.nome;
+const refLocal=n=>(S.idioma!=='pt'&&n['referencia_'+S.idioma])||n.referencia||n.nome;
+const nomeAndar=id=>{const a=PACOTE.edificio.andares.find(x=>x.id===id);return (S.idioma!=='pt'&&a['nome_'+S.idioma])||a.nome;};
+const andarCurto=id=>nomeAndar(id).split(' –')[0];
+const cap=s=>s.charAt(0).toUpperCase()+s.slice(1);
+const temUI=f=>!!(S.perfilU&&S.perfilU.ui.has(f));
+const usuario=()=>S.conta||S.visitante;
+const pal=()=>temUI('altoContraste')?PALETA.contraste:PALETA[S.tema];
+
+function anunciar(t){$('anuncio').textContent='';setTimeout(()=>{$('anuncio').textContent=t;},50);}
+let toastT=null;
+function toast(t){const el=$('toast');el.textContent=t;el.hidden=false;anunciar(t);clearTimeout(toastT);toastT=setTimeout(()=>{el.hidden=true;},3500);}
+function falar(t){try{if(!('speechSynthesis' in window))return;speechSynthesis.cancel();const f=new SpeechSynthesisUtterance(t);f.lang={pt:'pt-BR',en:'en-US',es:'es-ES'}[S.idioma];f.rate=.95;speechSynthesis.speak(f);}catch(e){}}
+function vibrar(p){try{if($('dVibrar').checked&&navigator.vibrate)navigator.vibrate(p);}catch(e){}}
+function guardar(k,v){try{v==null?localStorage.removeItem(k):localStorage.setItem(k,JSON.stringify(v));return true;}catch(e){return false;}}
+function ler(k){try{return JSON.parse(localStorage.getItem(k));}catch(e){return null;}}
+
+// ---------- navegação entre telas (pilha) ----------
+function mostrar(id){
+  document.querySelectorAll('main>section').forEach(s=>s.hidden=s.id!=='tela-'+id);
+  S.tela=id;
+  const h=document.querySelector('#tela-'+id+' h1');if(h){h.tabIndex=-1;h.focus({preventScroll:true});}
+  document.querySelector('main').scrollTop=0;
+  if(id==='explorar') requestAnimationFrame(()=>{ if(!S.V) enquadrarInicio(); desenharExplorar(); });
+  atualizarTopo();
+}
+/** Abre uma tela. raiz=true limpa o histórico (acesso e mapa são telas principais). */
+function ir(id,raiz){
+  if(raiz) S.pilha=[]; else if(S.tela&&S.tela!==id) S.pilha.push(S.tela);
+  mostrar(id);
+}
+function voltar(){
+  if(!S.pilha.length) return;
+  const ant=S.pilha.pop();
+  if(S.tela==='cadastro') S.editando=false;
+  mostrar(ant);
+  if(ant==='rota') renderPasso(true);
+  if(ant==='explorar') { renderCartao(); desenharExplorar(); }
+}
+function atualizarTopo(){
+  const t=u(), b=$('btnVoltar'), ant=S.pilha[S.pilha.length-1];
+  b.hidden=!ant;
+  if(ant) b.setAttribute('aria-label',t.voltarPara(t.titulos[ant]));
+  const logado=!!S.perfilU&&S.tela!=='acesso'&&S.tela!=='visitante'&&S.tela!=='entrar'&&!(S.tela==='cadastro'&&!S.editando);
+  $('btnConfig').hidden=!logado||S.tela==='config';
+  $('btnConfig').setAttribute('aria-label',t.config);
+  // Conversar: somente para surdez e/ou deficiência na fala
+  $('btnConversar').hidden=!logado||!temUI('conversar')||S.tela==='conversa';
+}
+$('btnVoltar').onclick=voltar;
+$('btnConfig').onclick=()=>{renderConfig();ir('config');};
+$('btnConversar').onclick=()=>abrirConversa();
+document.addEventListener('keydown',e=>{
+  if(e.key!=='Escape') return;
+  if(!$('sosTela').hidden){fecharSOS();return;}
+  if(!$('dlg').hidden){fecharDialogo(false);return;}
+  if(gav.classList.contains('aberta')){abrirGaveta(false);return;}
+});
+
+// ---------- diálogo de confirmação acessível ----------
+let dlgResolver=null, dlgFocoAnterior=null;
+function confirmar(titulo,texto,sim,nao){
+  return new Promise(res=>{
+    dlgResolver=res; dlgFocoAnterior=document.activeElement;
+    $('dlgTitulo').textContent=titulo; $('dlgTexto').textContent=texto; $('dlgSim').textContent=sim; $('dlgNao').textContent=nao;
+    $('dlg').hidden=false; $('dlgTitulo').focus();
+  });
+}
+function fecharDialogo(v){ $('dlg').hidden=true; const r=dlgResolver; dlgResolver=null; if(dlgFocoAnterior) dlgFocoAnterior.focus(); if(r) r(v); }
+$('dlgSim').onclick=()=>fecharDialogo(true); $('dlgNao').onclick=()=>fecharDialogo(false);
+$('dlg').addEventListener('keydown',e=>{ if(e.key!=='Tab')return; const f=[$('dlgSim'),$('dlgNao')], i=f.indexOf(document.activeElement);
+  e.preventDefault(); f[(i+(e.shiftKey?-1:1)+f.length)%f.length].focus(); });
+
+// ---------- perfil e tema ----------
+function aplicarPerfil(){
+  S.perfilU=N.perfilDoUsuario(PACOTE,usuario());
+  document.body.className=[...S.perfilU.ui].map(f=>'ui-'+f).join(' ');
+  aplicarTema(S.tema);
+}
+function aplicarTema(t){
+  S.tema=['claro','escuro','terror'].includes(t)?t:'claro';
+  document.body.dataset.tema=S.tema; guardar('rd_tema',S.tema);
+  document.querySelectorAll('input[name=tema]').forEach(r=>r.checked=r.value===S.tema);
+  $('notaContraste').hidden=!temUI('altoContraste');
+  if(S.tela==='explorar') desenharExplorar();
+  if(S.tela==='rota') desenharMapaRota();
+}
+$('listaTemas').addEventListener('change',e=>{ if(e.target.name==='tema'){ aplicarTema(e.target.value); toast(u()['tema'+cap(e.target.value==='terror'?'terror':e.target.value)]||''); }});
+
+// bloco reutilizável: deficiências/necessidades (visitante e cadastro)
+function renderBlocoDef(container){
+  const p=container.dataset.prefixo, t=u(), salvo=S.editando?usuario():(p==='v'?S.visitante:null);
+  const atual=lerDef(p)||{possui:salvo?(salvo.possuiDeficiencia?'sim':'nao'):null,tipos:salvo?salvo.tipos:[],consent:salvo?!!salvo.consentimento:false};
+  container.innerHTML=`
+    <fieldset aria-describedby="${p}PossuiErro"><legend>${t.perguntaDef} <span class="obrig">${t.obrig}</span></legend>
+      <div class="opcoes"><label><input type="radio" name="${p}possui" value="sim" ${atual.possui==='sim'?'checked':''}> ${t.sim}</label>
+      <label><input type="radio" name="${p}possui" value="nao" ${atual.possui==='nao'?'checked':''}> ${t.nao}</label></div>
+      <span class="erro-campo" id="${p}PossuiErro"></span></fieldset>
+    <fieldset id="${p}BlocoTipos" ${atual.possui==='sim'?'':'hidden'} aria-describedby="${p}TiposErro"><legend>${t.quais}</legend>
+      <div class="tipos">${N.TIPOS_DEFICIENCIA.map(x=>`<label><input type="checkbox" name="${p}tipo" value="${x.id}" ${atual.tipos.includes(x.id)?'checked':''}> <span>${esc(x[S.idioma])}</span></label>`).join('')}</div>
+      <span class="erro-campo" id="${p}TiposErro"></span>
+      ${p==='c'?`<label class="consent"><input type="checkbox" id="${p}Consent" ${atual.consent?'checked':''}> <span>${t.consent} <span class="obrig">${t.obrig}</span></span></label><span class="erro-campo" id="${p}ConsentErro"></span>`:''}
+    </fieldset>
+    <div class="adapta" id="${p}Adapta" aria-live="polite"></div>`;
+  renderAdapta(p);
+}
+function lerDef(p){
+  const c=document.querySelector(`.bloco-def[data-prefixo="${p}"]`); if(!c||!c.querySelector('input')) return null;
+  return {possui:(c.querySelector(`input[name=${p}possui]:checked`)||{}).value||null,
+    tipos:[...c.querySelectorAll(`input[name=${p}tipo]:checked`)].map(i=>i.value),consent:!!(c.querySelector(`#${p}Consent`)||{}).checked};
+}
+function renderAdapta(p){
+  const d=lerDef(p); if(!d) return; const t=u();
+  const pf=N.perfilDoUsuario(PACOTE,{possuiDeficiencia:d.possui==='sim',tipos:d.tipos});
+  const itens=[...pf.ui].map(k=>t.ad[k]).filter(Boolean);
+  $(p+'Adapta').innerHTML=`<b>${t.adaptaT}</b><ul>${(itens.length?itens:[t.ad.nenhum]).map(x=>`<li>${esc(x)}</li>`).join('')}</ul>`;
+  $(p+'BlocoTipos').hidden=d.possui!=='sim';
+}
+document.querySelectorAll('.bloco-def').forEach(c=>c.addEventListener('change',()=>renderAdapta(c.dataset.prefixo)));
+function marcarErro(id,msg){ const inp=$(id), sp=$(id+'Erro'); if(sp) sp.textContent=msg||''; if(inp) inp.setAttribute('aria-invalid',msg?'true':'false'); }
+function resumoErros(box,erros,titulo){
+  const el=$(box); if(!erros.length){el.hidden=true;el.innerHTML='';return;}
+  el.innerHTML=`<b>${titulo??u().corrija(erros.length)}</b><ul>${erros.map(([id,m])=>`<li><a href="#${id}" data-foco="${id}">${esc(m)}</a></li>`).join('')}</ul>`;
+  el.hidden=false; el.tabIndex=-1; el.focus();
+}
+document.addEventListener('click',e=>{const a=e.target.closest('[data-foco]'); if(a){e.preventDefault(); const alvo=$(a.dataset.foco)||document.querySelector(`[name=${a.dataset.foco}]`); if(alvo) alvo.focus();}});
+document.querySelectorAll('.mostrar-senha').forEach(b=>b.onclick=()=>{const i=$(b.dataset.alvo); const mostra=i.type==='password'; i.type=mostra?'text':'password'; b.textContent=mostra?u().ocultarSenha:u().mostrarSenha; b.setAttribute('aria-pressed',mostra);});
+function validarDef(p,exigeConsent){
+  const d=lerDef(p),t=u(),err=[];
+  $(p+'PossuiErro').textContent=''; $(p+'TiposErro').textContent=''; if($(p+'ConsentErro')) $(p+'ConsentErro').textContent='';
+  if(!d.possui){err.push([p+'possui',t.ePossui]); $(p+'PossuiErro').textContent=t.ePossui;}
+  else if(d.possui==='sim'&&!d.tipos.length){err.push([p+'tipo',t.eTipos]); $(p+'TiposErro').textContent=t.eTipos;}
+  else if(d.possui==='sim'&&exigeConsent&&!d.consent){err.push([p+'Consent',t.eConsent]); $(p+'ConsentErro').textContent=t.eConsent;}
+  return {d,err};
+}
+
+// ---------- contas (neste protótipo: salvas no navegador; no app: API /contas) ----------
+const so=t=>(t||'').replace(/\D/g,'');
+function formatarTel(t){const d=so(t); if(d.length===11) return `(${d.slice(0,2)}) ${d.slice(2,7)}-${d.slice(7)}`; if(d.length===10) return `(${d.slice(0,2)}) ${d.slice(2,6)}-${d.slice(6)}`; return t;}
+$('cTel').addEventListener('blur',()=>{$('cTel').value=formatarTel($('cTel').value);});
+async function hashSenha(senha,salHex){
+  const enc=new TextEncoder(), sal=salHex?Uint8Array.from(salHex.match(/../g).map(h=>parseInt(h,16))):crypto.getRandomValues(new Uint8Array(16));
+  const chave=await crypto.subtle.importKey('raw',enc.encode(senha),'PBKDF2',false,['deriveBits']);
+  const bits=await crypto.subtle.deriveBits({name:'PBKDF2',hash:'SHA-256',salt:sal,iterations:150000},chave,256);
+  const hex=b=>[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('');
+  return {hash:hex(bits),sal:hex(sal)};
+}
+const contas=()=>ler('rd_contas')||{};
+const publico=c=>c&&({nome:c.nome,telefone:c.telefone,email:c.email,possuiDeficiencia:c.possuiDeficiencia,tipos:c.tipos,consentimento:c.consentimento});
+
+$('opVisitante').onclick=()=>{S.editando=false;renderBlocoDef(document.querySelector('[data-prefixo=v]'));$('vLembrar').checked=!!ler('rd_visitante');ir('visitante');};
+$('opEntrar').onclick=()=>{ir('entrar');};
+$('opCriar').onclick=()=>abrirCadastro(false);
+$('linkCriar').onclick=()=>abrirCadastro(false);
+
+$('formVisitante').addEventListener('submit',e=>{
+  e.preventDefault(); const {d,err}=validarDef('v',false);
+  resumoErros('visErros',err); if(err.length) return;
+  S.visitante={possuiDeficiencia:d.possui==='sim',tipos:d.possui==='sim'?d.tipos:[],consentimento:$('vLembrar').checked};
+  S.conta=null; guardar('rd_sessao',null);
+  guardar('rd_visitante',$('vLembrar').checked?S.visitante:null); // só guarda com autorização
+  aplicarPerfil(); toast(u().prefsSalvas);
+  if(S.editando){S.editando=false;voltar();renderConfig();} else entrarNoApp();
+});
+
+$('formEntrar').addEventListener('submit',async e=>{
+  e.preventDefault(); const t=u(), email=$('eEmail').value.trim().toLowerCase(), senha=$('eSenha').value, err=[];
+  marcarErro('eEmail',''); marcarErro('eSenha','');
+  if(!/^\S+@\S+\.\S+$/.test(email)){err.push(['eEmail',t.eEmail]);marcarErro('eEmail',t.eEmail);}
+  if(!senha){err.push(['eSenha',t.eSenhaVazia]);marcarErro('eSenha',t.eSenhaVazia);}
+  resumoErros('entErros',err); if(err.length) return;
+  const b=$('btnEntrar'); b.disabled=true; b.textContent=t.entrando; anunciar(t.entrando);
+  try{
+    const c=contas()[email];
+    const ok=c&&(await hashSenha(senha,c.sal)).hash===c.senhaHash;
+    if(!ok){ resumoErros('entErros',[['eSenha',t.eLogin]],''); return; }
+    S.conta=publico(c); S.visitante=null; guardar('rd_sessao',email);
+    aplicarPerfil(); toast(t.bemVindoDeVolta(c.nome)); $('eSenha').value=''; entrarNoApp();
+  }catch(x){ resumoErros('entErros',[['eEmail',t.eArmaz]]); }
+  finally{ b.disabled=false; b.textContent=t.entrar; }
+});
+
+function abrirCadastro(editar){
+  S.editando=editar; const t=u(), c=S.conta;
+  $('cadTitulo').textContent=editar?t.cadTituloEd:t.cadTitulo;
+  $('btnSalvarCadastro').textContent=editar?t.salvar:t.criarConta;
+  $('cSenhaRot').textContent=editar?t.senhaTroca:t.senhaNova; $('cSenhaObrig').textContent=editar?t.opcional:t.obrig;
+  $('cSenha').setAttribute('aria-required',editar?'false':'true');
+  if(editar&&c){ $('cNome').value=c.nome; $('cTel').value=formatarTel(c.telefone); $('cEmail').value=c.email; $('cSenha').value=''; }
+  ['cNome','cTel','cEmail','cSenha'].forEach(i=>marcarErro(i,'')); resumoErros('cadErros',[]);
+  renderBlocoDef(document.querySelector('[data-prefixo=c]'));
+  ir('cadastro');
+}
+$('formCadastro').addEventListener('submit',async e=>{
+  e.preventDefault(); const t=u(), err=[];
+  const nome=$('cNome').value.trim(), tel=so($('cTel').value), email=$('cEmail').value.trim().toLowerCase(), senha=$('cSenha').value;
+  ['cNome','cTel','cEmail','cSenha'].forEach(i=>marcarErro(i,''));
+  if(!nome){err.push(['cNome',t.eNome]);marcarErro('cNome',t.eNome);}
+  if(!(tel.length===10||tel.length===11)){err.push(['cTel',t.eTel]);marcarErro('cTel',t.eTel);}
+  if(!/^\S+@\S+\.\S+$/.test(email)){err.push(['cEmail',t.eEmail]);marcarErro('cEmail',t.eEmail);}
+  if((!S.editando||senha)&&senha.length<8){err.push(['cSenha',t.eSenha]);marcarErro('cSenha',t.eSenha);}
+  const v=validarDef('c',true); err.push(...v.err);
+  resumoErros('cadErros',err); if(err.length) return;
+  const todas=contas(), anterior=S.editando&&S.conta?S.conta.email:null;
+  if(todas[email]&&email!==anterior){ marcarErro('cEmail',t.eDuplicado); resumoErros('cadErros',[['cEmail',t.eDuplicado]]); return; }
+  const b=$('btnSalvarCadastro'); b.disabled=true; b.textContent=S.editando?t.salvando:t.criando; anunciar(b.textContent);
+  try{
+    const base=anterior?todas[anterior]:{};
+    const cred=senha?await hashSenha(senha):{hash:base.senhaHash,sal:base.sal};
+    const c={nome,telefone:tel,email,possuiDeficiencia:v.d.possui==='sim',tipos:v.d.possui==='sim'?v.d.tipos:[],consentimento:v.d.possui==='sim'&&v.d.consent,
+      senhaHash:cred.hash,sal:cred.sal,criadoEm:base.criadoEm||new Date().toISOString(),atualizadoEm:new Date().toISOString()};
+    if(anterior&&anterior!==email) delete todas[anterior];
+    todas[email]=c;
+    if(!guardar('rd_contas',todas)) throw new Error('armazenamento');
+    guardar('rd_sessao',email); S.conta=publico(c); S.visitante=null; aplicarPerfil();
+    if(S.editando){ S.editando=false; toast(t.perfilSalvo); voltar(); renderConfig(); }
+    else { toast(t.contaCriada(nome)); $('cSenha').value=''; entrarNoApp(); }
+  }catch(x){ resumoErros('cadErros',[['cEmail',t.eArmaz]]); }
+  finally{ b.disabled=false; b.textContent=S.editando?t.salvar:t.criarConta; }
+});
+
+function renderConfig(){
+  const t=u(), us=usuario();
+  const tipos=us&&us.possuiDeficiencia&&us.tipos.length?us.tipos.map(id=>N.TIPOS_DEFICIENCIA.find(x=>x.id===id)[S.idioma]).join('; '):t.nenhuma;
+  $('resumoPerfil').innerHTML=`${esc(S.conta?t.modoConta(S.conta.email):t.modoVisitante)}<br>${esc(t.necessidades)}: ${esc(tipos)}`;
+  document.querySelectorAll('input[name=tema]').forEach(r=>r.checked=r.value===S.tema);
+  $('notaContraste').hidden=!temUI('altoContraste');
+}
+$('btnEditarPerfil').onclick=()=>{ if(S.conta) abrirCadastro(true); else { S.editando=true; renderBlocoDef(document.querySelector('[data-prefixo=v]')); $('vLembrar').checked=!!ler('rd_visitante'); ir('visitante'); } };
+$('btnSair').onclick=async()=>{ const t=u(); if(!await confirmar(t.sairT,t.sairD,t.sairSim,t.cancelar)) return;
+  guardar('rd_sessao',null); S.conta=null; S.visitante=null; S.perfilU=null; document.body.className=''; aplicarTema(S.tema); ir('acesso',true); };
+$('btnApagar').onclick=async()=>{ const t=u(); if(!await confirmar(t.apagarT,t.apagarD,t.apagarSim,t.cancelar)) return;
+  if(S.conta){ const todas=contas(); delete todas[S.conta.email]; guardar('rd_contas',todas); guardar('rd_sessao',null); }
+  guardar('rd_visitante',null); S.conta=null; S.visitante=null; S.perfilU=null; document.body.className=''; aplicarTema(S.tema);
+  toast(t.apagado); ir('acesso',true); };
+
+function entrarNoApp(){ S.sel=null; S.rota=null; S.origemAlt=null; $('cartaoPoi').hidden=true; ir('explorar',true); if(!S.pos) localizar(); else renderLocal();
+  if(temUI('listaPrimeiro')) setTimeout(()=>abrirGaveta(true),300); }
+
+// ---------- localização ----------
+function localizar(){
+  S.pos=null; renderLocal(true);
+  setTimeout(()=>{ const b=PACOTE.beacons[S.beaconIdx%PACOTE.beacons.length]; definirPosicao(b.no,'media',true); },700);
+}
+function definirPosicao(no,confianca,centralizar){
+  S.pos={no,confianca}; S.origemAlt=null; const n=grafo.nos[no]; S.andarMapa=n.andar;
+  if(centralizar&&!S.sel) enquadrar(n.x-45,n.y-40,n.x+45,n.y+40);
+  renderLocal(); if(S.sel){ tracarRota(); renderCartao(); } desenharExplorar();
+}
+function renderLocal(carregando){
+  const el=$('barraLocal'),t=u(); el.classList.toggle('ajustando',S.ajustando);
+  if(S.ajustando){ el.innerHTML=`<span class="txt">${t.toqueMapa}</span><button id="lCancelar">${t.cancelar}</button>`; $('lCancelar').onclick=()=>{S.ajustando=false;renderLocal();desenharExplorar();}; return; }
+  if(carregando||!S.pos){ el.innerHTML=`<span class="txt">📍 ${t.localizando}</span>`; return; }
+  const n=grafo.nos[S.pos.no], conf=S.pos.confianca==='alta';
+  el.innerHTML=`<span class="txt">📍 ${esc(t.vcAqui(refLocal(n)))} · ${esc(andarCurto(n.andar))} <small>(${conf?t.confirmado:t.estimado})</small></span>${conf?'':`<button id="lOk">${t.ehAqui}</button>`}<button id="lAjustar">${t.ajustar}</button>`;
+  if(!conf) $('lOk').onclick=()=>{S.pos.confianca='alta';renderLocal();anunciar(t.confirmado);};
+  $('lAjustar').onclick=()=>{S.ajustando=true;renderLocal();desenharExplorar();anunciar(t.toqueMapa);};
+}
+
+// ---------- mapa ----------
+const svgEx=$('mapaExplorar');
+const andarInfo=id=>PACOTE.edificio.andares.find(a=>a.id===id);
+function dimensoes(){ const r=svgEx.getBoundingClientRect(); return {w:r.width||340,h:r.height||400}; }
+function fundoPlanta(andar){
+  const a=andarInfo(andar), tema=temUI('altoContraste')?'escuro':S.tema, src=IMAGENS[(a.imagens&&a.imagens[tema])||a.imagem];
+  return `<rect x="-400" y="-400" width="${a.largura+800}" height="${a.altura+800}" fill="${getComputedStyle(document.body).getPropertyValue('--mapa').trim()||'#F3F5F1'}"/>`+
+    (src?`<image href="${src}" x="0" y="0" width="${a.largura}" height="${a.altura}" preserveAspectRatio="none"/>`:'');
+}
+function enquadrar(x0,y0,x1,y1,inset,minLarg){
+  const {w,h}=dimensoes(), hv=Math.max(120,h-(inset||0)), ar=w/hv, pad=8, mn=minLarg||60;
+  let vw=Math.max(x1-x0+2*pad,mn), vh=Math.max(y1-y0+2*pad,mn/ar);
+  if(vw/vh<ar) vw=vh*ar; else vh=vw/ar;
+  S.V={x:(x0+x1)/2-vw/2,y:(y0+y1)/2-vh/2,w:vw,h:vw*h/w};
+}
+function enquadrarInicio(){ const a=andarInfo(S.andarMapa); enquadrar(0,0,a.largura,a.altura,0,a.largura); }
+function limitarV(){ const {w,h}=dimensoes(),ar=w/h,a=andarInfo(S.andarMapa),L=a.largura,H=a.altura;
+  S.V.w=Math.min(Math.max(S.V.w,25),L*1.4); S.V.h=S.V.w/ar;
+  const m=Math.max(L,H)*.3, lim=(v,tam,max)=>tam>=max+2*m?(max-tam)/2:Math.min(Math.max(v,-m),max-tam+m);
+  S.V.x=lim(S.V.x,S.V.w,L); S.V.y=lim(S.V.y,S.V.h,H); }
+function zoomEm(f,cx,cy){ const V=S.V; cx=cx??V.x+V.w/2; cy=cy??V.y+V.h/2;
+  V.x=cx-(cx-V.x)*f; V.y=cy-(cy-V.y)*f; V.w*=f; V.h*=f; limitarV(); desenharExplorar(); }
+function poisVisiveis(){ const q=$('campoBusca').value.trim(); return q?new Set(N.buscar(PACOTE,q).map(p=>p.id)):null; }
+const linhaRota=(r,andar)=>r.nos.filter(id=>grafo.nos[id].andar===andar).map(id=>grafo.nos[id].x+','+grafo.nos[id].y).join(' ');
+function svgRota(r,andar,px,P,grossa){
+  const pts=linhaRota(r,andar), k=grossa||1;
+  return `<polyline points="${pts}" fill="none" stroke="${P.rotaBorda}" stroke-width="${11*px*k}" stroke-linejoin="round" stroke-linecap="round"/><polyline points="${pts}" fill="none" stroke="${P.rota}" stroke-width="${7*px*k}" stroke-linejoin="round" stroke-linecap="round"/>`;
+}
+function desenharExplorar(){
+  if(!S.V) return; limitarV();
+  const V=S.V, andar=S.andarMapa, nos=grafo.nos, out=[], P=pal(), px=V.w/dimensoes().w;
+  svgEx.setAttribute('viewBox',`${V.x} ${V.y} ${V.w} ${V.h}`); svgEx.classList.toggle('ajustar',S.ajustando);
+  out.push(fundoPlanta(andar));
+  if(S.rota){
+    if($('dComparar').checked&&S.rotaPadrao&&S.rotaPadrao.nos.join()!==S.rota.nos.join())
+      out.push(`<polyline points="${linhaRota(S.rotaPadrao,andar)}" fill="none" stroke="${P.padrao}" stroke-width="${3*px}" stroke-dasharray="${6*px} ${5*px}" stroke-linejoin="round"/>`);
+    out.push(svgRota(S.rota,andar,px,P));
+  }
+  // escadas rolantes/escada e elevador (exatamente onde estão na planta)
+  PACOTE.nos.filter(n=>n.tipo==='vertical'&&n.andar===andar).forEach(n=>{ const r=10*px, elev=n.id.includes('elev');
+    out.push(`<g aria-hidden="true"><rect x="${n.x-r}" y="${n.y-r}" width="${2*r}" height="${2*r}" rx="${3*px}" fill="#2D5DA8" stroke="#fff" stroke-width="${1.5*px}"/><text x="${n.x}" y="${n.y+4*px}" font-size="${12*px}" text-anchor="middle" fill="#fff" font-weight="700">${elev?'E':'⇅'}</text></g>`); });
+  const vis=poisVisiveis(), mostrarRotulo=V.w<(andar===0?95:70), fs=12*px;
+  PACOTE.pois.filter(p=>p.andar===andar).forEach(p=>{
+    const sel=S.sel&&S.sel.id===p.id, achado=vis&&vis.has(p.id), apagado=vis&&!achado, r=(sel?12:achado?10:(V.w>200?5.5:8))*px, cor=P.cat[p.categoria];
+    const icone=temUI('altoContraste')?'#000':'#fff';
+    out.push(`<g class="pin" data-poi="${p.id}" tabindex="0" role="button" aria-label="${esc(nomeLocal(p))}, ${esc(u().catUm[p.categoria])}" opacity="${apagado?.3:1}">
+      ${sel?`<circle cx="${p.x}" cy="${p.y}" r="${r*1.9}" fill="${P.rota}" opacity=".45"/>`:''}
+      <circle class="disco" cx="${p.x}" cy="${p.y}" r="${r}" fill="${cor}" stroke="${P.contorno}" stroke-width="${1.6*px}"/>
+      ${r>6*px?`<svg x="${p.x-r*.62}" y="${p.y-r*.62}" width="${r*1.24}" height="${r*1.24}" viewBox="0 0 24 24" overflow="visible"><path d="${ICONE_CAT[p.categoria]}" fill="none" stroke="${['escuro','terror'].includes(S.tema)&&!temUI('altoContraste')?'#111':icone}" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>`:''}
+      ${(mostrarRotulo||sel||achado)?`<text x="${p.x}" y="${p.y+r+fs}" font-size="${fs}" text-anchor="middle" fill="${P.rotulo}" font-weight="${sel?700:600}" paint-order="stroke" stroke="${P.contorno}" stroke-width="${fs*.32}">${esc(nomeLocal(p).replace(/\s*\(.*\)/,''))}</text>`:''}
+    </g>`);
+  });
+  PACOTE.nos.filter(n=>n.tipo==='entrada'&&n.andar===andar).forEach(n=>out.push(`<text x="${n.x}" y="${n.y+18*px}" font-size="${11*px}" text-anchor="middle" fill="${P.rotulo}" font-weight="700" paint-order="stroke" stroke="${P.contorno}" stroke-width="${3*px}">${esc(n.nome.split(' –')[0].replace('Entrada principal','Entrada'))}</text>`));
+  const origem=S.origemAlt?{no:S.origemAlt,confianca:'alta'}:S.pos;
+  if(origem){ const n=nos[origem.no]; if(n.andar===andar){
+    out.push(`<circle class="pulso" cx="${n.x}" cy="${n.y}" r="${(origem.confianca==='alta'?14:24)*px}" fill="${P.voce}" opacity=".3"/><circle cx="${n.x}" cy="${n.y}" r="${7.5*px}" fill="${P.voce}" stroke="#fff" stroke-width="${2.8*px}"/>`);}}
+  svgEx.innerHTML=out.join('');
+  $('andaresExplorar').innerHTML=PACOTE.edificio.andares.map(a=>`<button aria-pressed="${a.id===andar}" data-andar="${a.id}">${esc(andarCurto(a.id))}</button>`).join('');
+  const t=u();
+  $('legendaMapa').innerHTML=`<span><i style="background:${P.voce}"></i>${t.legVoce}</span>${S.sel?`<span><i style="background:${P.rota}"></i>${t.legDestino}</span><span><i class="rota" style="background:${P.rota};outline:2px solid ${P.rotaBorda}"></i>${t.legRota}</span>`:''}`;
+}
+$('andaresExplorar').addEventListener('click',e=>{const b=e.target.closest('[data-andar]');if(!b)return;S.andarMapa=+b.dataset.andar;enquadrarInicio();desenharExplorar();});
+$('zMais').onclick=()=>zoomEm(.7); $('zMenos').onclick=()=>zoomEm(1/.7);
+$('zCentro').onclick=()=>{ if(!S.pos)return; const n=grafo.nos[S.pos.no]; S.andarMapa=n.andar; enquadrar(n.x-35,n.y-30,n.x+35,n.y+30); desenharExplorar(); };
+const ponteiros=new Map(); let gesto=null;
+function paraMapa(cx,cy){ const pt=svgEx.createSVGPoint(); pt.x=cx; pt.y=cy; return pt.matrixTransform(svgEx.getScreenCTM().inverse()); }
+svgEx.addEventListener('pointerdown',e=>{ ponteiros.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  if(ponteiros.size===1) gesto={x:e.clientX,y:e.clientY,movido:false,alvo:e.target.closest('[data-poi]')}; svgEx.setPointerCapture(e.pointerId); });
+svgEx.addEventListener('pointermove',e=>{
+  if(!ponteiros.has(e.pointerId)) return;
+  const ant=ponteiros.get(e.pointerId), {w}=dimensoes(), k=S.V.w/w;
+  if(ponteiros.size===1){ S.V.x-=(e.clientX-ant.x)*k; S.V.y-=(e.clientY-ant.y)*k; if(gesto&&Math.hypot(e.clientX-gesto.x,e.clientY-gesto.y)>6) gesto.movido=true; }
+  else if(ponteiros.size===2){ const [a,b]=[...ponteiros.values()], d0=Math.hypot(a.x-b.x,a.y-b.y); ponteiros.set(e.pointerId,{x:e.clientX,y:e.clientY});
+    const [c,d]=[...ponteiros.values()], d1=Math.hypot(c.x-d.x,c.y-d.y), m=paraMapa((c.x+d.x)/2,(c.y+d.y)/2); if(gesto) gesto.movido=true; if(d1>0) zoomEm(d0/d1,m.x,m.y); return; }
+  ponteiros.set(e.pointerId,{x:e.clientX,y:e.clientY}); desenharExplorar();
+});
+function fimPonteiro(e){
+  if(!ponteiros.has(e.pointerId)) return; ponteiros.delete(e.pointerId);
+  if(ponteiros.size===0&&gesto&&!gesto.movido){
+    if(S.ajustando){ const m=paraMapa(e.clientX,e.clientY), n=N.noMaisProximo(PACOTE,S.andarMapa,m.x,m.y); S.ajustando=false; definirPosicao(n.id,'alta'); anunciar(u().vcAqui(refLocal(n))); }
+    else if(gesto.alvo) selecionar(gesto.alvo.dataset.poi);
+  }
+  if(ponteiros.size===0) gesto=null;
+}
+svgEx.addEventListener('pointerup',fimPonteiro); svgEx.addEventListener('pointercancel',fimPonteiro);
+svgEx.addEventListener('wheel',e=>{e.preventDefault();const m=paraMapa(e.clientX,e.clientY);zoomEm(e.deltaY>0?1.15:1/1.15,m.x,m.y);},{passive:false});
+svgEx.addEventListener('keydown',e=>{const g=e.target.closest('[data-poi]'); if(g&&(e.key==='Enter'||e.key===' ')){e.preventDefault();selecionar(g.dataset.poi);}});
+
+// ---------- busca e lista ----------
+$('campoBusca').addEventListener('input',()=>{ renderLista(); desenharExplorar(); });
+$('formBusca').addEventListener('submit',e=>{ e.preventDefault(); const r=N.buscar(PACOTE,$('campoBusca').value); if(r.length) selecionar(r[0].id); else anunciar(u().semResultado); });
+$('btnVoz').addEventListener('click',()=>{const R=window.SpeechRecognition||window.webkitSpeechRecognition;if(!R){$('campoBusca').focus();return;}
+  try{const r=new R();r.lang={pt:'pt-BR',en:'en-US',es:'es-ES'}[S.idioma];r.onresult=ev=>{$('campoBusca').value=ev.results[0][0].transcript;renderLista();desenharExplorar();};r.start();}catch(e){}});
+function renderLista(){
+  const q=$('campoBusca').value.trim(), itens=N.buscar(PACOTE,q), t=u();
+  if(!itens.length){ $('listaLojas').innerHTML=`<p class="aviso">${t.semResultado}</p>`; return; }
+  const porCat={}; itens.forEach(p=>(porCat[p.categoria]=porCat[p.categoria]||[]).push(p));
+  $('listaLojas').innerHTML=Object.keys(t.cat).filter(c=>porCat[c]).map(c=>`<h3>${t.cat[c]}</h3><ul>${porCat[c].sort((a,b)=>nomeLocal(a).localeCompare(nomeLocal(b))).map(p=>`<li><button data-poi="${p.id}"><span>${esc(nomeLocal(p))}${p.acessivel?' ♿':''}</span><small>${esc(andarCurto(p.andar))}</small></button></li>`).join('')}</ul>`).join('');
+}
+const gav=$('gaveta');
+function abrirGaveta(abrir){ gav.classList.toggle('aberta',abrir); gav.style.transform=''; $('alcaLista').setAttribute('aria-expanded',abrir);
+  gav.inert=!abrir; if(abrir){ renderLista(); const b=gav.querySelector('button[data-poi]')||$('fecharGaveta'); b.focus({preventScroll:true}); } else $('alcaLista').focus({preventScroll:true}); }
+gav.inert=true;
+$('fecharGaveta').onclick=()=>abrirGaveta(false);
+$('listaLojas').addEventListener('click',e=>{const b=e.target.closest('[data-poi]'); if(!b)return; abrirGaveta(false); selecionar(b.dataset.poi);});
+function arrastavel(el,abrindo){
+  let x0=null,dx=0;
+  el.addEventListener('pointerdown',e=>{ if(!abrindo&&e.target.closest('button'))return; x0=e.clientX; dx=0; el.setPointerCapture(e.pointerId); gav.classList.add('arrastando'); });
+  el.addEventListener('pointermove',e=>{ if(x0==null)return; dx=e.clientX-x0; const w=gav.offsetWidth; const d=abrindo?Math.max(0,w+Math.min(0,dx)):Math.max(0,dx); gav.style.transform=`translateX(${d}px)`; });
+  const fim=()=>{ if(x0==null)return; gav.classList.remove('arrastando'); if(abrindo) abrirGaveta(dx<-50||Math.abs(dx)<5); else if(dx>50) abrirGaveta(false); else gav.style.transform=''; x0=null; };
+  el.addEventListener('pointerup',fim); el.addEventListener('pointercancel',fim);
+}
+arrastavel($('alcaLista'),true); arrastavel(gav,false);
+
+// ---------- seleção e rota (acessibilidade antes da distância) ----------
+function grafoAtual(){ if(!$('dElevador').checked) return grafo;
+  const p=JSON.parse(JSON.stringify(PACOTE)); p.arestas=p.arestas.filter(a=>a.tipo!=='elevador'); return N.montarGrafo(p); }
+const origemNo=()=>S.origemAlt||(S.pos&&S.pos.no);
+function tracarRota(){
+  if(!S.sel||!origemNo()){ S.rota=null; return; }
+  const g=grafoAtual(); S._g=g;
+  S.rota=N.calcularRota(g,S.perfilU.perfil,origemNo(),S.sel.no);
+  S.rotaPadrao=N.calcularRota(g,PACOTE.perfis.padrao,origemNo(),S.sel.no);
+  // perfis visuais: se a rota inclui escada, procura alternativa sem escadas confirmada
+  S.alts=[];
+  const exige=S.perfilU.perfil.exigir_confirmado||S.perfilU.perfil.proibidos.length;
+  const temEscada=r=>r&&r.arestas.some(a=>a.tipo==='escada'||a.tipo==='escada_rolante');
+  if(exige&&(!S.rota||temEscada(S.rota))){
+    const estrito=Object.assign({},S.perfilU.perfil,{proibidos:[...new Set([...S.perfilU.perfil.proibidos,'escada','escada_rolante','esteira'])],exigir_confirmado:true});
+    S.alts=N.entradasComRota(PACOTE,g,estrito,S.sel.no).filter(x=>x.entrada.id!==origemNo()).slice(0,2);
+  }
+}
+function selecionar(id){
+  S.sel=PACOTE.pois.find(p=>p.id===id); S.origemAlt=null; tracarRota(); enquadrarSelecao(); renderCartao();
+  anunciar(nomeLocal(S.sel)+'. '+(S.rota?u().distancia(S.rota.distancia):u().semRotaAcessT));
+}
+function enquadrarSelecao(){
+  const o=origemNo()&&grafo.nos[origemNo()];
+  if(o) S.andarMapa=S.rota?o.andar:S.sel.andar; else S.andarMapa=S.sel.andar;
+  const pts=[]; if(S.rota) S.rota.nos.forEach(n=>{const x=grafo.nos[n]; if(x.andar===S.andarMapa) pts.push(x);});
+  if(S.sel.andar===S.andarMapa) pts.push(S.sel);
+  if(!pts.length) pts.push(S.sel);
+  enquadrar(Math.min(...pts.map(p=>p.x)),Math.min(...pts.map(p=>p.y)),Math.max(...pts.map(p=>p.x)),Math.max(...pts.map(p=>p.y))+6,230);
+  desenharExplorar();
+}
+function blocoSemRota(t){
+  const o=origemNo()&&grafo.nos[origemNo()], exige=S.perfilU.perfil.exigir_confirmado||S.perfilU.perfil.proibidos.length;
+  const motivos=[exige?t.semRotaAcessD:''];
+  if(o&&S.sel&&o.andar!==S.sel.andar&&exige) motivos.push(t.semRotaPisoD);
+  if($('dElevador').checked) motivos.push(t.elevManut);
+  const alts=(S.alts||[]).map((x,i)=>`<button class="secundario" data-alt="${i}">${esc(t.altEntrada(nomeLocal(x.entrada)))}</button>`).join('');
+  const seg=PACOTE.pois.find(p=>p.id==='poi_seguranca');
+  return `<div class="aviso erro" style="margin:6px 0"><b>${exige?t.semRotaAcessT:t.semRotaT}</b><br>${motivos.filter(Boolean).map(esc).join('<br>')}</div>
+    <p style="margin:8px 0 4px"><b>${t.alternativas}</b></p>
+    <div class="pilha">${alts}${alts?`<p class="nota" style="margin:0">${t.altEntradaNota}</p>`:''}
+      ${temUI('conversar')?`<button class="secundario" data-acao="conversar">${t.altConversar}</button>`:(seg&&S.sel.id!==seg.id?`<button class="secundario" data-acao="seguranca">${t.altSeguranca}</button>`:'')}
+      <button class="secundario" data-acao="ajustar">${t.revisarOrigem}</button>
+      <button class="secundario" data-acao="outro">${t.outroDestino}</button></div>`;
+}
+function acaoAlternativa(el){
+  const t=u();
+  if(el.dataset.alt!=null){ const x=S.alts[+el.dataset.alt]; S.origemAlt=x.entrada.id; tracarRota(); enquadrarSelecao(); renderCartao(); anunciar(t.rotaDaEntrada(nomeLocal(x.entrada))); return true; }
+  const a=el.dataset.acao; if(!a) return false;
+  if(a==='conversar') abrirConversa();
+  if(a==='seguranca') selecionar('poi_seguranca');
+  if(a==='ajustar'){ if(S.tela!=='explorar') voltarAoMapa(); S.ajustando=true; renderLocal(); desenharExplorar(); }
+  if(a==='outro'){ if(S.tela!=='explorar') voltarAoMapa(); S.sel=null; S.rota=null; S.origemAlt=null; $('cartaoPoi').hidden=true; desenharExplorar(); $('campoBusca').focus(); }
+  return true;
+}
+function voltarAoMapa(){ while(S.pilha.length&&S.tela!=='explorar') voltar(); if(S.tela!=='explorar') ir('explorar',true); }
+function renderCartao(){
+  const p=S.sel,c=$('cartaoPoi'),t=u(); if(!p){c.hidden=true;return;}
+  let corpo='';
+  if(!S.pos) corpo=`<p class="meta">${t.localizando}</p>`;
+  else if(!S.rota) corpo=blocoSemRota(t);
+  else{
+    const tipos=S.rota.arestas.map(a=>a.tipo), escada=tipos.includes('escada')||tipos.includes('escada_rolante');
+    const pt=S.rotaPadrao&&S.rotaPadrao.arestas.map(a=>a.tipo), exige=S.perfilU.perfil.exigir_confirmado;
+    const notas=[];
+    if(S.origemAlt) notas.push(t.rotaDaEntrada(nomeLocal(grafo.nos[S.origemAlt]))+'. '+t.altEntradaNota);
+    if(S.perfilU.perfis.includes('mobilidade')&&pt&&(pt.includes('escada')||pt.includes('escada_rolante'))) notas.push(t.padraoUsaria);
+    if(escada&&exige) notas.push(t.temEscadaVisual);
+    if(S.perfilU.perfis.includes('sensorial')) notas.push(t.evitaMov);
+    if(p.andar!==grafo.nos[origemNo()].andar) notas.push(t.outroAndar(nomeAndar(p.andar)));
+    const selos=`<span class="selo">${t.distancia(S.rota.distancia)}</span>${!escada?`<span class="selo ouro">♿ ${t.semEscadas}</span>`:`<span class="selo atencao">⚠ ${tipos.includes('escada_rolante')?t.incluiRolante:t.incluiEscada}</span>`}${exige&&!escada?`<span class="selo">${t.confirmadaPerfil}</span>`:''}`;
+    const alts=escada&&S.alts&&S.alts.length?`<div class="pilha" style="margin-top:6px">${S.alts.map((x,i)=>`<button class="secundario" data-alt="${i}">${esc(t.altEntrada(nomeLocal(x.entrada)))}</button>`).join('')}</div>`:'';
+    corpo=`<div>${selos}</div>${notas.map(n=>`<p class="meta" style="margin:2px 0">${esc(n)}</p>`).join('')}${alts}<button class="primario" style="margin-top:8px" id="cIniciar">${t.iniciar}</button>`;
+  }
+  c.innerHTML=`<button class="fechar" id="cFechar" aria-label="${t.fechar}">×</button><h2>${esc(nomeLocal(p))}${p.acessivel?' ♿':''}</h2><div class="meta">${esc(t.catUm[p.categoria])} · ${esc(t.noAndar(nomeAndar(p.andar)))}</div>${corpo}`;
+  c.hidden=false;
+  $('cFechar').onclick=()=>{S.sel=null;S.rota=null;S.origemAlt=null;c.hidden=true;desenharExplorar();};
+  if($('cIniciar')) $('cIniciar').onclick=iniciarNavegacao;
+}
+$('cartaoPoi').addEventListener('click',e=>{const b=e.target.closest('[data-alt],[data-acao]'); if(b) acaoAlternativa(b);});
+$('semRotaCorpo').addEventListener('click',e=>{const b=e.target.closest('[data-alt],[data-acao]'); if(!b)return; if(b.dataset.alt!=null){ voltarAoMapa(); } acaoAlternativa(b);});
+
+// ---------- passo a passo ----------
+function iniciarNavegacao(){ S.origem=grafo.nos[origemNo()]; S.i=0; gerarEtapas(); ir('rota'); renderPasso(true); }
+function gerarEtapas(){
+  const nomeOrigem=S.origem.tipo==='entrada'?nomeLocal(S.origem):null;
+  S.etapas=N.gerarInstrucoes(PACOTE,S._g||grafo,S.rota,nomeOrigem,S.sel,S.idioma);
+  const t=u(),tipos=S.rota.arestas.map(a=>a.tipo), escada=tipos.includes('escada')||tipos.includes('escada_rolante');
+  $('resumoRota').innerHTML=`<h1 style="font-size:22px">${esc(nomeLocal(S.sel))}</h1><div><span class="selo">${t.distancia(S.rota.distancia)}</span>${!escada?`<span class="selo ouro">♿ ${t.semEscadas}</span>`:''}</div>${escada&&S.perfilU.perfil.exigir_confirmado?`<p class="aviso erro" style="margin:8px 0">${t.temEscadaVisual}</p>`:''}`;
+}
+function renderPasso(primeira){
+  const e=S.etapas[S.i],n=S.etapas.length,t=u();
+  $('etapaAtual').innerHTML=`<span class="seta">${ic(e.icone,30)}</span><div><p>${esc(e.texto)}</p><small>${t.passo(S.i+1,n)}</small></div>`;
+  $('listaEtapas').innerHTML=S.etapas.map((x,k)=>`<li class="${k<S.i?'feita':k===S.i?'atual':''}">${esc(x.texto)}</li>`).join('');
+  $('btnProx').textContent=S.i===n-1?t.cheguei:t.proximo;
+  S.andarVisto=S.i===0?S.origem.andar:S.etapas[S.i-1].andar;
+  desenharMapaRota();
+  if(temUI('vibracao')) vibrar({direita:[80,60,80,60,80],esquerda:[80,60,80],chegada:[300]}[e.icone]||[60]);
+  if(temUI('audioAuto')) falar(e.texto); else anunciar(e.texto);
+}
+function desenharMapaRota(){
+  if(!S.rota||!S.etapas.length) return;
+  const andar=S.andarVisto,svg=$('mapa'),nos=grafo.nos,out=[],P=pal();
+  $('abasAndar').innerHTML=PACOTE.edificio.andares.map(a=>`<button aria-pressed="${a.id===andar}" data-andar="${a.id}">${esc(andarCurto(a.id))}</button>`).join('');
+  const inf=andarInfo(andar), AR=16/10;
+  const xs=[],ys=[]; S.rota.nos.forEach(id=>{const n=nos[id];if(n.andar===andar){xs.push(n.x);ys.push(n.y);}}); if(S.sel.andar===andar){xs.push(S.sel.x);ys.push(S.sel.y);}
+  let x0=0,y0=0,w=inf.largura,h=inf.largura/AR;
+  if(xs.length){const pad=15;x0=Math.min(...xs)-pad;const x1=Math.max(...xs)+pad;y0=Math.min(...ys)-pad;const y1=Math.max(...ys)+pad;w=Math.max(x1-x0,60);h=Math.max(y1-y0,w/AR);w=Math.max(w,h*AR);x0=(x0+x1)/2-w/2;y0=(y0+y1)/2-h/2;}
+  svg.setAttribute('viewBox',`${x0} ${y0} ${w} ${h}`);
+  const px=w/340;
+  out.push(fundoPlanta(andar));
+  if($('dComparar').checked&&S.rotaPadrao&&S.rotaPadrao.nos.join()!==S.rota.nos.join()) out.push(`<polyline points="${linhaRota(S.rotaPadrao,andar)}" fill="none" stroke="${P.padrao}" stroke-width="${2.5*px}" stroke-dasharray="${6*px} ${5*px}"/>`);
+  out.push(svgRota(S.rota,andar,px,P,.9));
+  if(S.sel.andar===andar) out.push(`<circle cx="${S.sel.x}" cy="${S.sel.y}" r="${10*px}" fill="${P.rota}" stroke="${P.rotaBorda}" stroke-width="${2.5*px}"/><text x="${S.sel.x}" y="${S.sel.y+24*px}" font-size="${12*px}" text-anchor="middle" font-weight="700" fill="${P.rotulo}" paint-order="stroke" stroke="${P.contorno}" stroke-width="${3*px}">${esc(nomeLocal(S.sel))}</text>`);
+  const aqui=S.i===0?S.origem:nos[S.etapas[S.i-1].no];
+  if(aqui.andar===andar) out.push(`<circle class="pulso" cx="${aqui.x}" cy="${aqui.y}" r="${16*px}" fill="${P.voce}"/><circle cx="${aqui.x}" cy="${aqui.y}" r="${7.5*px}" fill="${P.voce}" stroke="#fff" stroke-width="${2.8*px}"/>`);
+  svg.innerHTML=out.join('');
+}
+$('abasAndar').addEventListener('click',e=>{const b=e.target.closest('[data-andar]');if(!b)return;S.andarVisto=+b.dataset.andar;desenharMapaRota();});
+$('btnProx').onclick=()=>{ if(S.i<S.etapas.length-1){S.i++;renderPasso();} else concluir(); };
+$('btnOuvir').onclick=()=>falar(S.etapas[S.i].texto);
+function concluir(){
+  S.pos={no:S.sel.no,confianca:'alta'}; S.origemAlt=null; S.andarMapa=S.sel.andar;
+  $('chegadaTitulo').textContent=u().chegou; $('chegadaTexto').textContent=S.etapas[S.etapas.length-1].texto;
+  ir('chegada'); vibrar([300]); if(temUI('audioAuto')) falar(u().chegou+' '+S.etapas[S.etapas.length-1].texto);
+}
+$('btnNova').onclick=()=>{ S.sel=null; S.rota=null; $('cartaoPoi').hidden=true; $('campoBusca').value=''; ir('explorar',true); renderLocal(); };
+$('btnPerdido').onclick=()=>{
+  $('listaPerdido').innerHTML=PACOTE.nos.filter(n=>n.andar===S.andarVisto&&n.tipo!=='vertical'&&(n.tipo==='entrada'||n.referencia)).map(n=>`<li><button data-no="${n.id}"><span>${esc(n.tipo==='entrada'?nomeLocal(n):cap(refLocal(n)))}</span></button></li>`).join('');
+  ir('perdido'); anunciar(u().incertoT);
+};
+$('listaPerdido').addEventListener('click',e=>{const b=e.target.closest('[data-no]');if(!b)return;
+  S.pos={no:b.dataset.no,confianca:'alta'}; S.origemAlt=null; tracarRota();
+  if(!S.rota){ $('semRotaCorpo').innerHTML=blocoSemRota(u()); S.pilha.pop(); ir('semrota'); return; }
+  S.origem=grafo.nos[origemNo()]; S.i=0; gerarEtapas(); S.pilha.pop(); mostrar('rota'); renderPasso(true); });
+
+// ---------- conversar e SOS ----------
+function renderFrases(){
+  $('frasesVisitante').innerHTML=FRASES.map((f,k)=>`<button data-f="${k}">${esc(f[S.idioma])}</button>`).join('');
+  $('respostasAtendente').innerHTML=RESPOSTAS.map((f,k)=>`<button data-r="${k}">${esc(f.pt)}</button>`).join('');
+}
+function abrirConversa(frase){
+  if(!temUI('conversar')) return; // exclusivo para surdez e/ou deficiência na fala
+  ir('conversa');
+  const us=usuario()||{tipos:[]};
+  if(frase) msgV(frase);
+  else if(S.sel) msgV({pt:`Estou procurando: ${S.sel.nome}.`,en:`I'm looking for: ${nomeLocal(S.sel)}.`,es:`Estoy buscando: ${nomeLocal(S.sel)}.`});
+  else if(!S._ultima) msgV(us.tipos.includes('auditiva')?FRASES[0]:FRASES[1]);
+}
+function msgV(f){$('falaParaAtendente').textContent=f.pt;$('falaParaVisitante').textContent=f[S.idioma]||f.pt;S._ultima=f;}
+function msgA(f){$('falaParaVisitante').textContent=f[S.idioma]||f.pt;$('falaParaAtendente').textContent=f.pt;S._ultima=f;vibrar([120]);}
+$('frasesVisitante').addEventListener('click',e=>{const b=e.target.closest('[data-f]');if(b)msgV(FRASES[+b.dataset.f]);});
+$('respostasAtendente').addEventListener('click',e=>{const b=e.target.closest('[data-r]');if(b)msgA(RESPOSTAS[+b.dataset.r]);});
+$('formVisitanteMsg').addEventListener('submit',e=>{e.preventDefault();const v=$('campoVisitante').value.trim();if(!v)return;msgV({pt:v,en:v,es:v});$('campoVisitante').value='';});
+$('formAtendente').addEventListener('submit',e=>{e.preventDefault();const v=$('campoAtendente').value.trim();if(!v)return;msgA({pt:v});$('campoAtendente').value='';});
+$('btnSOS').onclick=async()=>{
+  const t=u(); if(!await confirmar(t.sosConfT,t.sosConfD,t.sosConfSim,t.cancelar)) return;
+  const us=usuario()||{tipos:[]}, linhas=[];
+  if(us.tipos.includes('auditiva')) linhas.push(UI.pt.sosSurdo);
+  if(us.tipos.includes('fala')) linhas.push(UI.pt.sosFala);
+  linhas.push(UI.pt.sosChame);
+  const n=S.pos&&grafo.nos[S.pos.no];
+  if(n) linhas.push(UI.pt.sosPerto(n.referencia||n.nome,andarCurto(n.andar)));
+  // A mensagem para quem está perto fica em português (idioma do shopping); com versão no idioma do visitante, se for outro.
+  let corpo=linhas.map(l=>`<p>${esc(l)}</p>`).join('');
+  if(S.idioma!=='pt') corpo+=`<p style="font-size:18px;opacity:.9">${esc(t.sosChame)}</p>`;
+  $('sosCorpo').innerHTML=corpo;
+  // Sem integração com a central: não simulamos envio nem dizemos que a ajuda foi acionada.
+  $('sosStatus').textContent=CENTRAL.disponivel?'':t.sosSemEnvio;
+  $('sosTela').hidden=false; $('sosTitulo').focus(); if(temUI('vibracao')) vibrar([200]);
+};
+function fecharSOS(){ $('sosTela').hidden=true; $('btnSOS').focus(); }
+$('sosFechar').onclick=fecharSOS;
+$('sosTela').addEventListener('keydown',e=>{ if(e.key==='Tab'){ e.preventDefault(); $('sosFechar').focus(); } });
+
+// ---------- painel demo ----------
+$('dMover').onclick=()=>{ S.beaconIdx++; const b=PACOTE.beacons[S.beaconIdx%PACOTE.beacons.length]; definirPosicao(b.no,'media'); if(S.sel) selecionar(S.sel.id); };
+$('dElevador').onchange=()=>{ if(S.sel){ tracarRota(); renderCartao(); desenharExplorar(); } };
+$('dComparar').onchange=()=>desenharExplorar();
+$('dReset').onclick=()=>{ ['rd_contas','rd_sessao','rd_visitante','rd_tema','rd_idioma'].forEach(k=>guardar(k,null)); location.reload(); };
+
+// ---------- idioma e início ----------
+function aplicarIdioma(){
+  const t=u(); document.documentElement.lang={pt:'pt-BR',en:'en',es:'es'}[S.idioma]; guardar('rd_idioma',S.idioma);
+  document.querySelectorAll('.seletor-idioma').forEach(s=>s.value=S.idioma);
+  document.querySelectorAll('[data-t]').forEach(el=>{const v=t[el.dataset.t];if(typeof v==='string')el.textContent=v;});
+  document.querySelectorAll('[data-ph]').forEach(el=>{el.placeholder=t[el.dataset.ph];});
+  const v=PACOTE.versao; $('txtPacote').textContent=t.pacote(v.versao,v.atualizado_em.split('-').reverse().join('/'));
+  renderFrases(); renderLista();
+  document.querySelectorAll('.bloco-def').forEach(c=>{ if(c.querySelector('input')) renderBlocoDef(c); });
+  if(S.tela==='cadastro'){ $('cadTitulo').textContent=S.editando?t.cadTituloEd:t.cadTitulo; $('btnSalvarCadastro').textContent=S.editando?t.salvar:t.criarConta; }
+  if(S.tela==='config') renderConfig();
+  if(S.tela==='explorar'){ renderLocal(); desenharExplorar(); if(S.sel) renderCartao(); }
+  if(S.tela==='rota'&&S.rota){ gerarEtapas(); renderPasso(true); }
+  atualizarTopo();
+}
+document.querySelectorAll('.seletor-idioma').forEach(s=>s.addEventListener('change',e=>{S.idioma=e.target.value;aplicarIdioma();}));
+window.addEventListener('resize',()=>{ if(S.V&&S.tela==='explorar') desenharExplorar(); });
+
+// sessão salva neste navegador (protótipo)
+S.idioma=ler('rd_idioma')||'pt'; S.tema=ler('rd_tema')||'claro';
+const sessao=ler('rd_sessao'), cs=contas();
+if(sessao&&cs[sessao]) S.conta=publico(cs[sessao]); else if(ler('rd_visitante')) S.visitante=ler('rd_visitante');
+aplicarTema(S.tema); aplicarIdioma();
+if(S.conta||S.visitante){ aplicarPerfil(); entrarNoApp(); } else ir('acesso',true);
+})();
+</script>
+</body>
+</html>
